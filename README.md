@@ -4,7 +4,7 @@
 
 - [x] Initialize the Next.js project.
 - [x] Set up Clerk for authentication and configure user sign-in/sign-up functionality.
-- [ ] Integrate Prisma and connect it to the Supabase-hosted PostgreSQL database.
+- [x] Integrate Prisma and connect it to the Supabase-hosted PostgreSQL database.
 - [ ] Set up end-to-end testing in the project and in the CI/CD pipeline
 - [ ] Landing page
 
