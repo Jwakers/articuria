@@ -5,8 +5,11 @@
 - [x] Initialize the Next.js project.
 - [x] Set up Clerk for authentication and configure user sign-in/sign-up functionality.
 - [x] Integrate Prisma and connect it to the Supabase-hosted PostgreSQL database.
+- [x] Landing page
+  - [ ] Move header and footer to layout (use a grid for the layout)
+  - [ ] Find a nicer background gradient and store in tailwind config
+  - [ ] Add light/dark toggle and infrastructure
 - [ ] Set up end-to-end testing in the project and in the CI/CD pipeline
-- [ ] Landing page
 
 ## 2. Database Schema Design
 
@@ -66,7 +69,14 @@
   - Database operations (saving and retrieving videos).
   - Authentication.
 
-## 11. Optional Enhancements for MVP
+### Additional
+
+## Legal
+
+- Privacy page
+- Terms page
+
+## Optional Enhancements for MVP
 
 - [ ] Add user profile customization (e.g., profile pictures).
 - [ ] Allow users to delete or rename saved videos.
