@@ -33,12 +33,7 @@ export default function RootLayout({
         <body
           className={cn(geistSans.variable, geistMono.variable, "antialiased")}
         >
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <div className="grid grid-rows-[auto_1fr_auto] min-h-dvh">
               <Header />
               <main>{children}</main>
