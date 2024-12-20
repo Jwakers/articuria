@@ -6,8 +6,8 @@
 - [x] Set up Clerk for authentication and configure user sign-in/sign-up functionality.
 - [x] Integrate Prisma and connect it to the Supabase-hosted PostgreSQL database.
 - [x] Landing page
-  - [ ] Move header and footer to layout (use a grid for the layout)
-  - [ ] Find a nicer background gradient and store in tailwind config
+  - [x] Move header and footer to layout (use a grid for the layout)
+  - [x] Find a nicer background gradient and store in tailwind config
   - [ ] Add light/dark toggle and infrastructure
 - [ ] Set up end-to-end testing in the project and in the CI/CD pipeline
 

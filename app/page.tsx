@@ -27,7 +27,7 @@ export default function LandingPage() {
           <h2 className="text-3xl font-bold text-center mb-12">How It Works</h2>
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center p-6 rounded-lg">
-              <div className="text-white rounded-full p-4 inline-block mb-4">
+              <div className="rounded-full p-4 inline-block mb-4">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -50,7 +50,7 @@ export default function LandingPage() {
               </p>
             </div>
             <div className="text-center p-6 rounded-lg">
-              <div className="text-white rounded-full p-4 inline-block mb-4">
+              <div className="rounded-full p-4 inline-block mb-4">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -78,7 +78,7 @@ export default function LandingPage() {
               </p>
             </div>
             <div className="text-center p-6 rounded-lg">
-              <div className="text-white rounded-full p-4 inline-block mb-4">
+              <div className="rounded-full p-4 inline-block mb-4">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"

@@ -8,15 +8,13 @@ import {
   UserButton,
 } from "@clerk/nextjs";
 import Link from "next/link";
+import { ModeToggle } from "./mode-toggle";
 
 export function Header() {
   return (
     <header className="py-4 px-6 shadow-sm">
       <div className="container mx-auto flex justify-between items-center">
-        <Link
-          href="/"
-          className="text-2xl font-bold text-transparent bg-clip-text"
-        >
+        <Link href="/" className="text-2xl font-bold">
           TableTopicsMaster
         </Link>
         <nav>
@@ -42,6 +40,9 @@ export function Header() {
                   <SignOutButton />
                 </Button>
               </SignedIn>
+            </li>
+            <li>
+              <ModeToggle />
             </li>
           </ul>
         </nav>

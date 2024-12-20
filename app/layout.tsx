@@ -1,9 +1,10 @@
-import { Footer } from "@/app/_components/Footer";
-import { Header } from "@/app/_components/Header";
+import { Footer } from "@/app/_components/footer";
+import { Header } from "@/app/_components/header";
 import { cn } from "@/lib/utils";
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { ThemeProvider } from "./_components/theme-provider";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -30,15 +31,20 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body
-          className={cn(
-            geistSans.variable,
-            geistMono.variable,
-            "antialiased grid grid-rows-[auto_1fr_auto] dark"
-          )}
+          className={cn(geistSans.variable, geistMono.variable, "antialiased")}
         >
-          <Header />
-          <main>{children}</main>
-          <Footer />
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <div className="grid grid-rows-[auto_1fr_auto] min-h-dvh">
+              <Header />
+              <main>{children}</main>
+              <Footer />
+            </div>
+          </ThemeProvider>
         </body>
       </html>
     </ClerkProvider>
