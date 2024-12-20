@@ -8,15 +8,15 @@
 - [x] Landing page
   - [x] Move header and footer to layout (use a grid for the layout)
   - [x] Find a nicer background gradient and store in tailwind config
-  - [ ] Add light/dark toggle and infrastructure
-- [ ] Set up end-to-end testing in the project and in the CI/CD pipeline
+  - [x] Add light/dark toggle and infrastructure
+- [ ] Fix clerk sign up
+- [ ] Fix clerk button pop-in
 
 ## 2. Database Schema Design
 
 - [ ] Define a Prisma schema with the following models:
-  - **User**: Information about the users.
-  - **Topic**: Details of AI-generated topics.
   - **Video**: Video records saved by users.
+  - **Topic**: Details of AI-generated topics.
 - [ ] Migrate the schema to the PostgreSQL database.
 
 ## 3. AI-Generated Table Topics
