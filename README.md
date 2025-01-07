@@ -1,19 +1,28 @@
 # MVP To-Do List for Table Topics App
 
+## 0. Bugs and refactor
+
+- [x] Fix code review issues
+- [ ] Fix clerk button pop-in
+- [ ] Fix clerk sign up
+- [ ] Refactor server files in to a server folder (e.g. server/db/schema)
+
 ## 1. Project Setup
 
 - [x] Initialize the Next.js project.
 - [x] Set up Clerk for authentication and configure user sign-in/sign-up functionality.
 - [x] Integrate Prisma and connect it to the Supabase-hosted PostgreSQL database.
-- [ ] Set up end-to-end testing in the project and in the CI/CD pipeline
-- [ ] Landing page
+- [x] Landing page
+  - [x] Move header and footer to layout (use a grid for the layout)
+  - [x] Find a nicer background gradient and store in tailwind config
+  - [x] Add light/dark toggle and infrastructure
+- [ ] Mobile menu
 
 ## 2. Database Schema Design
 
 - [ ] Define a Prisma schema with the following models:
-  - **User**: Information about the users.
-  - **Topic**: Details of AI-generated topics.
   - **Video**: Video records saved by users.
+  - **Topic**: Details of AI-generated topics.
 - [ ] Migrate the schema to the PostgreSQL database.
 
 ## 3. AI-Generated Table Topics
@@ -66,7 +75,14 @@
   - Database operations (saving and retrieving videos).
   - Authentication.
 
-## 11. Optional Enhancements for MVP
+### Additional
+
+## Legal
+
+- Privacy page
+- Terms page
+
+## Optional Enhancements for MVP
 
 - [ ] Add user profile customization (e.g., profile pictures).
 - [ ] Allow users to delete or rename saved videos.
