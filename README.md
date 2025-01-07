@@ -4,7 +4,7 @@
 
 - [x] Fix code review issues
 - [ ] Fix clerk button pop-in
-- [ ] Fix clerk sign up
+- [x] Fix clerk sign up
 - [ ] Refactor server files in to a server folder (e.g. server/db/schema)
 
 ## 1. Project Setup
