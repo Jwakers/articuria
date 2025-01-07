@@ -31,7 +31,7 @@ export default function LandingPage() {
               <div className="rounded-full p-4 inline-block mb-4">
                 <Zap size={32} />
               </div>
-              <h3 className="text-xl font-semibold mb-">Generate Topics</h3>
+              <h3 className="text-xl font-semibold">Generate Topics</h3>
               <p className="">
                 Get AI-powered table topics tailored to your interests and skill
                 level
@@ -41,7 +41,7 @@ export default function LandingPage() {
               <div className="rounded-full p-4 inline-block mb-4">
                 <Camera size={32} />
               </div>
-              <h3 className="text-xl font-semibold mb-">Record Your Speech</h3>
+              <h3 className="text-xl font-semibold">Record Your Speech</h3>
               <p className="">
                 Practice your impromptu speaking skills and record your
                 performance
@@ -51,7 +51,7 @@ export default function LandingPage() {
               <div className="rounded-full p-4 inline-block mb-4">
                 <ChartArea size={32} />
               </div>
-              <h3 className="text-xl font-semibold mb-">Track Progress</h3>
+              <h3 className="text-xl font-semibold">Track Progress</h3>
               <p className="">
                 Review your recordings, get feedback, and see your improvement
                 over time

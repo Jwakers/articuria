@@ -1,5 +1,12 @@
 # MVP To-Do List for Table Topics App
 
+## 0. Bugs and refactor
+
+- [x] Fix code review issues
+- [ ] Fix clerk button pop-in
+- [ ] Fix clerk sign up
+- [ ] Refactor server files in to a server folder (e.g. server/db/schema)
+
 ## 1. Project Setup
 
 - [x] Initialize the Next.js project.
@@ -9,8 +16,7 @@
   - [x] Move header and footer to layout (use a grid for the layout)
   - [x] Find a nicer background gradient and store in tailwind config
   - [x] Add light/dark toggle and infrastructure
-- [ ] Fix clerk sign up
-- [ ] Fix clerk button pop-in
+- [ ] Mobile menu
 
 ## 2. Database Schema Design
 
