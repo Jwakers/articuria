@@ -6,6 +6,8 @@
 - [ ] Fix clerk button pop-in
 - [x] Fix clerk sign up
 - [ ] Refactor server files in to a server folder (e.g. server/db/schema)
+- [ ] Isolate the video render between recording video stream and playback. After recording "No video recording" message is briefly shown
+- [ ] The color indicator should only show during recording. It should also reset after recording.
 
 ## 1. Project Setup
 
@@ -51,6 +53,7 @@
 
 - [ ] Protect routes so only signed-in users can access dashboard and video features.
 - [ ] Configure role-based or user-based authorization if necessary.
+- [ ] Redirect user on sign in
 
 ## 8. UI/UX
 
