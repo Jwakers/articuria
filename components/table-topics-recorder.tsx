@@ -11,7 +11,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 // Mock function to generate a table topic
 const generateTopic = () => {
@@ -31,7 +31,6 @@ export default function TableTopicsRecorder() {
   const [recordedBlob, setRecordedBlob] = useState<Blob | null>(null);
   const [recordedVideoURL, setRecordedVideoURL] = useState<string | null>(null);
   const [timeElapsed, setTimeElapsed] = useState(0);
-  const [countdown, setCountdown] = useState<number | null>(null);
   const [recordingName, setRecordingName] = useState("");
 
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -61,22 +60,11 @@ export default function TableTopicsRecorder() {
     setRecordedVideoURL(null);
     setTimeElapsed(0);
     setRecordingName("");
-    startCountdown();
-  };
-
-  const startCountdown = () => {
-    setCountdown(5);
-    countdownRef.current = setInterval(() => {
-      setCountdown((prev) => {
-        if (prev !== null && prev > 1) {
-          return prev - 1;
-        } else {
-          clearInterval(countdownRef.current!);
-          handleStartRecording();
-          return null;
-        }
-      });
-    }, 1000);
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+    handleStartRecording();
   };
 
   const handleStartRecording = async () => {
@@ -85,9 +73,9 @@ export default function TableTopicsRecorder() {
         video: true,
         audio: true,
       });
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-      }
+
+      if (videoRef.current) videoRef.current.srcObject = stream;
+
       mediaRecorderRef.current = new MediaRecorder(stream);
       mediaRecorderRef.current.ondataavailable = (event) => {
         if (event.data.size > 0) {
@@ -100,9 +88,13 @@ export default function TableTopicsRecorder() {
         const url = URL.createObjectURL(blob);
         setRecordedVideoURL(url);
         chunksRef.current = [];
+        if (videoRef.current) videoRef.current.srcObject = null;
       };
       mediaRecorderRef.current.start();
       setIsRecording(true);
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
       timerRef.current = setInterval(() => {
         setTimeElapsed((prev) => prev + 1);
       }, 1000);
@@ -117,18 +109,12 @@ export default function TableTopicsRecorder() {
       setIsRecording(false);
       if (timerRef.current) {
         clearInterval(timerRef.current);
-        setTimeElapsed(0);
+        timerRef.current = null;
       }
       if (videoRef.current && videoRef.current.srcObject) {
         const tracks = (videoRef.current.srcObject as MediaStream).getTracks();
         tracks.forEach((track) => track.stop());
       }
-    }
-
-    if (videoRef.current) {
-      videoRef.current;
-      videoRef.current.pause();
-      videoRef.current.currentTime = 0;
     }
   };
 
@@ -153,13 +139,17 @@ export default function TableTopicsRecorder() {
     setRecordedVideoURL(null);
     setTimeElapsed(0);
     setRecordingName("");
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
   };
 
-  const getTimingColor = () => {
+  const getTimingColor = useMemo(() => {
     if (timeElapsed < 60) return "bg-green-500";
     if (timeElapsed < 90) return "bg-amber-500";
     return "bg-red-500";
-  };
+  }, [timeElapsed]);
 
   return (
     <div className="container mx-auto p-4">
@@ -168,45 +158,37 @@ export default function TableTopicsRecorder() {
           <CardTitle>Table Topics Recorder</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Button
-            onClick={handleGenerateTopic}
-            disabled={isRecording || countdown !== null}
-          >
+          <Button onClick={handleGenerateTopic} disabled={isRecording}>
             Generate Topic
           </Button>
           {currentTopic && (
             <div className="p-4 bg-muted rounded-md">
-              <h3 className="font-semibold mb-2">Current Topic:</h3>
+              <h3 className="font-semibold mb-2">Topic:</h3>
               <p>{currentTopic}</p>
             </div>
           )}
           <div className="aspect-video bg-black rounded-md overflow-hidden relative">
-            {isRecording || recordedVideoURL ? (
-              <>
-                <video
-                  ref={videoRef}
-                  className="w-full h-full"
-                  autoPlay
-                  muted={isRecording}
-                  controls={!isRecording}
-                  src={recordedVideoURL || undefined}
-                />
-                <div
-                  className={cn(
-                    "size-4 absolute top-4 right-4 rounded-full",
-                    getTimingColor()
-                  )}
-                />
-              </>
-            ) : countdown !== null ? (
-              <div className="absolute inset-0 flex items-center justify-center text-white text-6xl font-bold">
-                {countdown}
-              </div>
-            ) : (
-              <div className="w-full h-full flex items-center justify-center text-white">
+            <video
+              ref={videoRef}
+              className="w-full h-full"
+              autoPlay
+              muted={isRecording}
+              controls={!isRecording}
+              src={recordedVideoURL || undefined}
+            />
+            {isRecording ? (
+              <div
+                className={cn(
+                  "size-4 absolute top-4 right-4 rounded-full",
+                  getTimingColor
+                )}
+              />
+            ) : null}
+            {!isRecording && !recordedVideoURL ? (
+              <div className="absolute bg-black inset-0 flex items-center justify-center text-white">
                 No video recorded
               </div>
-            )}
+            ) : null}
           </div>
           <div className="flex justify-between">
             {isRecording && (
