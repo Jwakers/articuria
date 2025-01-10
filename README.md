@@ -6,10 +6,9 @@
 - [ ] Fix clerk button pop-in
 - [x] Fix clerk sign up
 - [ ] Refactor server files in to a server folder (e.g. server/db/schema)
-- [ ] Isolate the video render between recording video stream and playback. After recording "No video recording" message is briefly shown
 - [ ] Add toast component for error handling inside handleStartRecording function
 - [ ] Get a large fixed store of table topics (Will eventually be evolved to use AI generated topics)
-- [ ] remove naming feature for the video download
+- [x] remove naming feature for the video download
 
 ## 1. Project Setup
 
@@ -24,10 +23,10 @@
 
 ## 2. Database Schema Design
 
-- [ ] Define a Prisma schema with the following models:
+- [x] Define a Prisma schema with the following models:
   - **Video**: Video records saved by users.
   - **Topic**: Details of AI-generated topics.
-- [ ] Migrate the schema to the PostgreSQL database.
+- [x] Migrate the schema to the PostgreSQL database.
 
 ## 3. AI-Generated Table Topics
 
