@@ -8,8 +8,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { Download, Save, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -129,10 +127,8 @@ const generateTopic = () => {
 
 export default function TableTopicsRecorder() {
   const [currentTopic, setCurrentTopic] = useState<string | null>(null);
-  const [recordingName, setRecordingName] = useState("");
   const {
     isRecording,
-    recordedBlob,
     recordedVideoURL,
     videoElementRef,
     timeElapsed,
@@ -147,24 +143,31 @@ export default function TableTopicsRecorder() {
   };
 
   const handleSaveRecording = () => {
-    if (recordedBlob && recordingName) {
-      const a = document.createElement("a");
-      a.style.display = "none";
-      a.href = recordedVideoURL!;
-      a.download = `${recordingName}.webm`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-    }
+    console.log("Save recording");
+    // Placeholder
+  };
+
+  const handleDownloadRecording = () => {
+    // TODO: Convert to toast notification
+    if (!recordedVideoURL)
+      return alert("Error: no recording was found. Please try again");
+
+    const downloadLink = document.createElement("a");
+    downloadLink.style.display = "none";
+    downloadLink.href = recordedVideoURL;
+    downloadLink.download = "table-topic.webm";
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
   };
 
   const handleDiscardRecording = () => {
     const userResponse = confirm(
       "Are you sure you want to permanently delete this recording?"
     );
-    console.log(userResponse);
+
     if (!userResponse) return;
-    resetRecording(); // Reset all recording states
+    resetRecording();
     setCurrentTopic(null);
   };
 
@@ -217,48 +220,24 @@ export default function TableTopicsRecorder() {
           </div>
         </CardContent>
         <CardFooter>
-          <div className="w-full space-y-4">
-            <h3 className="font-semibold">Recording Options:</h3>
-            {recordedVideoURL && (
-              <>
-                <div className="flex items-center space-x-2">
-                  <Label htmlFor="recording-name">Recording Name:</Label>
-                  <Input
-                    id="recording-name"
-                    value={recordingName}
-                    onChange={(e) => setRecordingName(e.target.value)}
-                    placeholder="Enter a name for your recording"
-                  />
-                </div>
-                <div className="flex justify-between">
-                  <div className="flex gap-2">
-                    <Button
-                      onClick={handleSaveRecording}
-                      disabled={!recordingName}
-                    >
-                      <Save />
-                      Save Recording
-                    </Button>
-                    <Button
-                      onClick={handleSaveRecording}
-                      disabled={!recordingName}
-                      variant="secondary"
-                    >
-                      <Download />
-                      Download Recording
-                    </Button>
-                  </div>
-                  <Button
-                    onClick={handleDiscardRecording}
-                    variant="destructive"
-                  >
-                    <Trash2 />
-                    Discard Recording
-                  </Button>
-                </div>
-              </>
-            )}
-          </div>
+          {recordedVideoURL && (
+            <div className="flex justify-between w-full flex-wrap gap-4">
+              <div className="flex gap-2">
+                <Button onClick={handleSaveRecording}>
+                  <Save />
+                  Save Recording
+                </Button>
+                <Button onClick={handleDownloadRecording} variant="secondary">
+                  <Download />
+                  Download Recording
+                </Button>
+              </div>
+              <Button onClick={handleDiscardRecording} variant="destructive">
+                <Trash2 />
+                Delete Recording
+              </Button>
+            </div>
+          )}
         </CardFooter>
       </Card>
     </div>
