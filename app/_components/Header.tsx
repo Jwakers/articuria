@@ -3,7 +3,6 @@ import {
   SignedIn,
   SignedOut,
   SignInButton,
-  SignOutButton,
   SignUpButton,
   UserButton,
 } from "@clerk/nextjs";
@@ -18,27 +17,18 @@ export function Header() {
           TableTopicsMaster
         </Link>
         <nav role="navigation" aria-label="Main navigation">
-          <ul className="flex space-x-4">
-            <li>
+          <ul className="flex items-center space-x-4">
+            <li className="flex">
               <SignedOut>
                 <Button variant="ghost" asChild>
                   <SignInButton />
                 </Button>
-              </SignedOut>
-              <SignedIn>
-                <UserButton />
-              </SignedIn>
-            </li>
-            <li>
-              <SignedOut>
                 <Button asChild>
                   <SignUpButton />
                 </Button>
               </SignedOut>
               <SignedIn>
-                <Button variant="ghost" asChild>
-                  <SignOutButton />
-                </Button>
+                <UserButton />
               </SignedIn>
             </li>
             <li>

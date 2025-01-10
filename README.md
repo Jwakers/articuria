@@ -4,8 +4,12 @@
 
 - [x] Fix code review issues
 - [ ] Fix clerk button pop-in
-- [ ] Fix clerk sign up
+- [x] Fix clerk sign up
 - [ ] Refactor server files in to a server folder (e.g. server/db/schema)
+- [ ] Isolate the video render between recording video stream and playback. After recording "No video recording" message is briefly shown
+- [ ] Add toast component for error handling inside handleStartRecording function
+- [ ] Get a large fixed store of table topics (Will eventually be evolved to use AI generated topics)
+- [ ] remove naming feature for the video download
 
 ## 1. Project Setup
 
@@ -51,6 +55,7 @@
 
 - [ ] Protect routes so only signed-in users can access dashboard and video features.
 - [ ] Configure role-based or user-based authorization if necessary.
+- [ ] Redirect user on sign in
 
 ## 8. UI/UX
 
