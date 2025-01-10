@@ -5,9 +5,7 @@
 - [x] Fix code review issues
 - [ ] Fix clerk button pop-in
 - [x] Fix clerk sign up
-- [ ] Refactor server files in to a server folder (e.g. server/db/schema)
-- [ ] Add toast component for error handling inside handleStartRecording function
-- [ ] Get a large fixed store of table topics (Will eventually be evolved to use AI generated topics)
+- [x] Get a large fixed store of table topics (Will eventually be evolved to use AI generated topics)
 - [x] remove naming feature for the video download
 
 ## 1. Project Setup
@@ -20,6 +18,7 @@
   - [x] Find a nicer background gradient and store in tailwind config
   - [x] Add light/dark toggle and infrastructure
 - [ ] Mobile menu
+- [ ] Add a persistent sidebar menu (create topic, user dashboard, home) etc. This should be a layout level feature and only for logged in users.
 
 ## 2. Database Schema Design
 
@@ -35,8 +34,12 @@
 
 ## 4. Video Recording and Playback
 
-- [ ] Implement video recording functionality using a web-based library (e.g., `react-webcam` or MediaRecorder API).
-- [ ] Allow users to preview and playback recorded videos before saving.
+- [x] Implement video recording functionality using a web-based library (e.g., `react-webcam` or MediaRecorder API).
+- [x] Allow users to preview and playback recorded videos before saving.
+- [x] Save topics to DB
+- [ ] Set up upload thing
+- [ ] Save video to DB / Reference user ID
+- [ ] Add toast component for error handling and messaging
 
 ## 5. Saving Videos to the Database
 
