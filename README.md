@@ -3,10 +3,13 @@
 ## 0. Bugs and refactor
 
 - [x] Fix code review issues
-- [ ] Fix clerk button pop-in
 - [x] Fix clerk sign up
 - [x] Get a large fixed store of table topics (Will eventually be evolved to use AI generated topics)
 - [x] remove naming feature for the video download
+- [x] Timer indicator is not working when recording video
+- [x] Issue starting a new recording (generate topic button) when there is already a recorded video
+- [ ] Fix clerk button pop-in
+- [ ] Make videos more secure in cloudflare using requireSignedURLs.
 
 ## 1. Project Setup
 
@@ -37,14 +40,21 @@
 - [x] Implement video recording functionality using a web-based library (e.g., `react-webcam` or MediaRecorder API).
 - [x] Allow users to preview and playback recorded videos before saving.
 - [x] Save topics to DB
-- [ ] Set up upload thing
-- [ ] Save video to DB / Reference user ID
-- [ ] Add toast component for error handling and messaging
+- [x] Set up cloudflare
+- [x] Save video to DB / Reference user ID
+- [x] Add loading indicators / transition when videos are uploading
+- [x] Add toast message for successfully uploading
+- [x] Add error messages on the front end
+- [x] Add toast component for error handling and messaging
+- [ ] Compress recordings before upload
+- [x] Add a memory limit on video uploads
+  - [ ] Move the whole upload function to a server action to safely limit upload size
+- [ ] Add a limit to how many videos a user can upload
 
 ## 5. Saving Videos to the Database
 
-- [ ] Set up file storage for videos (e.g., upload them to Supabase Storage or another storage provider like uploadthing).
-- [ ] Link stored video URLs to the database using the Video model.
+- [x] Set up file storage for videos (e.g., upload them to Supabase Storage or another storage provider like uploadthing).
+- [x] Link stored video URLs to the database using the Video model.
 
 ## 6. User Dashboard
 

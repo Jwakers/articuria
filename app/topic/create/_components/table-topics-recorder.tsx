@@ -11,41 +11,58 @@ import {
 } from "@/components/ui/card";
 import Spinner from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
+import { Video } from "@prisma/client";
 import { Download, Save, Trash2 } from "lucide-react";
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
+import { toast } from "sonner";
 import { useMediaRecorder } from "../_hooks";
 
 export default function TableTopicsRecorder() {
   const [currentTopic, setCurrentTopic] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const topicId = useRef<Video["tableTopicId"] | null>(null);
 
   const {
     isRecording,
+    isUploading,
+    isSaving,
+    isSaved,
     recordedVideoURL,
     videoElementRef,
     timeElapsed,
     startRecording,
     stopRecording,
     resetRecording,
+    uploadVideo,
   } = useMediaRecorder();
 
   const handleGenerateTopic = () => {
     startTransition(async () => {
-      const { topic } = await getTableTopic();
+      const { topic, id } = await getTableTopic();
       setCurrentTopic(topic);
       startRecording();
+      topicId.current = id;
     });
   };
 
-  const handleSaveRecording = () => {
-    console.log("Save recording");
-    // Placeholder
+  const handleSaveRecording = async () => {
+    if (!topicId.current) throw new Error("Topic ID not set");
+
+    const promise = uploadVideo.bind(null, {
+      title: currentTopic ?? "Table topic",
+      tableTopicId: topicId.current,
+    });
+
+    toast.promise(promise, {
+      loading: "Saving...",
+      success: "Recoding saved",
+      error: "There was an error saving this recording",
+    });
   };
 
   const handleDownloadRecording = () => {
-    // TODO: Convert to toast notification
     if (!recordedVideoURL)
-      return alert("Error: no recording was found. Please try again");
+      return toast.error("No recording was found. Please try again.");
 
     const downloadLink = document.createElement("a");
     downloadLink.style.display = "none";
@@ -57,19 +74,32 @@ export default function TableTopicsRecorder() {
   };
 
   const handleDiscardRecording = () => {
-    const userResponse = confirm(
-      "Are you sure you want to permanently delete this recording?"
-    );
+    const deleteRecording = () => {
+      resetRecording();
+      setCurrentTopic(null);
+      topicId.current = null;
+    };
 
-    if (!userResponse) return;
-    resetRecording();
-    setCurrentTopic(null);
+    toast("Are you sure you want to permanently delete this recording?", {
+      action: {
+        label: "Delete",
+        onClick: deleteRecording,
+      },
+    });
   };
 
   const getTimingColor = () => {
     if (timeElapsed < 90) return "bg-green-500";
     if (timeElapsed < 120) return "bg-amber-500";
     return "bg-red-500";
+  };
+
+  const getSaveButtonText = () => {
+    let saveButtonText = "Save Recording";
+    if (isUploading) saveButtonText = "Uploading...";
+    if (isSaving) saveButtonText = "Saving...";
+
+    return saveButtonText;
   };
 
   return (
@@ -83,7 +113,7 @@ export default function TableTopicsRecorder() {
         <CardContent className="space-y-4">
           <Button onClick={handleGenerateTopic} disabled={isRecording}>
             {isPending ? <Spinner /> : null}
-            Generate Topic
+            {!recordedVideoURL ? "Generate topic" : "Generate new topic"}
           </Button>
           {currentTopic && (
             <div className="p-4 bg-muted rounded-md">
@@ -104,7 +134,7 @@ export default function TableTopicsRecorder() {
               <div
                 className={cn(
                   "size-4 absolute top-4 right-4 rounded-full",
-                  getTimingColor
+                  getTimingColor()
                 )}
               />
             ) : null}
@@ -121,19 +151,30 @@ export default function TableTopicsRecorder() {
           {recordedVideoURL && (
             <div className="flex justify-between w-full flex-wrap gap-4">
               <div className="flex gap-2">
-                <Button onClick={handleSaveRecording}>
-                  <Save />
-                  Save Recording
-                </Button>
+                {!isSaved ? (
+                  <Button
+                    onClick={handleSaveRecording}
+                    disabled={isUploading || isSaving || isSaved}
+                  >
+                    {isUploading || isSaving ? <Spinner /> : <Save />}
+                    {getSaveButtonText()}
+                  </Button>
+                ) : null}
                 <Button onClick={handleDownloadRecording} variant="secondary">
                   <Download />
                   Download Recording
                 </Button>
               </div>
-              <Button onClick={handleDiscardRecording} variant="destructive">
-                <Trash2 />
-                Delete Recording
-              </Button>
+              {!isSaved ? (
+                <Button
+                  onClick={handleDiscardRecording}
+                  variant="destructive"
+                  disabled={isUploading || isSaving}
+                >
+                  <Trash2 />
+                  Delete Recording
+                </Button>
+              ) : null}
             </div>
           )}
         </CardFooter>

@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Toaster } from "sonner";
 import { ThemeProvider } from "./_components/theme-provider";
 import "./globals.css";
 
@@ -39,6 +40,7 @@ export default function RootLayout({
               <main>{children}</main>
               <Footer />
             </div>
+            <Toaster richColors />
           </ThemeProvider>
         </body>
       </html>
