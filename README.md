@@ -3,13 +3,13 @@
 ## 0. Bugs and refactor
 
 - [x] Fix code review issues
-- [ ] Fix clerk button pop-in
 - [x] Fix clerk sign up
-- [ ] Refactor server files in to a server folder (e.g. server/db/schema)
-- [ ] Isolate the video render between recording video stream and playback. After recording "No video recording" message is briefly shown
-- [ ] Add toast component for error handling inside handleStartRecording function
-- [ ] Get a large fixed store of table topics (Will eventually be evolved to use AI generated topics)
-- [ ] remove naming feature for the video download
+- [x] Get a large fixed store of table topics (Will eventually be evolved to use AI generated topics)
+- [x] remove naming feature for the video download
+- [x] Timer indicator is not working when recording video
+- [x] Issue starting a new recording (generate topic button) when there is already a recorded video
+- [ ] Fix clerk button pop-in
+- [ ] Make videos more secure in cloudflare using requireSignedURLs.
 
 ## 1. Project Setup
 
@@ -21,13 +21,14 @@
   - [x] Find a nicer background gradient and store in tailwind config
   - [x] Add light/dark toggle and infrastructure
 - [ ] Mobile menu
+- [ ] Add a persistent sidebar menu (create topic, user dashboard, home) etc. This should be a layout level feature and only for logged in users.
 
 ## 2. Database Schema Design
 
-- [ ] Define a Prisma schema with the following models:
+- [x] Define a Prisma schema with the following models:
   - **Video**: Video records saved by users.
   - **Topic**: Details of AI-generated topics.
-- [ ] Migrate the schema to the PostgreSQL database.
+- [x] Migrate the schema to the PostgreSQL database.
 
 ## 3. AI-Generated Table Topics
 
@@ -36,13 +37,24 @@
 
 ## 4. Video Recording and Playback
 
-- [ ] Implement video recording functionality using a web-based library (e.g., `react-webcam` or MediaRecorder API).
-- [ ] Allow users to preview and playback recorded videos before saving.
+- [x] Implement video recording functionality using a web-based library (e.g., `react-webcam` or MediaRecorder API).
+- [x] Allow users to preview and playback recorded videos before saving.
+- [x] Save topics to DB
+- [x] Set up cloudflare
+- [x] Save video to DB / Reference user ID
+- [x] Add loading indicators / transition when videos are uploading
+- [x] Add toast message for successfully uploading
+- [x] Add error messages on the front end
+- [x] Add toast component for error handling and messaging
+- [ ] Compress recordings before upload
+- [x] Add a memory limit on video uploads
+  - [ ] Move the whole upload function to a server action to safely limit upload size
+- [ ] Add a limit to how many videos a user can upload
 
 ## 5. Saving Videos to the Database
 
-- [ ] Set up file storage for videos (e.g., upload them to Supabase Storage or another storage provider like uploadthing).
-- [ ] Link stored video URLs to the database using the Video model.
+- [x] Set up file storage for videos (e.g., upload them to Supabase Storage or another storage provider like uploadthing).
+- [x] Link stored video URLs to the database using the Video model.
 
 ## 6. User Dashboard
 
