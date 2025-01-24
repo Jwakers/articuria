@@ -38,10 +38,16 @@ export default function TableTopicsRecorder() {
 
   const handleGenerateTopic = () => {
     startTransition(async () => {
-      const { topic, id } = await getTableTopic();
-      setCurrentTopic(topic);
-      startRecording();
-      topicId.current = id;
+      try {
+        const { topic, id } = await getTableTopic();
+        setCurrentTopic(topic);
+        await startRecording();
+        topicId.current = id;
+      } catch (error) {
+        const message =
+          error instanceof Error ? error.message : "Failed to generate topic";
+        toast.error(message);
+      }
     });
   };
 

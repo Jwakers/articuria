@@ -102,9 +102,17 @@ export const useMediaRecorder = () => {
     title: string;
     tableTopicId: Video["tableTopicId"];
   }) => {
+    if (!title?.trim()) throw new Error("Title is required");
+    if (!tableTopicId) throw new Error("Table topic ID is required");
+
     // Check if the recordedBlob size exceeds 10MB
     if (recordedBlob && recordedBlob.size > 10 * 1024 * 1024) {
       throw new Error("File size exceeds the maximum limit of 10MB");
+    }
+
+    // Validate blob type
+    if (recordedBlob && !recordedBlob.type.startsWith("video/")) {
+      throw new Error("Invalid file type. Only video files are allowed");
     }
 
     setIsUploading(true);
@@ -116,11 +124,14 @@ export const useMediaRecorder = () => {
     if (!recordedBlob) throw new Error("No recorded video found");
 
     const formData = new FormData();
-    formData.append("file", recordedBlob, title);
+    formData.append("file", recordedBlob, `${title.trim()}.webm`);
 
     try {
       const res = await fetch(uploadURL, {
         method: "POST",
+        headers: {
+          Accept: "application/json",
+        },
         body: formData,
       });
 
@@ -138,11 +149,13 @@ export const useMediaRecorder = () => {
       setIsSaved(true);
       toast.success("Recording saved");
     } catch (error) {
-      console.error(error);
+      const message = error instanceof Error ? error.message : "Unknown error";
+      console.error("Failed to upload video:", message);
       setIsSaved(false);
-      toast.error("Recording failed to save");
+      toast.error(`Recording failed to save: ${message}`);
     } finally {
       setIsUploading(false);
+      setIsSaving(false);
     }
   };
 

@@ -8,8 +8,11 @@
 - [x] remove naming feature for the video download
 - [x] Timer indicator is not working when recording video
 - [x] Issue starting a new recording (generate topic button) when there is already a recorded video
+- [x] Home page sign up button does not work
 - [ ] Fix clerk button pop-in
 - [ ] Make videos more secure in cloudflare using requireSignedURLs.
+- [ ] User should be redirected to dashboard on sign in/up
+- [ ] Add all routes to a constant and replace hard coded instances
 
 ## 1. Project Setup
 
@@ -61,7 +64,12 @@
 - [ ] Create a dashboard where users can:
   - View their saved videos.
   - Watch previously recorded videos.
+  - Manage videos
+    - Delete videos
 - [ ] Fetch and display user-specific data from the database using Prisma.
+- [ ] Add account to the sidebar proper including profile image
+- [ ] Add breadcrumb next to the sidebar icon as per example: https://ui.shadcn.com/docs/components/sidebar as well as adding the theme toggle in the same bar at the opposite end
+- [ ] Close the sidebar on mobile
 
 ## 7. Authentication
 

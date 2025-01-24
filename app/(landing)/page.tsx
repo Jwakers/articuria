@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { SignUpButton } from "@clerk/nextjs";
 import { Camera, ChartArea, Zap } from "lucide-react";
-import Link from "next/link";
 
 export default function LandingPage() {
   return (
@@ -17,7 +16,7 @@ export default function LandingPage() {
             video recording
           </p>
           <Button size="lg" variant="secondary" asChild>
-            <Link href="/signup">Get Started for Free</Link>
+            <SignUpButton>Get Started for Free</SignUpButton>
           </Button>
         </div>
       </section>
