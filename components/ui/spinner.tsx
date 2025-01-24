@@ -2,6 +2,8 @@ export default function Spinner() {
   return (
     <svg
       className="animate-spin"
+      role="status"
+      aria-label="Loading"
       viewBox="0 0 64 64"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

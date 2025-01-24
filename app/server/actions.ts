@@ -39,17 +39,24 @@ export async function getVideoUploadUrl({ title }: { title: string }) {
     throw new Error("Missing Cloudflare account ID");
   if (!user?.id) throw new Error("Unauthorized");
 
-  console.log({ title });
+  if (!title?.trim()) {
+    throw new Error("Title is required");
+  }
 
-  const directUpload = await client.stream.directUpload.create({
-    account_id: process.env.CLOUDFLARE_ACCOUNT_ID,
-    maxDurationSeconds: 120,
-    scheduledDeletion: undefined,
-    meta: {
-      userId: user?.id,
-      created: new Date().toLocaleDateString(),
-    },
-  });
-
-  return directUpload;
+  try {
+    const directUpload = await client.stream.directUpload.create({
+      account_id: process.env.CLOUDFLARE_ACCOUNT_ID,
+      maxDurationSeconds: 120,
+      allowedOrigins: [process.env.NEXT_PUBLIC_APP_URL!],
+      meta: {
+        userId: user?.id,
+        title: title.trim(),
+        created: new Date().toLocaleDateString(),
+      },
+    });
+    return directUpload;
+  } catch (error) {
+    console.error(error);
+    throw new Error("Failed to create upload URL");
+  }
 }

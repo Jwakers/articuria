@@ -46,9 +46,10 @@ export default function TableTopicsRecorder() {
   };
 
   const handleSaveRecording = async () => {
-    if (!topicId.current) throw new Error("Topic ID not set");
+    if (!topicId.current)
+      return toast.error("Topic ID not set. Please generate a new topic.");
 
-    const promise = uploadVideo.bind(null, {
+    const promise = uploadVideo({
       title: currentTopic ?? "Table topic",
       tableTopicId: topicId.current,
     });

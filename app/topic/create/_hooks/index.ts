@@ -90,7 +90,8 @@ export const useMediaRecorder = () => {
     setIsSaved(false);
     if (recordedVideoURL) URL.revokeObjectURL(recordedVideoURL);
     if (!streamRef.current) return;
-    streamRef.current.getTracks().forEach((track) => track.stop());
+    const tracks = streamRef.current.getTracks();
+    tracks.forEach((track) => track.stop());
     streamRef.current = null;
   };
 
@@ -163,6 +164,13 @@ export const useMediaRecorder = () => {
 
   useEffect(() => {
     void setVideoToStream();
+
+    if (mediaRecorderRef.current?.state === "recording") {
+      mediaRecorderRef.current.stop();
+    }
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => track.stop());
+    }
 
     return () => {
       if (recordedVideoURL) URL.revokeObjectURL(recordedVideoURL);
