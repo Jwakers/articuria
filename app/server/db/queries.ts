@@ -22,7 +22,7 @@ export async function getRandomTableTopic() {
   return topic;
 }
 
-export async function setVideo({
+export async function setUserVideo({
   cloudflareId,
   tableTopicId,
 }: {
@@ -41,4 +41,20 @@ export async function setVideo({
   });
 
   return video;
+}
+
+export async function getUserVideos() {
+  const user = await auth();
+  if (!user.userId) throw new Error("Unauthorized");
+
+  const videos = await db.video.findMany({
+    where: {
+      userId: user.userId,
+    },
+    include: {
+      tableTopic: true,
+    },
+  });
+
+  return videos;
 }

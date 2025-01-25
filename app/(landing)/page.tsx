@@ -7,7 +7,7 @@ export default function LandingPage() {
     <div>
       {/* Hero Section */}
       <section className="relative py-20 overflow-hidden">
-        <div className="container mx-auto text-center relative z-10">
+        <div className="container px-4 mx-auto text-center relative z-10">
           <h1 className="text-4xl md:text-6xl font-bold mb-6">
             Master Table Topics with Confidence
           </h1>
@@ -23,7 +23,7 @@ export default function LandingPage() {
 
       {/* Features Section */}
       <section className="py-2">
-        <div className="container mx-auto">
+        <div className="container px-4 mx-auto">
           <h2 className="text-3xl font-bold text-center mb-12">How It Works</h2>
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center p-6 rounded-lg">
@@ -62,7 +62,7 @@ export default function LandingPage() {
 
       {/* CTA Section */}
       <section className="relative py-20 overflow-hidden">
-        <div className="container mx-auto text-center relative z-10">
+        <div className="container px-4 mx-auto text-center relative z-10">
           <h2 className="text-3xl font-bold mb-6">
             Ready to Improve Your Public Speaking?
           </h2>

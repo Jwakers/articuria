@@ -39,12 +39,6 @@ export const useMediaRecorder = () => {
 
       videoElementRef.current.srcObject = streamRef.current;
     } catch (error) {
-      const message =
-        error instanceof Error
-          ? error.message
-          : "Failed to access camera/microphone";
-
-      console.error("Error accessing media devices:", message);
       toast.error("Error accessing media devices.", {
         description:
           "Failed to access camera/microphone. Please ensure they are not in use by another application. And are authorized for use in your browser.",

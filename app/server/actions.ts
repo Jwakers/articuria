@@ -3,7 +3,7 @@
 import { currentUser } from "@clerk/nextjs/server";
 import { Video } from "@prisma/client";
 import Cloudflare from "cloudflare";
-import { getRandomTableTopic, setVideo as setVideoDb } from "./db/queries";
+import { getRandomTableTopic, setUserVideo as setVideoDb } from "./db/queries";
 
 const client = new Cloudflare({
   apiKey: process.env.CLOUDFLARE_API_TOKEN, // This is the default and can be omitted

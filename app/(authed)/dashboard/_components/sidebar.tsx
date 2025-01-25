@@ -25,6 +25,7 @@ import {
   SidebarMenuSubItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { ROUTES } from "@/lib/constants";
 import { SignOutButton } from "@clerk/nextjs";
 import Link from "next/link";
 
@@ -38,7 +39,7 @@ export default function DashboardSidebar() {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link href="/dashboard">
+                  <Link href={ROUTES.dashboard.root}>
                     <Home />
                     <span>Dashboard</span>
                   </Link>
@@ -55,10 +56,12 @@ export default function DashboardSidebar() {
                   <CollapsibleContent>
                     <SidebarMenuSub>
                       <SidebarMenuSubItem>
-                        <Link href="/topics/create">Record</Link>
+                        <Link href={ROUTES.dashboard.tableTopics.record}>
+                          Record
+                        </Link>
                       </SidebarMenuSubItem>
                       <SidebarMenuSubItem>
-                        <Link href="/dashboard/table-topics">
+                        <Link href={ROUTES.dashboard.tableTopics.manage}>
                           Manage recordings
                         </Link>
                       </SidebarMenuSubItem>

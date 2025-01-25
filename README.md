@@ -9,10 +9,10 @@
 - [x] Timer indicator is not working when recording video
 - [x] Issue starting a new recording (generate topic button) when there is already a recorded video
 - [x] Home page sign up button does not work
+- [x] Add all routes to a constant and replace hard coded instances
+- [x] User should be redirected to dashboard on sign in/up
 - [ ] Fix clerk button pop-in
 - [ ] Make videos more secure in cloudflare using requireSignedURLs.
-- [ ] User should be redirected to dashboard on sign in/up
-- [ ] Add all routes to a constant and replace hard coded instances
 
 ## 1. Project Setup
 
@@ -23,8 +23,8 @@
   - [x] Move header and footer to layout (use a grid for the layout)
   - [x] Find a nicer background gradient and store in tailwind config
   - [x] Add light/dark toggle and infrastructure
+- [x] Add a persistent sidebar menu (create topic, user dashboard, home) etc. This should be a layout level feature and only for logged in users.
 - [ ] Mobile menu
-- [ ] Add a persistent sidebar menu (create topic, user dashboard, home) etc. This should be a layout level feature and only for logged in users.
 
 ## 2. Database Schema Design
 
@@ -53,6 +53,7 @@
 - [x] Add a memory limit on video uploads
   - [ ] Move the whole upload function to a server action to safely limit upload size
 - [ ] Add a limit to how many videos a user can upload
+- [ ] Delete recording toast should be swapped out for a more visible modal
 
 ## 5. Saving Videos to the Database
 
@@ -65,11 +66,14 @@
   - View their saved videos.
   - Watch previously recorded videos.
   - Manage videos
-    - Delete videos
-- [ ] Fetch and display user-specific data from the database using Prisma.
+    - [ ] Delete videos
+- [x] Fetch and display user-specific data from the database using Prisma.
 - [ ] Add account to the sidebar proper including profile image
-- [ ] Add breadcrumb next to the sidebar icon as per example: https://ui.shadcn.com/docs/components/sidebar as well as adding the theme toggle in the same bar at the opposite end
+- [x] Add breadcrumb next to the sidebar icon as per example: https://ui.shadcn.com/docs/components/sidebar as well as adding the theme toggle in the same bar at the opposite end
 - [ ] Close the sidebar on mobile
+- [x] Create root page for table topics (it should redirect to the manage page for now)
+- [ ] Add duration to video table. Add this duration to the manage table
+- [ ] Add no recordings page component
 
 ## 7. Authentication
 

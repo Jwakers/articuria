@@ -10,12 +10,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Spinner from "@/components/ui/spinner";
+import { useMediaRecorder } from "@/hooks/use-media-recorder";
 import { cn } from "@/lib/utils";
 import { Video } from "@prisma/client";
 import { Download, Save, Trash2 } from "lucide-react";
 import { useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
-import { useMediaRecorder } from "../_hooks";
 
 export default function TableTopicsRecorder() {
   const [currentTopic, setCurrentTopic] = useState<string | null>(null);
