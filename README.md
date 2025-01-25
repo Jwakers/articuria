@@ -62,13 +62,13 @@
 
 ## 6. User Dashboard
 
-- [ ] Create a dashboard where users can:
-  - View their saved videos.
-  - Watch previously recorded videos.
+- Create a dashboard where users can:
+  - [x] View their saved videos.
+  - [ ] Watch previously recorded videos.
   - Manage videos
     - [ ] Delete videos
 - [x] Fetch and display user-specific data from the database using Prisma.
-- [ ] Add account to the sidebar proper including profile image
+- [x] Add account to the sidebar proper including profile image
 - [x] Add breadcrumb next to the sidebar icon as per example: https://ui.shadcn.com/docs/components/sidebar as well as adding the theme toggle in the same bar at the opposite end
 - [ ] Close the sidebar on mobile
 - [x] Create root page for table topics (it should redirect to the manage page for now)
@@ -77,9 +77,9 @@
 
 ## 7. Authentication
 
-- [ ] Protect routes so only signed-in users can access dashboard and video features.
-- [ ] Configure role-based or user-based authorization if necessary.
-- [ ] Redirect user on sign in
+- [x] Protect routes so only signed-in users can access dashboard and video features.
+- [x] Redirect user on sign in
+- [ ] Create account limits and apply to the FE + BE
 
 ## 8. UI/UX
 

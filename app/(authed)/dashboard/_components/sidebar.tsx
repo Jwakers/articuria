@@ -1,4 +1,4 @@
-import { ChevronUp, Home, Mic, User2 } from "lucide-react";
+import { ChevronUp, Home, Mic } from "lucide-react";
 
 import {
   Collapsible,
@@ -27,9 +27,11 @@ import {
 } from "@/components/ui/sidebar";
 import { ROUTES } from "@/lib/constants";
 import { SignOutButton } from "@clerk/nextjs";
+import { currentUser } from "@clerk/nextjs/server";
 import Link from "next/link";
 
-export default function DashboardSidebar() {
+export default async function DashboardSidebar() {
+  const user = await currentUser();
   return (
     <Sidebar>
       <SidebarContent>
@@ -79,7 +81,14 @@ export default function DashboardSidebar() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton>
-                  <User2 /> Username
+                  {user?.hasImage ? (
+                    <img
+                      src={user?.imageUrl}
+                      className="aspect-square w-6 rounded-full"
+                      alt="User image"
+                    />
+                  ) : null}
+                  {user?.fullName}
                   <ChevronUp className="ml-auto" />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
@@ -88,7 +97,9 @@ export default function DashboardSidebar() {
                 className="w-[--radix-popper-anchor-width]"
               >
                 <SignOutButton>
-                  <DropdownMenuItem>Sign out</DropdownMenuItem>
+                  <DropdownMenuItem className="cursor-pointer">
+                    Sign out
+                  </DropdownMenuItem>
                 </SignOutButton>
               </DropdownMenuContent>
             </DropdownMenu>
