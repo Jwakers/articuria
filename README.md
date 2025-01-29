@@ -49,11 +49,11 @@
 - [x] Add toast message for successfully uploading
 - [x] Add error messages on the front end
 - [x] Add toast component for error handling and messaging
+- [x] Delete recording toast should be swapped out for a more visible modal
 - [ ] Compress recordings before upload
 - [x] Add a memory limit on video uploads
   - [ ] Move the whole upload function to a server action to safely limit upload size
 - [ ] Add a limit to how many videos a user can upload
-- [ ] Delete recording toast should be swapped out for a more visible modal
 
 ## 5. Saving Videos to the Database
 
@@ -71,11 +71,11 @@
 - [x] Add account to the sidebar proper including profile image
 - [x] Add breadcrumb next to the sidebar icon as per example
 - [x] Add theme toggle to the dashboard
-- [ ] Add manage account button to dashboard menu
+- [x] Add manage account button to dashboard menu
 - [ ] Close the sidebar on mobile
 - [x] Create root page for table topics (it should redirect to the manage page for now)
-- [ ] Handle delete from video list (use client component / refresh after delete and add toast messages)
-- [ ] Download video functionality (hook)
+- [x] Download video functionality (useManageVideo)
+- [ ] Add index number of videos next to the manage videos menu item
 - [ ] Add duration to video table. Add this duration to the manage table
 - [ ] Set video ID to UUID rather than incremental number (it looks weird in the URL)
 - [ ] Add no recordings page component
@@ -85,6 +85,7 @@
 - [x] Protect routes so only signed-in users can access dashboard and video features.
 - [x] Redirect user on sign in
 - [ ] Create account limits and apply to the FE + BE
+- [ ] On account deletion all data should be removed from the DB and cloudflare
 
 ## 8. UI/UX
 

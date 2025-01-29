@@ -20,6 +20,7 @@ import { Download, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { use } from "react";
 import { Skeleton } from "./ui/skeleton";
+import Spinner from "./ui/spinner";
 
 type VideoPlayerProps = {
   videoPromise: ReturnType<typeof getUserVideoById>;
@@ -28,12 +29,17 @@ type VideoPlayerProps = {
 export default function VideoPlayer({ videoPromise }: VideoPlayerProps) {
   const video = use(videoPromise);
   const router = useRouter();
-  const { isDeleting, deleteVideo } = useManageVideo({ id: video?.id });
+  const { isDeleting, deleteVideo, isDownloading, downloadVideo } =
+    useManageVideo({ video });
 
   const handleDelete = async () => {
     await deleteVideo({
       successCallback: () => router.push(ROUTES.dashboard.tableTopics.manage),
     });
+  };
+
+  const handleDownload = async () => {
+    await downloadVideo();
   };
 
   return (
@@ -48,9 +54,12 @@ export default function VideoPlayer({ videoPromise }: VideoPlayerProps) {
           allowFullScreen
         ></iframe>
         <div className="mt-4 flex justify-between items-center">
-          <Button variant="secondary">
-            {/* TODO: Download functionality. Abstract from recorder into a hook */}
-            <Download />
+          <Button
+            variant="secondary"
+            onClick={handleDownload}
+            disabled={isDownloading}
+          >
+            {isDownloading ? <Spinner /> : <Download />}
             <span>Download</span>
           </Button>
           <AlertDialog>

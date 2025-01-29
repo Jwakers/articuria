@@ -35,6 +35,9 @@ export async function getVideoUploadUrl({ title }: { title: string }) {
 }
 
 export async function getVideoById(id: string) {
+  const user = await currentUser();
+  if (!user?.id) throw new Error("Unauthorized");
+
   const video = await cloudflareClient.stream.get(id, {
     account_id: process.env.CLOUDFLARE_ACCOUNT_ID!,
   });
@@ -43,9 +46,22 @@ export async function getVideoById(id: string) {
 }
 
 export async function deleteVideoById(id: string) {
-  const video = await cloudflareClient.stream.delete(id, {
+  const user = await currentUser();
+  if (!user?.id) throw new Error("Unauthorized");
+
+  await cloudflareClient.stream.delete(id, {
     account_id: process.env.CLOUDFLARE_ACCOUNT_ID!,
   });
+}
 
-  return video;
+export async function getDownloadDataById(id: string) {
+  const user = await currentUser();
+  if (!user?.id) throw new Error("Unauthorized");
+
+  const download = await cloudflareClient.stream.downloads.create(id, {
+    account_id: process.env.CLOUDFLARE_ACCOUNT_ID!,
+    body: {},
+  });
+
+  return download;
 }
