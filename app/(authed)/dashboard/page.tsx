@@ -3,7 +3,8 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Dashboard",
-  description: "",
+  description:
+    "View your Table Topics practice statistics and performance metrics",
 };
 
 export default function DashboardPage() {

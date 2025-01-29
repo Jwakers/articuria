@@ -80,6 +80,7 @@
 - [ ] Set video ID to UUID rather than incremental number (it looks weird in the URL)
 - [ ] Add no recordings page component
 - [ ] Add pagination to recording list
+- [ ] Add proper dynamic dashboard stats rather than the current hardcoded values
 
 ## 7. Authentication
 
