@@ -1,7 +1,8 @@
 import { db } from "@/app/server/db";
 import { auth } from "@clerk/nextjs/server";
-import { Video } from "@prisma/client";
+import { Prisma, Video } from "@prisma/client";
 import "server-only";
+import { deleteVideoById } from "../cloudflare-actions";
 import topics from "./topics.json";
 
 export async function getRandomTableTopic() {
@@ -22,7 +23,7 @@ export async function getRandomTableTopic() {
   return topic;
 }
 
-export async function setVideo({
+export async function setUserVideo({
   cloudflareId,
   tableTopicId,
 }: {
@@ -42,3 +43,72 @@ export async function setVideo({
 
   return video;
 }
+
+export async function getUserVideos({ cursor }: { cursor?: number } = {}) {
+  const user = await auth();
+  if (!user.userId) throw new Error("Unauthorized");
+
+  const videos = await db.video.findMany({
+    where: {
+      userId: user.userId,
+    },
+    include: {
+      tableTopic: true,
+    },
+    take: 10,
+    skip: cursor ? 1 : 0, // Skip the cursor
+    cursor: cursor
+      ? {
+          id: cursor,
+        }
+      : undefined,
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  const nextCursor = videos.length > 0 ? videos[videos.length - 1].id : null;
+
+  return { videos, nextCursor };
+}
+
+export async function getUserVideoById(id: Video["id"]) {
+  const user = await auth();
+  if (!user.userId) throw new Error("Unauthorized");
+
+  const video = await db.video.findFirst({
+    where: {
+      id,
+      userId: user.userId,
+    },
+    include: {
+      tableTopic: true,
+    },
+  });
+
+  return video;
+}
+
+export async function deleteUserVideoById(id: Video["id"]) {
+  const user = await auth();
+  if (!user.userId) throw new Error("Unauthorized");
+
+  const deletedVideo = await db.$transaction(async (prisma) => {
+    const deletedVideo = await prisma.video.delete({
+      where: {
+        id,
+        userId: user.userId,
+      },
+    });
+
+    await deleteVideoById(deletedVideo.cloudflareId);
+
+    return deletedVideo;
+  });
+
+  return deletedVideo;
+}
+
+export type VideoWithTopic = Prisma.VideoGetPayload<{
+  include: { tableTopic: true };
+}>;

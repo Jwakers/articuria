@@ -1,9 +1,10 @@
+import { ROUTES } from "@/lib/constants";
 import Link from "next/link";
 
 export function Footer() {
   return (
     <footer className="py-6 px-6">
-      <div className="container mx-auto flex justify-between items-center">
+      <div className="container px-4 mx-auto flex justify-between items-center">
         <p className="text-sm">
           © {new Date().getFullYear()} TableTopicsMaster. All rights reserved.
         </p>
@@ -11,7 +12,7 @@ export function Footer() {
           <ul className="flex space-x-4">
             <li>
               <Link
-                href="/privacy"
+                href={ROUTES.privacy}
                 className="text-sm hover:opacity-60 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 aria-label="Privacy Policy"
               >
@@ -20,7 +21,7 @@ export function Footer() {
             </li>
             <li>
               <Link
-                href="/terms"
+                href={ROUTES.terms}
                 className="text-sm hover:opacity-60 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 aria-label="Terms of Service"
               >

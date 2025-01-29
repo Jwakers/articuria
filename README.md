@@ -8,6 +8,9 @@
 - [x] remove naming feature for the video download
 - [x] Timer indicator is not working when recording video
 - [x] Issue starting a new recording (generate topic button) when there is already a recorded video
+- [x] Home page sign up button does not work
+- [x] Add all routes to a constant and replace hard coded instances
+- [x] User should be redirected to dashboard on sign in/up
 - [ ] Fix clerk button pop-in
 - [ ] Make videos more secure in cloudflare using requireSignedURLs.
 
@@ -20,8 +23,8 @@
   - [x] Move header and footer to layout (use a grid for the layout)
   - [x] Find a nicer background gradient and store in tailwind config
   - [x] Add light/dark toggle and infrastructure
+- [x] Add a persistent sidebar menu (create topic, user dashboard, home) etc. This should be a layout level feature and only for logged in users.
 - [ ] Mobile menu
-- [ ] Add a persistent sidebar menu (create topic, user dashboard, home) etc. This should be a layout level feature and only for logged in users.
 
 ## 2. Database Schema Design
 
@@ -46,6 +49,7 @@
 - [x] Add toast message for successfully uploading
 - [x] Add error messages on the front end
 - [x] Add toast component for error handling and messaging
+- [x] Delete recording toast should be swapped out for a more visible modal
 - [ ] Compress recordings before upload
 - [x] Add a memory limit on video uploads
   - [ ] Move the whole upload function to a server action to safely limit upload size
@@ -58,16 +62,31 @@
 
 ## 6. User Dashboard
 
-- [ ] Create a dashboard where users can:
-  - View their saved videos.
-  - Watch previously recorded videos.
-- [ ] Fetch and display user-specific data from the database using Prisma.
+- Create a dashboard where users can:
+  - [x] View their saved videos.
+  - [x] Watch previously recorded videos.
+  - Manage videos
+    - [x] Delete videos
+- [x] Fetch and display user-specific data from the database using Prisma.
+- [x] Add account to the sidebar proper including profile image
+- [x] Add breadcrumb next to the sidebar icon as per example
+- [x] Add theme toggle to the dashboard
+- [x] Add manage account button to dashboard menu
+- [ ] Close the sidebar on mobile
+- [x] Create root page for table topics (it should redirect to the manage page for now)
+- [x] Download video functionality (useManageVideo)
+- [ ] Add duration to video table. Add this duration to the manage table
+- [ ] Set video ID to UUID rather than incremental number (it looks weird in the URL)
+- [ ] Add no recordings page component
+- [ ] Add pagination to recording list
+- [ ] Add proper dynamic dashboard stats rather than the current hardcoded values
 
 ## 7. Authentication
 
-- [ ] Protect routes so only signed-in users can access dashboard and video features.
-- [ ] Configure role-based or user-based authorization if necessary.
-- [ ] Redirect user on sign in
+- [x] Protect routes so only signed-in users can access dashboard and video features.
+- [x] Redirect user on sign in
+- [ ] Create account limits and apply to the FE + BE
+- [ ] On account deletion all data should be removed from the DB and cloudflare
 
 ## 8. UI/UX
 
@@ -101,6 +120,7 @@
 
 ## Optional Enhancements for MVP
 
+- [ ] Video expiry (automatic delete) on free accounts (use a webhook to manage the database / or a cron job and do it directly from the server)
 - [ ] Add user profile customization (e.g., profile pictures).
 - [ ] Allow users to delete or rename saved videos.
 - [ ] Add timestamps or metadata to saved videos (e.g., topic name, date).
