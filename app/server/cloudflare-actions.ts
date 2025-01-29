@@ -49,9 +49,14 @@ export async function deleteVideoById(id: string) {
   const user = await currentUser();
   if (!user?.id) throw new Error("Unauthorized");
 
-  await cloudflareClient.stream.delete(id, {
-    account_id: process.env.CLOUDFLARE_ACCOUNT_ID!,
-  });
+  try {
+    await cloudflareClient.stream.delete(id, {
+      account_id: process.env.CLOUDFLARE_ACCOUNT_ID!,
+    });
+  } catch (error) {
+    console.error("Failed to delete video:", error);
+    throw new Error("Failed to delete video from Cloudflare");
+  }
 }
 
 export async function getDownloadDataById(id: string) {
