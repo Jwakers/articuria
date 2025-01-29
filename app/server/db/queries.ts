@@ -2,7 +2,7 @@ import { db } from "@/app/server/db";
 import { auth } from "@clerk/nextjs/server";
 import { Prisma, Video } from "@prisma/client";
 import "server-only";
-import { deleteVideoById } from "./cloudflare";
+import { deleteVideoById } from "../cloudflare-actions";
 import topics from "./topics.json";
 
 export async function getRandomTableTopic() {
@@ -87,8 +87,6 @@ export async function deleteUserVideoById(id: Video["id"]) {
       userId: user.userId,
     },
   });
-
-  console.log({ video });
 
   if (!video) throw new Error("Could not find video");
 

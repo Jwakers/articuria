@@ -1,7 +1,7 @@
 "use server";
 
 import { currentUser } from "@clerk/nextjs/server";
-import { cloudflareClient } from ".";
+import { cloudflareClient } from "./cloudflare-client";
 
 export async function getVideoUploadUrl({ title }: { title: string }) {
   const user = await currentUser();
