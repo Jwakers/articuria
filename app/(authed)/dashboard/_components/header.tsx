@@ -1,3 +1,4 @@
+import { ModeToggle } from "@/app/_components/mode-toggle";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import Breadcrumbs from "./breadcrumbs";
@@ -8,6 +9,10 @@ export function Header() {
       <SidebarTrigger />
       <Separator orientation="vertical" className="h-4 mr-1" />
       <Breadcrumbs />
+
+      <div className="ml-auto">
+        <ModeToggle />
+      </div>
     </header>
   );
 }
