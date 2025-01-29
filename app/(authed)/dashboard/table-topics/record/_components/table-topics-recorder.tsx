@@ -1,6 +1,17 @@
 "use client";
 
 import { getTableTopic } from "@/app/server/actions";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -81,18 +92,9 @@ export default function TableTopicsRecorder() {
   };
 
   const handleDiscardRecording = () => {
-    const deleteRecording = () => {
-      resetRecording();
-      setCurrentTopic(null);
-      topicId.current = null;
-    };
-
-    toast("Are you sure you want to permanently delete this recording?", {
-      action: {
-        label: "Delete",
-        onClick: deleteRecording,
-      },
-    });
+    resetRecording();
+    setCurrentTopic(null);
+    topicId.current = null;
   };
 
   const getTimingColor = () => {
@@ -173,14 +175,29 @@ export default function TableTopicsRecorder() {
                 </Button>
               </div>
               {!isSaved ? (
-                <Button
-                  onClick={handleDiscardRecording}
-                  variant="destructive"
-                  disabled={isUploading || isSaving}
-                >
-                  <Trash2 />
-                  Delete Recording
-                </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="destructive">
+                      <Trash2 className="mr-2 h-4 w-4" />
+                      Delete Video
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action cannot be undone. This will permanently
+                        delete your video from our servers.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleDiscardRecording}>
+                        Delete
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               ) : null}
             </div>
           )}

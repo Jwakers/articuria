@@ -16,7 +16,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { ROUTES } from "@/lib/constants";
 import { Settings } from "lucide-react";
+import Link from "next/link";
 import { use } from "react";
 
 type VideoListProps = {
@@ -48,8 +50,6 @@ export function VideoList({ videoListPromise }: VideoListProps) {
             <TableCell>{new Date(video.createdAt).toLocaleString()}</TableCell>
             <TableCell>Duration</TableCell>
             <TableCell className="text-right">
-              {/* Update to a drop down that allows users to view or delete (delete
-              should be a modal) */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" size="sm">
@@ -58,7 +58,13 @@ export function VideoList({ videoListPromise }: VideoListProps) {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  <DropdownMenuItem>View</DropdownMenuItem>
+                  <DropdownMenuItem asChild className="cursor-pointer">
+                    <Link
+                      href={`${ROUTES.dashboard.tableTopics.manage}/${video.id}`}
+                    >
+                      View
+                    </Link>
+                  </DropdownMenuItem>
                   <DropdownMenuItem>Delete</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

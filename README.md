@@ -64,15 +64,17 @@
 
 - Create a dashboard where users can:
   - [x] View their saved videos.
-  - [ ] Watch previously recorded videos.
+  - [x] Watch previously recorded videos.
   - Manage videos
-    - [ ] Delete videos
+    - [x] Delete videos
 - [x] Fetch and display user-specific data from the database using Prisma.
 - [x] Add account to the sidebar proper including profile image
 - [x] Add breadcrumb next to the sidebar icon as per example: https://ui.shadcn.com/docs/components/sidebar as well as adding the theme toggle in the same bar at the opposite end
 - [ ] Close the sidebar on mobile
 - [x] Create root page for table topics (it should redirect to the manage page for now)
+- [ ] Download video functionality (hook)
 - [ ] Add duration to video table. Add this duration to the manage table
+- [ ] Set video ID to UUID rather than incremental number (it looks weird in the URL)
 - [ ] Add no recordings page component
 
 ## 7. Authentication

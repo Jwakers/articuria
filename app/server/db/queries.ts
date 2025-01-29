@@ -1,7 +1,8 @@
 import { db } from "@/app/server/db";
 import { auth } from "@clerk/nextjs/server";
-import { Video } from "@prisma/client";
+import { Prisma, Video } from "@prisma/client";
 import "server-only";
+import { deleteVideoById } from "./cloudflare";
 import topics from "./topics.json";
 
 export async function getRandomTableTopic() {
@@ -58,3 +59,44 @@ export async function getUserVideos() {
 
   return videos;
 }
+
+export async function getUserVideoById(id: Video["id"]) {
+  const user = await auth();
+  if (!user.userId) throw new Error("Unauthorized");
+
+  const video = await db.video.findFirst({
+    where: {
+      id,
+      userId: user.userId,
+    },
+    include: {
+      tableTopic: true,
+    },
+  });
+
+  return video;
+}
+
+export async function deleteUserVideoById(id: Video["id"]) {
+  const user = await auth();
+  if (!user.userId) throw new Error("Unauthorized");
+
+  const video = await db.video.delete({
+    where: {
+      id,
+      userId: user.userId,
+    },
+  });
+
+  console.log({ video });
+
+  if (!video) throw new Error("Could not find video");
+
+  await deleteVideoById(video.cloudflareId);
+
+  return video;
+}
+
+export type VideoWithTopic = Prisma.VideoGetPayload<{
+  include: { tableTopic: true };
+}>;
