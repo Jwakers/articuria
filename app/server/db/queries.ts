@@ -81,18 +81,20 @@ export async function deleteUserVideoById(id: Video["id"]) {
   const user = await auth();
   if (!user.userId) throw new Error("Unauthorized");
 
-  const video = await db.video.delete({
-    where: {
-      id,
-      userId: user.userId,
-    },
+  const deletedVideo = await db.$transaction(async (prisma) => {
+    const deletedVideo = await prisma.video.delete({
+      where: {
+        id,
+        userId: user.userId,
+      },
+    });
+
+    await deleteVideoById(deletedVideo.cloudflareId);
+
+    return deletedVideo;
   });
 
-  if (!video) throw new Error("Could not find video");
-
-  await deleteVideoById(video.cloudflareId);
-
-  return video;
+  return deletedVideo;
 }
 
 export type VideoWithTopic = Prisma.VideoGetPayload<{
