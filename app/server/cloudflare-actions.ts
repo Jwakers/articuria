@@ -71,10 +71,19 @@ export async function getDownloadDataById(id: string): Promise<DownloadData> {
   const user = await currentUser();
   if (!user?.id) throw new Error("Unauthorized");
 
-  const download = await cloudflareClient.stream.downloads.create(id, {
-    account_id: process.env.CLOUDFLARE_ACCOUNT_ID!,
-    body: {},
-  });
+  try {
+    const download = await cloudflareClient.stream.downloads.create(id, {
+      account_id: process.env.CLOUDFLARE_ACCOUNT_ID!,
+      body: {},
+    });
 
-  return download as DownloadData;
+    if (!download || typeof download !== "object" || !("default" in download)) {
+      throw new Error("Invalid download data format");
+    }
+
+    return download as DownloadData;
+  } catch (error) {
+    console.error("Failed to get download data:", error);
+    throw new Error("Failed to get video download data");
+  }
 }

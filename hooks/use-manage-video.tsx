@@ -17,7 +17,7 @@ export default function useManageVideo({ video }: { video: Video | null }) {
         loading: "Downloading video...",
         success: (data) => {
           const link = document.createElement("a");
-          if (!data?.default?.url) throw new Error("Download link not found");
+          if (!data) throw new Error("Download link not found");
 
           link.href = data.default.url;
           document.body.appendChild(link);
