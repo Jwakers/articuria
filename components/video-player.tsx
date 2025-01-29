@@ -1,6 +1,5 @@
 "use client";
 
-import { deleteVideo } from "@/app/server/actions";
 import { getUserVideoById } from "@/app/server/db/queries";
 import {
   AlertDialog,
@@ -15,11 +14,11 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import useManageVideo from "@/hooks/use-manage-video";
 import { ROUTES } from "@/lib/constants";
 import { Download, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { use, useState } from "react";
-import { toast } from "sonner";
+import { use } from "react";
 import { Skeleton } from "./ui/skeleton";
 
 type VideoPlayerProps = {
@@ -29,21 +28,12 @@ type VideoPlayerProps = {
 export default function VideoPlayer({ videoPromise }: VideoPlayerProps) {
   const video = use(videoPromise);
   const router = useRouter();
-  const [isDeleting, setIsDeleting] = useState(false);
+  const { isDeleting, deleteVideo } = useManageVideo({ id: video?.id });
 
   const handleDelete = async () => {
-    if (!video?.id) return toast.error("Video ID is not set");
-    setIsDeleting(true);
-
-    try {
-      await deleteVideo(video?.id);
-      router.push(ROUTES.dashboard.tableTopics.manage);
-    } catch (error) {
-      console.log(error);
-      toast.error("Unable to delete video");
-    } finally {
-      setIsDeleting(false);
-    }
+    await deleteVideo({
+      successCallback: () => router.push(ROUTES.dashboard.tableTopics.manage),
+    });
   };
 
   return (

@@ -72,6 +72,7 @@
 - [x] Add breadcrumb next to the sidebar icon as per example: https://ui.shadcn.com/docs/components/sidebar as well as adding the theme toggle in the same bar at the opposite end
 - [ ] Close the sidebar on mobile
 - [x] Create root page for table topics (it should redirect to the manage page for now)
+- [ ] Handle delete from video list (use client component / refresh after delete and add toast messages)
 - [ ] Download video functionality (hook)
 - [ ] Add duration to video table. Add this duration to the manage table
 - [ ] Set video ID to UUID rather than incremental number (it looks weird in the URL)

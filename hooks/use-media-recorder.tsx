@@ -1,5 +1,5 @@
 import { setVideo } from "@/app/server/actions";
-import { getVideoUploadUrl } from "@/app/server/db/cloudflare";
+import { getVideoUploadUrl } from "@/app/server/cloudflare-actions";
 import { useUser } from "@clerk/nextjs";
 import { Video } from "@prisma/client";
 import { useEffect, useRef, useState } from "react";
