@@ -25,18 +25,24 @@ export default function Breadcrumbs() {
   return (
     <Breadcrumb>
       <BreadcrumbList>
-        {breadcrumbs.map((crumb, index) => (
-          <Fragment key={index}>
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link href={`/${breadcrumbs.slice(0, index + 1).join("/")}`}>
-                  {getLabel(crumb)}
-                </Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-          </Fragment>
-        ))}
+        {breadcrumbs.map((crumb, index) => {
+          const { pathname } = new URL(
+            `${window.location.origin}/${breadcrumbs
+              .slice(0, index + 1)
+              .join("/")}`
+          );
+
+          return (
+            <Fragment key={pathname}>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link href={pathname}>{getLabel(crumb)}</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+            </Fragment>
+          );
+        })}
         {currentPage ? (
           <BreadcrumbItem>
             <BreadcrumbPage>{getLabel(currentPage)}</BreadcrumbPage>
