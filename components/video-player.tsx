@@ -52,6 +52,8 @@ export default function VideoPlayer({ videoPromise }: VideoPlayerProps) {
           className="aspect-video w-full"
           allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
           allowFullScreen
+          sandbox="allow-scripts allow-same-origin allow-presentation"
+          loading="lazy"
         ></iframe>
         <div className="mt-4 flex justify-between items-center">
           <Button
