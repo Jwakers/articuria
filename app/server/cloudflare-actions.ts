@@ -59,7 +59,15 @@ export async function deleteVideoById(id: string) {
   }
 }
 
-export async function getDownloadDataById(id: string) {
+type DownloadData =
+  | {
+      default: {
+        url: string;
+      };
+    }
+  | undefined;
+
+export async function getDownloadDataById(id: string): Promise<DownloadData> {
   const user = await currentUser();
   if (!user?.id) throw new Error("Unauthorized");
 
@@ -68,5 +76,5 @@ export async function getDownloadDataById(id: string) {
     body: {},
   });
 
-  return download;
+  return download as DownloadData;
 }
