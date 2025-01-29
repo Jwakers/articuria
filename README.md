@@ -69,7 +69,9 @@
     - [x] Delete videos
 - [x] Fetch and display user-specific data from the database using Prisma.
 - [x] Add account to the sidebar proper including profile image
-- [x] Add breadcrumb next to the sidebar icon as per example: https://ui.shadcn.com/docs/components/sidebar as well as adding the theme toggle in the same bar at the opposite end
+- [x] Add breadcrumb next to the sidebar icon as per example
+- [ ] Add theme toggle to the dashboard
+- [ ] Add manage account button to dashboard menu
 - [ ] Close the sidebar on mobile
 - [x] Create root page for table topics (it should redirect to the manage page for now)
 - [ ] Handle delete from video list (use client component / refresh after delete and add toast messages)

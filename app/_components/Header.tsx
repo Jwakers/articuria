@@ -32,6 +32,13 @@ export function Header() {
                 <UserButton />
               </SignedIn>
             </li>
+            <SignedIn>
+              <li>
+                <Button asChild>
+                  <Link href={ROUTES.dashboard.root}>Dashboard</Link>
+                </Button>
+              </li>
+            </SignedIn>
             <li>
               <ModeToggle />
             </li>

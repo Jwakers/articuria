@@ -1,11 +1,5 @@
 import { getUserVideos } from "@/app/server/db/queries";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
@@ -17,7 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ROUTES } from "@/lib/constants";
-import { Settings } from "lucide-react";
+import { Play } from "lucide-react";
 import Link from "next/link";
 import { use } from "react";
 
@@ -50,24 +44,14 @@ export function VideoList({ videoListPromise }: VideoListProps) {
             <TableCell>{new Date(video.createdAt).toLocaleString()}</TableCell>
             <TableCell>Duration</TableCell>
             <TableCell className="text-right">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm">
-                    <Settings />
-                    <span>Manage</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuItem asChild className="cursor-pointer">
-                    <Link
-                      href={`${ROUTES.dashboard.tableTopics.manage}/${video.id}`}
-                    >
-                      View
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>Delete</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <Button variant="outline" size="sm" asChild>
+                <Link
+                  href={`${ROUTES.dashboard.tableTopics.manage}/${video.id}`}
+                >
+                  <Play />
+                  <span>View</span>
+                </Link>
+              </Button>
             </TableCell>
           </TableRow>
         ))}
