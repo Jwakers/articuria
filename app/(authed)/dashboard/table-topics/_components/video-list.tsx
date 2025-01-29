@@ -20,7 +20,7 @@ type VideoListProps = {
 };
 
 export function VideoList({ videoListPromise }: VideoListProps) {
-  const videos = use(videoListPromise);
+  const { videos } = use(videoListPromise);
 
   return (
     <Table>

@@ -44,7 +44,7 @@ export async function setUserVideo({
   return video;
 }
 
-export async function getUserVideos() {
+export async function getUserVideos({ cursor }: { cursor?: number } = {}) {
   const user = await auth();
   if (!user.userId) throw new Error("Unauthorized");
 
@@ -55,9 +55,21 @@ export async function getUserVideos() {
     include: {
       tableTopic: true,
     },
+    take: 10,
+    skip: cursor ? 1 : 0, // Skip the cursor
+    cursor: cursor
+      ? {
+          id: cursor,
+        }
+      : undefined,
+    orderBy: {
+      createdAt: "desc",
+    },
   });
 
-  return videos;
+  const nextCursor = videos.length > 0 ? videos[videos.length - 1].id : null;
+
+  return { videos, nextCursor };
 }
 
 export async function getUserVideoById(id: Video["id"]) {
