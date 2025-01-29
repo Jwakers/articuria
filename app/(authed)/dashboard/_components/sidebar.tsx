@@ -29,6 +29,7 @@ import { ROUTES } from "@/lib/constants";
 import { SignOutButton } from "@clerk/nextjs";
 import { currentUser } from "@clerk/nextjs/server";
 import Link from "next/link";
+import ManageAccountButton from "./manage-account-button";
 
 export default async function DashboardSidebar() {
   const user = await currentUser();
@@ -96,6 +97,7 @@ export default async function DashboardSidebar() {
                 side="top"
                 className="w-[--radix-popper-anchor-width]"
               >
+                <ManageAccountButton />
                 <SignOutButton>
                   <DropdownMenuItem className="cursor-pointer">
                     Sign out
