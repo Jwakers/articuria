@@ -8,10 +8,9 @@ export default async function VideoPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const user = currentUser();
-  const { id } = await params;
+  const [user, { id }] = await Promise.all([currentUser(), params]);
 
-  if (!user) throw new Error("Unauthorized");
+  if (!user) throw new Error("You must be signed in to view this page");
 
   const videoPromise = getUserVideoById(Number(id));
 
