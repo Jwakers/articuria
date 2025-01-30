@@ -16,3 +16,10 @@ export function validateFile(file: File, isServer: boolean = false) {
     throw new Error("Invalid file type. Only video files are allowed");
   }
 }
+
+export function formatDuration(seconds: number | null | undefined): string {
+  if (!seconds) return "--:--";
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+  return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
+}

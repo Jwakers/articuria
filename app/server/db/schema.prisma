@@ -22,4 +22,5 @@ model Video {
     userId       String
     tableTopic   TableTopic @relation(fields: [tableTopicId], references: [id])
     tableTopicId Int
+    duration     Int? // Duration in seconds
 }
