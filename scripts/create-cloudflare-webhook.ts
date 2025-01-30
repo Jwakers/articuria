@@ -1,6 +1,6 @@
 import Cloudflare from "cloudflare";
 import * as dotenv from "dotenv";
-dotenv.config({ path: ".env.local" });
+dotenv.config({ path: ".env" });
 
 // pnpm dlx tsx scripts/create-cloudflare-webhook.ts
 

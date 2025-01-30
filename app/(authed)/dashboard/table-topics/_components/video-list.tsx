@@ -42,7 +42,9 @@ export function VideoList({ videoListPromise }: VideoListProps) {
             <TableCell className="font-medium">
               {video.tableTopic.topic}
             </TableCell>
-            <TableCell>{new Date(video.createdAt).toLocaleString()}</TableCell>
+            <TableCell>
+              {new Date(video.createdAt).toLocaleDateString()}
+            </TableCell>
             <TableCell>
               <span
                 aria-label={`Duration: ${

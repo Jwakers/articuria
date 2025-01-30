@@ -1,7 +1,7 @@
 import { db } from "@/app/server/db";
 import Cloudflare from "cloudflare";
 import * as dotenv from "dotenv";
-dotenv.config({ path: ".env.local" });
+dotenv.config({ path: ".env" });
 
 // pnpm dlx tsx scripts/backfill-video-durations.ts
 
@@ -12,7 +12,7 @@ const cloudflareClient = new Cloudflare({
 async function backfillDurations() {
   const videos = await db.video.findMany({
     where: {
-      duration: 0,
+      duration: null,
     },
   });
 

@@ -65,7 +65,7 @@ export async function createUserVideo({
   return video;
 }
 
-export async function getUserVideos({ cursor }: { cursor?: number } = {}) {
+export async function getUserVideos({ cursor }: { cursor?: string } = {}) {
   const user = await auth();
   if (!user.userId) throw new Error("Unauthorized");
 

@@ -12,7 +12,7 @@ export default async function VideoPage({
 
   if (!user) throw new Error("You must be signed in to view this page");
 
-  const videoPromise = getUserVideoById(Number(id));
+  const videoPromise = getUserVideoById(id);
 
   return (
     <div className="container mx-auto px-4 py-8">
