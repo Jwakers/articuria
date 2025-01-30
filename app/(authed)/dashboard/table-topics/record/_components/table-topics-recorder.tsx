@@ -97,99 +97,97 @@ export default function TableTopicsRecorder() {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <Card className="w-full max-w-3xl mx-auto">
-        <CardHeader>
-          <CardTitle>
-            <h1 className="text-2xl md:text-3xl">Table topics recorder</h1>
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <Button onClick={handleGenerateTopic} disabled={isRecording}>
-            {isPending ? <Spinner /> : null}
-            {!recordedVideoURL ? "Generate topic" : "Generate new topic"}
-          </Button>
-          {currentTopic && (
-            <div className="p-4 bg-muted rounded-md">
-              <h3 className="font-semibold mb-2">Topic:</h3>
-              <p>{currentTopic}</p>
-            </div>
-          )}
-          <div className="aspect-video bg-black rounded-md overflow-hidden relative">
-            <video
-              ref={videoElementRef}
-              className="w-full h-full"
-              autoPlay={!recordedVideoURL} // Autoplay is required to see the stream without manually calling .play()
-              muted={!recordedVideoURL}
-              controls={!!recordedVideoURL}
-              src={recordedVideoURL || undefined}
+    <Card>
+      <CardHeader>
+        <CardTitle>
+          <h1 className="text-2xl md:text-3xl">Table topics recorder</h1>
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <Button onClick={handleGenerateTopic} disabled={isRecording}>
+          {isPending ? <Spinner /> : null}
+          {!recordedVideoURL ? "Generate topic" : "Generate new topic"}
+        </Button>
+        {currentTopic && (
+          <div className="p-4 bg-muted rounded-md">
+            <h3 className="font-semibold mb-2">Topic:</h3>
+            <p>{currentTopic}</p>
+          </div>
+        )}
+        <div className="aspect-video bg-black rounded-md overflow-hidden relative">
+          <video
+            ref={videoElementRef}
+            className="w-full h-full"
+            autoPlay={!recordedVideoURL} // Autoplay is required to see the stream without manually calling .play()
+            muted={!recordedVideoURL}
+            controls={!!recordedVideoURL}
+            src={recordedVideoURL || undefined}
+          />
+          {isRecording ? (
+            <div
+              className={cn(
+                "size-4 absolute top-4 right-4 rounded-full",
+                getTimingColor()
+              )}
             />
-            {isRecording ? (
-              <div
-                className={cn(
-                  "size-4 absolute top-4 right-4 rounded-full",
-                  getTimingColor()
-                )}
-              />
+          ) : null}
+        </div>
+        <div className="flex justify-between">
+          {isRecording && (
+            <Button onClick={stopRecording} variant="destructive">
+              Stop Recording
+            </Button>
+          )}
+        </div>
+      </CardContent>
+      <CardFooter>
+        {recordedVideoURL && (
+          <div className="flex justify-between w-full flex-wrap gap-4">
+            <div className="flex gap-2">
+              {!isSaved ? (
+                <Button
+                  onClick={handleSaveRecording}
+                  disabled={isSaving}
+                  aria-busy={isSaving}
+                  aria-live="polite"
+                >
+                  {isSaving ? <Spinner /> : <Save />}
+                  {isSaving ? "Saving..." : "Save recording"}
+                </Button>
+              ) : null}
+              <Button onClick={handleDownloadRecording} variant="secondary">
+                <Download />
+                Download Recording
+              </Button>
+            </div>
+            {!isSaved ? (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="destructive">
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    Delete Video
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone. This will permanently delete
+                      your video from our servers.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleDiscardRecording}>
+                      Delete
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             ) : null}
           </div>
-          <div className="flex justify-between">
-            {isRecording && (
-              <Button onClick={stopRecording} variant="destructive">
-                Stop Recording
-              </Button>
-            )}
-          </div>
-        </CardContent>
-        <CardFooter>
-          {recordedVideoURL && (
-            <div className="flex justify-between w-full flex-wrap gap-4">
-              <div className="flex gap-2">
-                {!isSaved ? (
-                  <Button
-                    onClick={handleSaveRecording}
-                    disabled={isSaving}
-                    aria-busy={isSaving}
-                    aria-live="polite"
-                  >
-                    {isSaving ? <Spinner /> : <Save />}
-                    {isSaving ? "Saving..." : "Save recording"}
-                  </Button>
-                ) : null}
-                <Button onClick={handleDownloadRecording} variant="secondary">
-                  <Download />
-                  Download Recording
-                </Button>
-              </div>
-              {!isSaved ? (
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button variant="destructive">
-                      <Trash2 className="mr-2 h-4 w-4" />
-                      Delete Video
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        This action cannot be undone. This will permanently
-                        delete your video from our servers.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction onClick={handleDiscardRecording}>
-                        Delete
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              ) : null}
-            </div>
-          )}
-        </CardFooter>
-      </Card>
-    </div>
+        )}
+      </CardFooter>
+    </Card>
   );
 }

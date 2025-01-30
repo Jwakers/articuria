@@ -13,7 +13,7 @@ import Link from "next/link";
 
 export default function NoVideos() {
   return (
-    <Card className="mt-6">
+    <Card>
       <CardHeader>
         <CardTitle>Embark on Your Speaking Adventure</CardTitle>
         <CardDescription>
@@ -25,8 +25,8 @@ export default function NoVideos() {
           <p>
             Table Topics are your gateway to mastering the art of thinking on
             your feet. In just 1-2 minutes, transform a surprise subject into a
-            captivating mini-speech. It's not just practice—it's your personal
-            growth adventure!
+            captivating mini-speech. It&apos;s not just practice—it&apos;s your
+            personal growth adventure!
           </p>
           <h3 className="text-lg font-semibold">Unlock These Superpowers:</h3>
           <div className="grid gap-2 md:grid-cols-2">
@@ -79,7 +79,7 @@ function BenefitCard({
   description: string;
 }) {
   return (
-    <Card className="border">
+    <Card>
       <CardContent className="flex items-center p-4">
         <Icon className="h-8 w-8 mr-4" />
         <div>

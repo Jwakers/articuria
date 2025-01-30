@@ -123,6 +123,3 @@
 ## Optional Enhancements for MVP
 
 - [ ] Video expiry (automatic delete) on free accounts (use a webhook to manage the database / or a cron job and do it directly from the server)
-- [ ] Add user profile customization (e.g., profile pictures).
-- [ ] Allow users to delete or rename saved videos.
-- [ ] Add timestamps or metadata to saved videos (e.g., topic name, date).

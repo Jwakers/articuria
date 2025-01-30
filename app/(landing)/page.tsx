@@ -67,8 +67,7 @@ export default function LandingPage() {
             Ready to Improve Your Public Speaking?
           </h2>
           <p className="text-xl mb-8">
-            Join TableTopicsMaster today and take your communication skills to
-            the next level
+            sign up today and take your communication skills to the next level
           </p>
           <SignUpButton>
             <Button size="lg">Sign Up Now</Button>

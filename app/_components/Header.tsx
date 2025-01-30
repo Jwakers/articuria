@@ -15,7 +15,7 @@ export function Header() {
     <header className="py-4 px-6 shadow-sm sticky top-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/40 z-50">
       <div className="container px-4 mx-auto flex justify-between items-center">
         <Link href={ROUTES.landing} className="text-2xl font-bold">
-          TableTopicsMaster
+          TableTopics
         </Link>
         <nav role="navigation" aria-label="Main navigation">
           <ul className="flex items-center space-x-4">
