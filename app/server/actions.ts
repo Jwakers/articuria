@@ -1,10 +1,11 @@
 "use server";
 
+import { validateFile } from "@/lib/utils";
 import { Video } from "@prisma/client";
 import {
+  createUserVideo,
   deleteUserVideoById,
   getRandomTableTopic,
-  setUserVideo as setVideoDb,
 } from "./db/queries";
 
 export async function getTableTopic() {
@@ -13,16 +14,25 @@ export async function getTableTopic() {
   return topic;
 }
 
-export async function setVideo({
-  cloudflareId,
+export async function createVideo({
   tableTopicId,
+  title,
+  formData,
 }: {
-  cloudflareId: Video["cloudflareId"];
   tableTopicId: Video["tableTopicId"];
+  title: string;
+  formData: FormData;
 }) {
-  const video = await setVideoDb({
-    cloudflareId,
+  const file = formData.get("file") as File | null;
+
+  if (!file) throw new Error("No file found");
+
+  validateFile(file, true);
+
+  const video = await createUserVideo({
     tableTopicId,
+    title,
+    formData,
   });
 
   return video;

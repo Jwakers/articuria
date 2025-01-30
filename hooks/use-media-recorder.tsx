@@ -1,5 +1,5 @@
-import { setVideo } from "@/app/server/actions";
-import { getVideoUploadUrl } from "@/app/server/cloudflare-actions";
+import { createVideo } from "@/app/server/actions";
+import { validateFile } from "@/lib/utils";
 import { useUser } from "@clerk/nextjs";
 import { Video } from "@prisma/client";
 import { useEffect, useRef, useState } from "react";
@@ -7,7 +7,6 @@ import { toast } from "sonner";
 
 export const useMediaRecorder = () => {
   const [isRecording, setIsRecording] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
 
@@ -99,59 +98,44 @@ export const useMediaRecorder = () => {
   }) => {
     if (!title?.trim()) throw new Error("Title is required");
     if (!tableTopicId) throw new Error("Table topic ID is required");
-
-    // Check if the recordedBlob size exceeds 10MB
-    if (recordedBlob && recordedBlob.size > 10 * 1024 * 1024) {
-      throw new Error("File size exceeds the maximum limit of 10MB");
-    }
-
-    // Validate blob type
-    if (recordedBlob && !recordedBlob.type.startsWith("video/")) {
-      throw new Error("Invalid file type. Only video files are allowed");
-    }
-
-    setIsUploading(true);
-
-    const { uploadURL, uid } = await getVideoUploadUrl({ title });
-
     if (!user) throw new Error("Unauthorized");
-    if (!uploadURL) throw new Error("Unable to get upload URL");
     if (!recordedBlob) throw new Error("No recorded video found");
 
+    const file = new File([recordedBlob], `${title.trim()}.webm`, {
+      type: recordedBlob.type,
+    });
+
+    validateFile(file);
+
     const formData = new FormData();
-    formData.append("file", recordedBlob, `${title.trim()}.webm`);
+    formData.append("file", file);
 
-    try {
-      const res = await fetch(uploadURL, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-        },
-        body: formData,
-      });
+    setIsSaving(true);
 
-      if (!res.ok) throw new Error(`Video upload failed: ${res.status}`);
+    const promise = createVideo({
+      tableTopicId,
+      title,
+      formData,
+    });
 
-      if (!uid) throw new Error("Could not get video ID");
-
-      // Upload to DB
-      setIsSaving(true);
-      await setVideo({
-        cloudflareId: uid,
-        tableTopicId,
-      });
-      setIsSaving(false);
-      setIsSaved(true);
-      toast.success("Recording saved");
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "Unknown error";
-      console.error("Failed to upload video:", message);
-      setIsSaved(false);
-      toast.error(`Recording failed to save: ${message}`);
-    } finally {
-      setIsUploading(false);
-      setIsSaving(false);
-    }
+    toast.promise(promise, {
+      loading: "Saving...",
+      success: () => {
+        setIsSaved(true);
+        return "Recoding saved";
+      },
+      error: (error) => {
+        const message =
+          error instanceof Error ? error.message : "Unknown error";
+        console.error("Failed to upload video:", message);
+        setIsSaved(false);
+        toast.error(`Recording failed to save: ${message}`);
+        return "There was an error saving this recording";
+      },
+      finally: () => {
+        setIsSaving(false);
+      },
+    });
   };
 
   useEffect(() => {
@@ -191,7 +175,6 @@ export const useMediaRecorder = () => {
     recordedVideoURL,
     timeElapsed,
     videoElementRef,
-    isUploading,
     isSaving,
     isSaved,
     startRecording,

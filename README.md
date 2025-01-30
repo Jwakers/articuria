@@ -59,6 +59,8 @@
 
 - [x] Set up file storage for videos (e.g., upload them to Supabase Storage or another storage provider like uploadthing).
 - [x] Link stored video URLs to the database using the Video model.
+- [x] Move save video logic to a prisma transaction
+- [ ] Move save logic out of server actions and into an api route. There is an adjustable limit on server actions. See next.config but to be safe we should pass this data to a dedicated endpoint. This should also allow us to properly validate the file type on the server.
 
 ## 6. User Dashboard
 

@@ -19,7 +19,7 @@ export async function getVideoUploadUrl({ title }: { title: string }) {
   try {
     const directUpload = await cloudflareClient.stream.directUpload.create({
       account_id: process.env.CLOUDFLARE_ACCOUNT_ID,
-      maxDurationSeconds: 120,
+      maxDurationSeconds: 180,
       allowedOrigins: [process.env.NEXT_PUBLIC_APP_URL!],
       meta: {
         userId: user?.id,
