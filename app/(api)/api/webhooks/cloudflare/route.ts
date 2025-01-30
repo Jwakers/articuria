@@ -1,4 +1,5 @@
 import { db } from "@/app/server/db";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import crypto from "crypto";
 
 export async function POST(request: Request) {
@@ -11,22 +12,40 @@ export async function POST(request: Request) {
       !data ||
       typeof data !== "object" ||
       !("uid" in data) ||
-      !("duration" in data)
+      !("duration" in data) ||
+      typeof data.duration !== "number" ||
+      data.duration < 0
     ) {
-      throw new Error("Missing required data: uid or duration");
+      throw new Error(
+        "Invalid request data: uid must be a string and duration must be a non-negative number"
+      );
     }
 
-    const video = await db.video.update({
-      where: {
-        cloudflareId: data.uid,
-      },
-      data: {
-        duration: data.duration,
-      },
-    });
-
-    console.log(`Updated duration for video ${data.uid} to ${data.duration}`);
-    return Response.json({ video });
+    try {
+      const video = await db.video.update({
+        where: {
+          cloudflareId: data.uid,
+        },
+        data: {
+          duration: data.duration,
+        },
+      });
+      return new Response(JSON.stringify({ video }), { status: 200 });
+    } catch (error) {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === "P2025"
+      ) {
+        return new Response(
+          JSON.stringify({
+            error: "Video not found",
+            message: `No video found with cloudflareId: ${data.uid}`,
+          }),
+          { status: 404 }
+        );
+      }
+      throw error; // Re-throw other database errors
+    }
   } catch (error) {
     console.error(error);
 
@@ -76,9 +95,10 @@ async function verifySignature(request: Request) {
     .digest("hex");
 
   // Step 4: Compare expected and actual signatures
-  if (sig1 !== expectedSignature) {
+  if (
+    !crypto.timingSafeEqual(Buffer.from(sig1), Buffer.from(expectedSignature))
+  )
     throw new Error("Invalid signature");
-  }
 }
 
 type ResponseData =
