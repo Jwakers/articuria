@@ -52,8 +52,19 @@ export const useMediaRecorder = () => {
     if (!streamRef.current) await setVideoToStream();
     if (!streamRef.current) throw new Error("Unable to set media stream");
 
+    // Check for supported MIME types and set fallback
+    const mimeType = MediaRecorder.isTypeSupported("video/webm; codecs=vp8")
+      ? "video/webm; codecs=vp8"
+      : MediaRecorder.isTypeSupported(
+          "video/mp4; codecs=avc1.42E01E, mp4a.40.2"
+        )
+      ? "video/mp4; codecs=avc1.42E01E, mp4a.40.2"
+      : null;
+
+    if (!mimeType) throw new Error("No supported MIME type found");
+
     const options = {
-      mimeType: "video/webm; codecs=vp8",
+      mimeType,
       videoBitsPerSecond: 500000,
       audioBitsPerSecond: 64000,
     };
