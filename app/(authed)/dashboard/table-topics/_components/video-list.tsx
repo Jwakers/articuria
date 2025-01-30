@@ -15,6 +15,7 @@ import { formatDuration } from "@/lib/utils";
 import { Play } from "lucide-react";
 import Link from "next/link";
 import { use } from "react";
+import NoVideos from "./no-videos";
 
 type VideoListProps = {
   videoListPromise: ReturnType<typeof getUserVideos>;
@@ -23,55 +24,60 @@ type VideoListProps = {
 export function VideoList({ videoListPromise }: VideoListProps) {
   const { videos } = use(videoListPromise);
 
+  if (!videos.length) return <NoVideos />;
+
   return (
-    <Table>
-      <TableCaption>
-        A list of your recent Table Topics recordings.
-      </TableCaption>
-      <TableHeader>
-        <TableRow>
-          <TableHead className="w-[400px]">Topic</TableHead>
-          <TableHead>Date</TableHead>
-          <TableHead>Duration</TableHead>
-          <TableHead className="text-right">Actions</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {videos.map((video) => (
-          <TableRow key={video.id}>
-            <TableCell className="font-medium">
-              {video.tableTopic.topic}
-            </TableCell>
-            <TableCell>
-              {new Date(video.createdAt).toLocaleDateString()}
-            </TableCell>
-            <TableCell>
-              <span
-                aria-label={`Duration: ${
-                  video.duration
-                    ? `${Math.floor(video.duration / 60)} minutes and ${
-                        video.duration % 60
-                      } seconds`
-                    : "Not available"
-                }`}
-              >
-                {formatDuration(video.duration)}
-              </span>
-            </TableCell>
-            <TableCell className="text-right">
-              <Button variant="outline" size="sm" asChild>
-                <Link
-                  href={`${ROUTES.dashboard.tableTopics.manage}/${video.id}`}
-                >
-                  <Play />
-                  <span>View</span>
-                </Link>
-              </Button>
-            </TableCell>
+    <>
+      <h1 className="text-2xl md:text-3xl">Manage recordings</h1>
+      <Table>
+        <TableCaption>
+          A list of your recent Table Topics recordings.
+        </TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-[400px]">Topic</TableHead>
+            <TableHead>Date</TableHead>
+            <TableHead>Duration</TableHead>
+            <TableHead className="text-right">Actions</TableHead>
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+        </TableHeader>
+        <TableBody>
+          {videos.map((video) => (
+            <TableRow key={video.id}>
+              <TableCell className="font-medium">
+                {video.tableTopic.topic}
+              </TableCell>
+              <TableCell>
+                {new Date(video.createdAt).toLocaleDateString()}
+              </TableCell>
+              <TableCell>
+                <span
+                  aria-label={`Duration: ${
+                    video.duration
+                      ? `${Math.floor(video.duration / 60)} minutes and ${
+                          video.duration % 60
+                        } seconds`
+                      : "Not available"
+                  }`}
+                >
+                  {formatDuration(video.duration)}
+                </span>
+              </TableCell>
+              <TableCell className="text-right">
+                <Button variant="outline" size="sm" asChild>
+                  <Link
+                    href={`${ROUTES.dashboard.tableTopics.manage}/${video.id}`}
+                  >
+                    <Play />
+                    <span>View</span>
+                  </Link>
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </>
   );
 }
 
