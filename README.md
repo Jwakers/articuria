@@ -79,7 +79,7 @@
 - [x] Close the sidebar on mobile
 - [x] Add duration to video table. Add this duration to the video list component
 - [x] Set video ID to UUID rather than incremental number (it looks weird in the URL)
-- [ ] Add no recordings page component
+- [x] Add no recordings page component
 - [ ] Add pagination to recording list
 - [ ] Add proper dynamic dashboard stats rather than the current hardcoded values
 
