@@ -5,59 +5,16 @@ import crypto from "crypto";
 export async function POST(request: Request) {
   try {
     await verifySignature(request);
+    const data: ResponseData | undefined = await request.json();
 
-    const data: ResponseData = await request.json();
+    if (!data) throw new Error("No data received");
 
-    if (
-      !data ||
-      typeof data !== "object" ||
-      !("uid" in data) ||
-      !("duration" in data) ||
-      typeof data.duration !== "number" ||
-      data.duration < 0
-    ) {
-      throw new Error(
-        "Invalid request data: uid must be a string and duration must be a non-negative number"
-      );
-    }
-
-    try {
-      const video = await db.video.update({
-        where: {
-          cloudflareId: data.uid,
-        },
-        data: {
-          duration: data.duration,
-        },
-      });
-      return new Response(JSON.stringify({ video }), { status: 200 });
-    } catch (error) {
-      if (
-        error instanceof PrismaClientKnownRequestError &&
-        error.code === "P2025"
-      ) {
-        return new Response(
-          JSON.stringify({
-            error: "Video not found",
-            message: `No video found with cloudflareId: ${data.uid}`,
-          }),
-          { status: 404 }
-        );
-      }
-      throw error; // Re-throw other database errors
-    }
+    validateRequestData(data);
+    const video = await updateVideoDuration(data);
+    return new Response(JSON.stringify({ video }), { status: 200 });
   } catch (error) {
     console.error(error);
-
-    return new Response(
-      JSON.stringify({
-        error: "Webhook failed",
-        message: error instanceof Error ? error.message : "Unknown error",
-      }),
-      {
-        status: 500,
-      }
-    );
+    return handleError(error);
   }
 }
 
@@ -101,49 +58,98 @@ async function verifySignature(request: Request) {
     throw new Error("Invalid signature");
 }
 
-type ResponseData =
-  | {
-      uid: string;
-      creator: null;
-      thumbnail: string;
-      thumbnailTimestampPct: number;
-      readyToStream: boolean;
-      readyToStreamAt: string;
-      status: {
-        state: string;
-        step: string;
-        pctComplete: string;
-        errorReasonCode: string;
-        errorReasonText: string;
-      };
-      meta: {
-        created: string;
-        name: string;
-        title: string;
-        userId: string;
-      };
-      created: string;
-      modified: string;
-      scheduledDeletion: null;
-      size: number;
-      preview: string;
-      allowedOrigins: string[];
-      requireSignedURLs: boolean;
-      uploaded: string;
-      uploadExpiry: string;
-      maxSizeBytes: null;
-      maxDurationSeconds: number;
-      duration: number;
-      input: {
-        width: number;
-        height: number;
-      };
-      playback: {
-        hls: string;
-        dash: string;
-      };
-      watermark: null;
-      clippedFrom: null;
-      publicDetails: null;
+function validateRequestData(data: ResponseData) {
+  if (
+    !data ||
+    typeof data !== "object" ||
+    !("uid" in data) ||
+    !("duration" in data) ||
+    typeof data.duration !== "number" ||
+    data.duration < 0
+  ) {
+    throw new Error(
+      "Invalid request data: uid must be a string and duration must be a non-negative number"
+    );
+  }
+}
+
+async function updateVideoDuration(data: ResponseData) {
+  try {
+    return await db.video.update({
+      where: {
+        cloudflareId: data.uid,
+      },
+      data: {
+        duration: data.duration,
+      },
+    });
+  } catch (error) {
+    if (
+      error instanceof PrismaClientKnownRequestError &&
+      error.code === "P2025"
+    ) {
+      throw new Error(`No video found with cloudflareId: ${data.uid}`);
     }
-  | undefined;
+    throw error; // Re-throw other database errors
+  }
+}
+
+function handleError(error: unknown) {
+  const message = error instanceof Error ? error.message : "Unknown error";
+  const status =
+    error instanceof Error && error.message.includes("not found") ? 404 : 500;
+  return new Response(
+    JSON.stringify({
+      error: "Webhook failed",
+      message,
+    }),
+    {
+      status,
+    }
+  );
+}
+
+type ResponseData = {
+  uid: string;
+  creator: null;
+  thumbnail: string;
+  thumbnailTimestampPct: number;
+  readyToStream: boolean;
+  readyToStreamAt: string;
+  status: {
+    state: string;
+    step: string;
+    pctComplete: string;
+    errorReasonCode: string;
+    errorReasonText: string;
+  };
+  meta: {
+    created: string;
+    name: string;
+    title: string;
+    userId: string;
+  };
+  created: string;
+  modified: string;
+  scheduledDeletion: null;
+  size: number;
+  preview: string;
+  allowedOrigins: string[];
+  requireSignedURLs: boolean;
+  uploaded: string;
+  uploadExpiry: string;
+  maxSizeBytes: null;
+  maxDurationSeconds: number;
+  duration: number;
+  input: {
+    width: number;
+    height: number;
+  };
+  playback: {
+    hls: string;
+    dash: string;
+  };
+  watermark: null;
+  clippedFrom: null;
+  publicDetails: null;
+};
