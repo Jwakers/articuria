@@ -55,7 +55,7 @@ export default function VideoPlayer({ videoPromise }: VideoPlayerProps) {
           sandbox="allow-scripts allow-same-origin allow-presentation"
           loading="lazy"
         ></iframe>
-        <div className="mt-4 flex justify-between items-center">
+        <div className="mt-4 flex flex-wrap gap-2 justify-between items-center">
           <Button
             variant="secondary"
             onClick={handleDownload}
@@ -67,7 +67,7 @@ export default function VideoPlayer({ videoPromise }: VideoPlayerProps) {
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button variant="destructive" disabled={isDeleting}>
-                <Trash2 className="mr-2 h-4 w-4" />
+                <Trash2 className="h-4 w-4" />
                 Delete Video
               </Button>
             </AlertDialogTrigger>
