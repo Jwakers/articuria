@@ -148,7 +148,9 @@ export default function TableTopicsRecorder() {
                 {!isSaved ? (
                   <Button
                     onClick={handleSaveRecording}
-                    disabled={isSaving || isSaved}
+                    disabled={isSaving}
+                    aria-busy={isSaving}
+                    aria-live="polite"
                   >
                     {isSaving ? <Spinner /> : <Save />}
                     {isSaving ? "Saving..." : "Save recording"}

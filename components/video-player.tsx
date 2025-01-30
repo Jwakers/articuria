@@ -60,9 +60,11 @@ export default function VideoPlayer({ videoPromise }: VideoPlayerProps) {
             variant="secondary"
             onClick={handleDownload}
             disabled={isDownloading}
+            aria-busy={isDownloading}
+            aria-live="polite"
           >
             {isDownloading ? <Spinner /> : <Download />}
-            <span>Download</span>
+            <span>{isDownloading ? "Downloading..." : "Download"}</span>
           </Button>
           <AlertDialog>
             <AlertDialogTrigger asChild>
