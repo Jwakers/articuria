@@ -11,6 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ROUTES } from "@/lib/constants";
+import { formatDuration } from "@/lib/utils";
 import { Play } from "lucide-react";
 import Link from "next/link";
 import { use } from "react";
@@ -43,7 +44,17 @@ export function VideoList({ videoListPromise }: VideoListProps) {
             </TableCell>
             <TableCell>{new Date(video.createdAt).toLocaleString()}</TableCell>
             <TableCell>
-              {video.duration ? `${video.duration}s` : "--:--"}
+              <span
+                aria-label={`Duration: ${
+                  video.duration
+                    ? `${Math.floor(video.duration / 60)} minutes and ${
+                        video.duration % 60
+                      } seconds`
+                    : "Not available"
+                }`}
+              >
+                {formatDuration(video.duration)}
+              </span>
             </TableCell>
             <TableCell className="text-right">
               <Button variant="outline" size="sm" asChild>
