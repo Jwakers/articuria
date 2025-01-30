@@ -2,7 +2,11 @@ import { db } from "@/app/server/db";
 import { auth } from "@clerk/nextjs/server";
 import { Prisma, Video } from "@prisma/client";
 import "server-only";
-import { deleteVideoById, getVideoUploadUrl } from "../cloudflare-actions";
+import {
+  createWebhook,
+  deleteVideoById,
+  getVideoUploadUrl,
+} from "../cloudflare-actions";
 import topics from "./topics.json";
 
 export async function getRandomTableTopic() {
@@ -34,6 +38,8 @@ export async function createUserVideo({
 }) {
   const user = await auth();
   if (!user.userId) throw new Error("Unauthorized");
+
+  await createWebhook();
 
   const video = await db.$transaction(async (prisma) => {
     const { uploadURL, uid } = await getVideoUploadUrl({ title });

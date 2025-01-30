@@ -42,7 +42,9 @@ export function VideoList({ videoListPromise }: VideoListProps) {
               {video.tableTopic.topic}
             </TableCell>
             <TableCell>{new Date(video.createdAt).toLocaleString()}</TableCell>
-            <TableCell>Duration</TableCell>
+            <TableCell>
+              {video.duration ? `${video.duration}s` : "--:--"}
+            </TableCell>
             <TableCell className="text-right">
               <Button variant="outline" size="sm" asChild>
                 <Link

@@ -87,3 +87,20 @@ export async function getDownloadDataById(id: string): Promise<DownloadData> {
     throw new Error("Failed to get video download data");
   }
 }
+
+export async function createWebhook() {
+  if (process.env.NODE_ENV === "development")
+    return console.warn("Cannot setup webhooks in development");
+
+  try {
+    const webhook = await cloudflareClient.stream.webhooks.update({
+      account_id: process.env.CLOUDFLARE_ACCOUNT_ID!,
+      notificationUrl: `${process.env.NEXT_PUBLIC_APP_URL}/api/webhooks/cloudflare`,
+    });
+
+    return webhook;
+  } catch (error) {
+    console.error("Failed to update webhook:", error);
+    throw new Error("Failed to update webhook");
+  }
+}
