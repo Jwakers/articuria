@@ -35,7 +35,6 @@ export default function TableTopicsRecorder() {
 
   const {
     isRecording,
-    isUploading,
     isSaving,
     isSaved,
     recordedVideoURL,
@@ -66,15 +65,9 @@ export default function TableTopicsRecorder() {
     if (!topicId.current)
       return toast.error("Topic ID not set. Please generate a new topic.");
 
-    const promise = uploadVideo({
+    await uploadVideo({
       title: currentTopic ?? "Table topic",
       tableTopicId: topicId.current,
-    });
-
-    toast.promise(promise, {
-      loading: "Saving...",
-      success: "Recoding saved",
-      error: "There was an error saving this recording",
     });
   };
 
@@ -101,14 +94,6 @@ export default function TableTopicsRecorder() {
     if (timeElapsed < 90) return "bg-green-500";
     if (timeElapsed < 120) return "bg-amber-500";
     return "bg-red-500";
-  };
-
-  const getSaveButtonText = () => {
-    let saveButtonText = "Save Recording";
-    if (isUploading) saveButtonText = "Uploading...";
-    if (isSaving) saveButtonText = "Saving...";
-
-    return saveButtonText;
   };
 
   return (
@@ -163,10 +148,12 @@ export default function TableTopicsRecorder() {
                 {!isSaved ? (
                   <Button
                     onClick={handleSaveRecording}
-                    disabled={isUploading || isSaving || isSaved}
+                    disabled={isSaving}
+                    aria-busy={isSaving}
+                    aria-live="polite"
                   >
-                    {isUploading || isSaving ? <Spinner /> : <Save />}
-                    {getSaveButtonText()}
+                    {isSaving ? <Spinner /> : <Save />}
+                    {isSaving ? "Saving..." : "Save recording"}
                   </Button>
                 ) : null}
                 <Button onClick={handleDownloadRecording} variant="secondary">

@@ -2,7 +2,7 @@ import { db } from "@/app/server/db";
 import { auth } from "@clerk/nextjs/server";
 import { Prisma, Video } from "@prisma/client";
 import "server-only";
-import { deleteVideoById } from "../cloudflare-actions";
+import { deleteVideoById, getVideoUploadUrl } from "../cloudflare-actions";
 import topics from "./topics.json";
 
 export async function getRandomTableTopic() {
@@ -23,22 +23,43 @@ export async function getRandomTableTopic() {
   return topic;
 }
 
-export async function setUserVideo({
-  cloudflareId,
+export async function createUserVideo({
   tableTopicId,
+  title,
+  formData,
 }: {
-  cloudflareId: Video["cloudflareId"];
   tableTopicId: Video["tableTopicId"];
+  title: string;
+  formData: FormData;
 }) {
   const user = await auth();
   if (!user.userId) throw new Error("Unauthorized");
 
-  const video = await db.video.create({
-    data: {
-      cloudflareId,
-      tableTopicId,
-      userId: user.userId,
-    },
+  const video = await db.$transaction(async (prisma) => {
+    const { uploadURL, uid } = await getVideoUploadUrl({ title });
+
+    if (!uploadURL) throw new Error("Unable to get upload URL");
+    if (!uid) throw new Error("Could not get video ID");
+
+    const res = await fetch(uploadURL, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+      },
+      body: formData,
+    });
+
+    if (!res.ok) throw new Error(`Video upload failed: ${res.status}`);
+
+    const videoData = await prisma.video.create({
+      data: {
+        cloudflareId: uid,
+        tableTopicId,
+        userId: user.userId,
+      },
+    });
+
+    return videoData;
   });
 
   return video;
