@@ -14,13 +14,13 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import Spinner from "@/components/ui/spinner";
 import useManageVideo from "@/hooks/use-manage-video";
 import { ROUTES } from "@/lib/constants";
 import { Download, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { use } from "react";
-import { Skeleton } from "./ui/skeleton";
-import Spinner from "./ui/spinner";
 
 type VideoPlayerProps = {
   videoPromise: ReturnType<typeof getUserVideoById>;

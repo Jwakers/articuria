@@ -77,36 +77,6 @@ export default async function DashboardSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        {/* <SidebarMenu>
-          <SidebarMenuItem>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <SidebarMenuButton>
-                  {user?.hasImage ? (
-                    <img
-                      src={user?.imageUrl}
-                      className="aspect-square w-6 rounded-full"
-                      alt="User image"
-                    />
-                  ) : null}
-                  {user?.fullName}
-                  <ChevronUp className="ml-auto" />
-                </SidebarMenuButton>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                side="top"
-                className="w-[--radix-popper-anchor-width]"
-              >
-                <ManageAccountButton />
-                <SignOutButton>
-                  <DropdownMenuItem className="cursor-pointer">
-                    Sign out
-                  </DropdownMenuItem>
-                </SignOutButton>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </SidebarMenuItem>
-        </SidebarMenu> */}
         <SidebarMenu>
           <SidebarMenuItem>
             <UserMenu />
