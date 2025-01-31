@@ -20,17 +20,19 @@ import { ROUTES } from "@/lib/constants";
 import { formatDuration } from "@/lib/utils";
 import { Play } from "lucide-react";
 import Link from "next/link";
-import { use } from "react";
+import { memo, use } from "react";
 import NoVideos from "./no-videos";
 
 type VideoListProps = {
   videoListPromise: ReturnType<typeof getUserVideos>;
 };
 
+const MemoizedNoVideos = memo(NoVideos);
+
 export function VideoList({ videoListPromise }: VideoListProps) {
   const { videos } = use(videoListPromise);
 
-  if (!videos.length) return <NoVideos />;
+  if (!videos.length) return <MemoizedNoVideos />;
 
   return (
     <Card>

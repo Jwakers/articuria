@@ -112,7 +112,7 @@ function MobileMenu() {
                 <Button variant="outline" className="w-full">
                   {user?.hasImage ? (
                     <img
-                      src={user?.imageUrl}
+                      src={user.imageUrl}
                       className="aspect-square w-6 rounded-full"
                       alt="User image"
                     />
