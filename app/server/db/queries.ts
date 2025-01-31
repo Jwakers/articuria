@@ -65,32 +65,43 @@ export async function createUserVideo({
   return video;
 }
 
-export async function getUserVideos({ cursor }: { cursor?: string } = {}) {
+export async function getUserVideos(
+  page: string | number = 1,
+  pageSize: number = 10
+) {
   const user = await auth();
   if (!user.userId) throw new Error("Unauthorized");
 
-  const videos = await db.video.findMany({
+  const skip = (Number(page) - 1) * pageSize;
+
+  const videosPromise = db.video.findMany({
     where: {
       userId: user.userId,
     },
     include: {
       tableTopic: true,
     },
-    take: 10,
-    skip: cursor ? 1 : 0, // Skip the cursor
-    cursor: cursor
-      ? {
-          id: cursor,
-        }
-      : undefined,
+    take: pageSize,
+    skip,
     orderBy: {
       createdAt: "desc",
     },
   });
 
-  const nextCursor = videos.length > 0 ? videos[videos.length - 1].id : null;
+  const totalItemsPromise = db.video.count({
+    where: {
+      userId: user.userId,
+    },
+  });
 
-  return { videos, nextCursor };
+  const [videos, totalItems] = await Promise.all([
+    videosPromise,
+    totalItemsPromise,
+  ]);
+
+  const totalPages = Math.ceil(totalItems / pageSize);
+
+  return { videos, totalPages, currentPage: Number(page) };
 }
 
 export async function getUserVideoById(id: Video["id"]) {

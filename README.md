@@ -25,6 +25,7 @@
   - [x] Add light/dark toggle and infrastructure
 - [x] Add a persistent sidebar menu (create topic, user dashboard, home) etc. This should be a layout level feature and only for logged in users.
 - [x] Mobile menu / Header layout
+- [ ] Update favicon
 
 ## 2. Database Schema Design
 
@@ -52,7 +53,7 @@
 - [x] Delete recording toast should be swapped out for a more visible modal
 - [ ] Compress recordings before upload
 - [x] Add a memory limit on video uploads
-  - [ ] Move the whole upload function to a server action to safely limit upload size
+  - [x] Move the whole upload function to a server action to safely limit upload size
 - [ ] Add a limit to how many videos a user can upload
 
 ## 5. Saving Videos to the Database
@@ -61,6 +62,8 @@
 - [x] Link stored video URLs to the database using the Video model.
 - [x] Move save video logic to a prisma transaction
 - [ ] Move save logic out of server actions and into an api route. There is an adjustable limit on server actions. See next.config but to be safe we should pass this data to a dedicated endpoint. This should also allow us to properly validate the file type on the server.
+- [ ] Save videos with TUS https://developers.cloudflare.com/api/node/resources/stream/methods/create/
+  - [ ] Show progress indicator in toast.promise
 
 ## 6. User Dashboard
 
@@ -80,7 +83,7 @@
 - [x] Add duration to video table. Add this duration to the video list component
 - [x] Set video ID to UUID rather than incremental number (it looks weird in the URL)
 - [x] Add no recordings page component
-- [ ] Add pagination to recording list
+- [x] Add pagination to recording list
 - [ ] Add proper dynamic dashboard stats rather than the current hardcoded values
 
 ## 7. Authentication

@@ -58,13 +58,19 @@ export default async function DashboardSidebar() {
                   </CollapsibleTrigger>
                   <CollapsibleContent>
                     <SidebarMenuSub>
-                      <SidebarMenuSubItem>
-                        <Link href={ROUTES.dashboard.tableTopics.record}>
+                      <SidebarMenuSubItem className="w-full">
+                        <Link
+                          href={ROUTES.dashboard.tableTopics.record}
+                          className="w-full block hover:underline"
+                        >
                           Record
                         </Link>
                       </SidebarMenuSubItem>
                       <SidebarMenuSubItem>
-                        <Link href={ROUTES.dashboard.tableTopics.manage}>
+                        <Link
+                          href={ROUTES.dashboard.tableTopics.manage}
+                          className="w-full block hover:underline"
+                        >
                           Manage recordings
                         </Link>
                       </SidebarMenuSubItem>
