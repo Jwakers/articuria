@@ -9,52 +9,88 @@ import { Activity, Mic } from "lucide-react";
 import { JSX } from "react";
 
 export async function TotalVideosCard() {
-  const { videoCount, countThisMonth } = await getUserVideoCount();
+  try {
+    const { videoCount, countThisMonth } = await getUserVideoCount();
 
-  return (
-    <StatCard
-      title="Saved recordings"
-      stat={videoCount}
-      relativeStat={`${countThisMonth} this month`}
-      icon={<Mic />}
-    />
-  );
+    return (
+      <StatCard
+        title="Saved recordings"
+        stat={videoCount}
+        relativeStat={`${countThisMonth} this month`}
+        icon={<Mic />}
+      />
+    );
+  } catch (error) {
+    console.error("Failed to fetch video count:", error);
+    return (
+      <StatCard
+        title="Saved recordings"
+        stat="--"
+        relativeStat="Failed to load"
+        icon={<Mic />}
+      />
+    );
+  }
 }
 
 export async function AverageVideoDurationCard() {
-  const { averageDuration, lastMonthAverageDuration } =
-    await getUserVideoDurationData();
+  try {
+    const { averageDuration, lastMonthAverageDuration } =
+      await getUserVideoDurationData();
 
-  const difference = averageDuration - lastMonthAverageDuration;
-  const differenceString =
-    difference > 0
-      ? `+${formatDuration(difference)} from last month`
-      : `${formatDuration(difference)} from last month`;
+    const difference = averageDuration - lastMonthAverageDuration;
+    const differenceString =
+      difference > 0
+        ? `+${formatDuration(difference)} from last month`
+        : `${formatDuration(difference)} from last month`;
 
-  return (
-    <StatCard
-      title="Average duration"
-      stat={formatDuration(averageDuration)}
-      relativeStat={lastMonthAverageDuration ? differenceString : undefined}
-      icon={<Activity />}
-    />
-  );
+    return (
+      <StatCard
+        title="Average duration"
+        stat={formatDuration(averageDuration)}
+        relativeStat={lastMonthAverageDuration ? differenceString : undefined}
+        icon={<Activity />}
+      />
+    );
+  } catch (error) {
+    console.error("Failed to fetch duration data:", error);
+    return (
+      <StatCard
+        title="Average duration"
+        stat="--"
+        relativeStat="Failed to load"
+        icon={<Activity />}
+      />
+    );
+  }
 }
 
 export async function TotalVideoDurationCard() {
-  const { totalDuration, thisMonthsTotalDuration } =
-    await getUserVideoDurationData();
+  try {
+    const { totalDuration, thisMonthsTotalDuration } =
+      await getUserVideoDurationData();
 
-  return (
-    <StatCard
-      title="Total recording time"
-      stat={formatDuration(totalDuration)}
-      relativeStat={`${formatDuration(
-        thisMonthsTotalDuration
-      )} recorded this month`}
-      icon={<Activity />}
-    />
-  );
+    return (
+      <StatCard
+        title="Total recording time"
+        stat={formatDuration(totalDuration)}
+        relativeStat={`${formatDuration(
+          thisMonthsTotalDuration
+        )} recorded this month`}
+        icon={<Activity />}
+      />
+    );
+  } catch (error) {
+    console.error("Failed to fetch total duration:", error);
+    return (
+      <StatCard
+        title="Total recording time"
+        stat="--"
+        relativeStat="Failed to load"
+        icon={<Activity />}
+      />
+    );
+  }
 }
 
 function StatCard({

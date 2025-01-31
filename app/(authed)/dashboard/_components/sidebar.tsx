@@ -21,12 +21,9 @@ import {
 } from "@/components/ui/sidebar";
 import UserMenu from "@/components/user-menu";
 import { ROUTES } from "@/lib/constants";
-import { currentUser } from "@clerk/nextjs/server";
 import Link from "next/link";
 
 export default async function DashboardSidebar() {
-  const user = await currentUser();
-
   return (
     <Sidebar>
       <SidebarContent>
