@@ -1,16 +1,10 @@
-import { ChevronUp, Home, Mic } from "lucide-react";
+import { Home, Mic } from "lucide-react";
 
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
   Sidebar,
   SidebarContent,
@@ -25,14 +19,14 @@ import {
   SidebarMenuSubItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import UserMenu from "@/components/user-menu";
 import { ROUTES } from "@/lib/constants";
-import { SignOutButton } from "@clerk/nextjs";
 import { currentUser } from "@clerk/nextjs/server";
 import Link from "next/link";
-import ManageAccountButton from "./manage-account-button";
 
 export default async function DashboardSidebar() {
   const user = await currentUser();
+
   return (
     <Sidebar>
       <SidebarContent>
@@ -83,7 +77,7 @@ export default async function DashboardSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <SidebarMenu>
+        {/* <SidebarMenu>
           <SidebarMenuItem>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -111,6 +105,11 @@ export default async function DashboardSidebar() {
                 </SignOutButton>
               </DropdownMenuContent>
             </DropdownMenu>
+          </SidebarMenuItem>
+        </SidebarMenu> */}
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <UserMenu />
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>

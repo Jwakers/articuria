@@ -1,7 +1,7 @@
 import { getUserVideoById } from "@/app/server/db/queries";
-import VideoPlayer, { VideoPlayerSkeleton } from "@/components/video-player";
 import { currentUser } from "@clerk/nextjs/server";
 import { Suspense } from "react";
+import VideoPlayer, { VideoPlayerSkeleton } from "./_components/video-player";
 
 export default async function VideoPage({
   params,

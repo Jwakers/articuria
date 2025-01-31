@@ -86,6 +86,15 @@
 - [x] Add pagination to recording list
 - [ ] Add proper dynamic dashboard stats rather than the current hardcoded values
 
+## 6.5 Contact
+
+- [ ] Add a contact page
+  - [ ] Hidden fields: user ID
+  - [ ] Should have options (issues, app feedback, other etc)
+  - [ ] Build endpoint to send email with node-mailer
+- [ ] Add a section on the dashboard where users can link to contact
+- [ ] Contact page should be a protected routes
+
 ## 7. Authentication
 
 - [x] Protect routes so only signed-in users can access dashboard and video features.
