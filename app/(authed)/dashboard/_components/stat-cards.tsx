@@ -1,5 +1,3 @@
-import { JSX } from "react";
-
 import {
   getUserVideoCount,
   getUserVideoDurationData,
@@ -8,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDuration } from "@/lib/utils";
 import { Activity, Mic } from "lucide-react";
+import { JSX } from "react";
 
 export async function TotalVideosCard() {
   const { videoCount, countThisMonth } = await getUserVideoCount();

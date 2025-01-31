@@ -100,32 +100,6 @@ function MobileMenu() {
         </ul>
         <SheetFooter className="mt-auto gap-2">
           <SignedIn>
-            {/* <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="w-full">
-                  {user?.hasImage ? (
-                    <img
-                      src={user.imageUrl}
-                      className="aspect-square w-6 rounded-full"
-                      alt="User image"
-                    />
-                  ) : null}
-                  {user?.fullName}
-                  <ChevronUp className="ml-auto" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                side="top"
-                className="w-[--radix-popper-anchor-width]"
-              >
-                <ManageAccountButton />
-                <SignOutButton>
-                  <DropdownMenuItem className="cursor-pointer">
-                    Sign out
-                  </DropdownMenuItem>
-                </SignOutButton>
-              </DropdownMenuContent>
-            </DropdownMenu> */}
             <UserMenu />
           </SignedIn>
           <div className="self-end">
