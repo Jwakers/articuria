@@ -24,7 +24,7 @@
   - [x] Find a nicer background gradient and store in tailwind config
   - [x] Add light/dark toggle and infrastructure
 - [x] Add a persistent sidebar menu (create topic, user dashboard, home) etc. This should be a layout level feature and only for logged in users.
-- [ ] Mobile menu
+- [x] Mobile menu / Header layout
 
 ## 2. Database Schema Design
 
