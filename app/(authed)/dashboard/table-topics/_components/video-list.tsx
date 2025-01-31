@@ -103,12 +103,15 @@ function Pagination({
   currentPage: number;
   totalPages: number;
 }) {
-  const hasPrev = currentPage <= 1;
-  const hasNext = currentPage >= totalPages;
+  const hasPrev = currentPage > 1;
+  const hasNext = currentPage < totalPages;
+  const text = `Page ${currentPage} of ${totalPages}`;
 
   return (
     <div className="flex justify-between items-end w-full">
-      <span className="text-sm text-muted-foreground">{`Page ${currentPage} of ${totalPages}`}</span>
+      <span className="text-sm text-muted-foreground" aria-label={text}>
+        {text}
+      </span>
 
       <div className="flex gap-2">
         <Link
