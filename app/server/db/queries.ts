@@ -1,13 +1,13 @@
 import { db } from "@/app/server/db";
 import { auth } from "@clerk/nextjs/server";
 import { Prisma, Video } from "@prisma/client";
+import { isSameMonth, subMonths } from "date-fns";
 import "server-only";
 import { deleteVideoById, getVideoUploadUrl } from "../cloudflare-actions";
 import topics from "./topics.json";
 
 export async function getRandomTableTopic() {
-  const user = await auth();
-  if (!user.userId) throw new Error("Unauthorized");
+  await isAuth();
 
   const randomTopic = topics[Math.floor(Math.random() * topics.length)];
   const topic = await db.tableTopic.upsert({
@@ -32,8 +32,7 @@ export async function createUserVideo({
   title: string;
   formData: FormData;
 }) {
-  const user = await auth();
-  if (!user.userId) throw new Error("Unauthorized");
+  const user = await isAuth();
 
   const video = await db.$transaction(async (prisma) => {
     const { uploadURL, uid } = await getVideoUploadUrl({ title });
@@ -69,8 +68,7 @@ export async function getUserVideos(
   page: string | number = 1,
   pageSize: number = 10
 ) {
-  const user = await auth();
-  if (!user.userId) throw new Error("Unauthorized");
+  const user = await isAuth();
 
   const skip = (Number(page) - 1) * pageSize;
 
@@ -104,9 +102,73 @@ export async function getUserVideos(
   return { videos, totalPages, currentPage: Number(page) };
 }
 
+export async function getUserVideoCount() {
+  const user = await isAuth();
+
+  const videos = await db.video.findMany({
+    select: {
+      createdAt: true,
+    },
+    where: {
+      userId: user.userId,
+    },
+  });
+
+  const { length: countThisMonth } = videos.filter((video) =>
+    isSameMonth(video.createdAt, new Date())
+  );
+
+  return {
+    videoCount: videos.length,
+    countThisMonth,
+  };
+}
+
+export async function getUserVideoDurationData() {
+  const user = await isAuth();
+
+  const videos = await db.video.findMany({
+    where: {
+      duration: {
+        not: null,
+      },
+    },
+    select: {
+      duration: true,
+      createdAt: true,
+    },
+  });
+
+  const getAverage = (data: typeof videos) => {
+    const average = data.reduce((acc, cur) => (acc += cur.duration!), 0);
+
+    return Math.round(average / data.length);
+  };
+
+  const lastMonthsVideos = videos.filter((video) =>
+    isSameMonth(subMonths(new Date(), 1), video.createdAt)
+  );
+  const thisMonthsVideos = videos.filter((video) =>
+    isSameMonth(new Date(), video.createdAt)
+  );
+  const averageDuration = getAverage(videos);
+  const lastMonthAverageDuration = getAverage(lastMonthsVideos);
+  const totalDuration = videos.reduce((acc, cur) => (acc += cur.duration!), 0);
+  const thisMonthsTotalDuration = thisMonthsVideos.reduce(
+    (acc, cur) => (acc += cur.duration!),
+    0
+  );
+
+  return {
+    totalDuration,
+    thisMonthsTotalDuration,
+    averageDuration,
+    lastMonthAverageDuration,
+  };
+}
+
 export async function getUserVideoById(id: Video["id"]) {
-  const user = await auth();
-  if (!user.userId) throw new Error("Unauthorized");
+  const user = await isAuth();
 
   const video = await db.video.findFirst({
     where: {
@@ -122,8 +184,7 @@ export async function getUserVideoById(id: Video["id"]) {
 }
 
 export async function deleteUserVideoById(id: Video["id"]) {
-  const user = await auth();
-  if (!user.userId) throw new Error("Unauthorized");
+  const user = await isAuth();
 
   const deletedVideo = await db.$transaction(async (prisma) => {
     const deletedVideo = await prisma.video.delete({
@@ -144,3 +205,10 @@ export async function deleteUserVideoById(id: Video["id"]) {
 export type VideoWithTopic = Prisma.VideoGetPayload<{
   include: { tableTopic: true };
 }>;
+
+async function isAuth() {
+  const user = await auth();
+  if (!user.userId) throw new Error("Unauthorized");
+
+  return user;
+}

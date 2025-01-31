@@ -1,12 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
 import {
   Sheet,
@@ -16,20 +10,19 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import UserMenu from "@/components/user-menu";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ROUTES } from "@/lib/constants";
 import {
   SignedIn,
   SignedOut,
   SignInButton,
-  SignOutButton,
   SignUpButton,
   UserButton,
   useUser,
 } from "@clerk/nextjs";
-import { ChevronUp, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 import Link from "next/link";
-import ManageAccountButton from "../(authed)/dashboard/_components/manage-account-button";
 import { ModeToggle } from "./mode-toggle";
 
 export function Header() {
@@ -107,32 +100,7 @@ function MobileMenu() {
         </ul>
         <SheetFooter className="mt-auto gap-2">
           <SignedIn>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="w-full">
-                  {user?.hasImage ? (
-                    <img
-                      src={user.imageUrl}
-                      className="aspect-square w-6 rounded-full"
-                      alt="User image"
-                    />
-                  ) : null}
-                  {user?.fullName}
-                  <ChevronUp className="ml-auto" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                side="top"
-                className="w-[--radix-popper-anchor-width]"
-              >
-                <ManageAccountButton />
-                <SignOutButton>
-                  <DropdownMenuItem className="cursor-pointer">
-                    Sign out
-                  </DropdownMenuItem>
-                </SignOutButton>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <UserMenu />
           </SignedIn>
           <div className="self-end">
             <ModeToggle />

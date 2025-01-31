@@ -62,6 +62,7 @@
 - [x] Link stored video URLs to the database using the Video model.
 - [x] Move save video logic to a prisma transaction
 - [ ] Move save logic out of server actions and into an api route. There is an adjustable limit on server actions. See next.config but to be safe we should pass this data to a dedicated endpoint. This should also allow us to properly validate the file type on the server.
+  - [ ] Test this by uploading a longer video
 - [ ] Save videos with TUS https://developers.cloudflare.com/api/node/resources/stream/methods/create/
   - [ ] Show progress indicator in toast.promise
 
@@ -85,6 +86,15 @@
 - [x] Add no recordings page component
 - [x] Add pagination to recording list
 - [ ] Add proper dynamic dashboard stats rather than the current hardcoded values
+
+## 6.5 Contact
+
+- [ ] Add a contact page
+  - [ ] Hidden fields: user ID
+  - [ ] Should have options (issues, app feedback, other etc)
+  - [ ] Build endpoint to send email with node-mailer
+- [ ] Add a section on the dashboard where users can link to contact
+- [ ] Contact page should be a protected routes
 
 ## 7. Authentication
 

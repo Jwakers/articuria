@@ -164,23 +164,36 @@ export function VideoListSkeleton() {
             {Array.from({ length: 5 }).map((_, index) => (
               <TableRow key={index}>
                 <TableCell>
-                  <Skeleton className="h-[20px] rounded-full" />
+                  <Skeleton className="h-[20px]" />
                 </TableCell>
                 <TableCell>
-                  <Skeleton className="h-[20px] rounded-full" />
+                  <Skeleton className="h-[20px]" />
                 </TableCell>
                 <TableCell>
-                  <Skeleton className="h-[20px] rounded-full" />
+                  <Skeleton className="h-[20px]" />
                 </TableCell>
                 <TableCell className="text-right">
-                  <Skeleton className="h-[20px] rounded-full" />
+                  <Skeleton className="h-[20px]" />
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </CardContent>
-      <CardFooter>{/* Pagination placeholder location */}</CardFooter>
+      <CardFooter>
+        <div className="flex justify-between items-end w-full">
+          <Skeleton className="w-32 h-5" />
+
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" disabled>
+              <ChevronLeft />
+            </Button>
+            <Button variant="outline" size="sm" disabled>
+              <ChevronRight />
+            </Button>
+          </div>
+        </div>
+      </CardFooter>
     </Card>
   );
 }
