@@ -17,8 +17,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ROUTES } from "@/lib/constants";
-import { formatDuration } from "@/lib/utils";
-import { Play } from "lucide-react";
+import { cn, formatDuration } from "@/lib/utils";
+import { ChevronLeft, ChevronRight, Play } from "lucide-react";
 import Link from "next/link";
 import { memo, use } from "react";
 import NoVideos from "./no-videos";
@@ -30,7 +30,7 @@ type VideoListProps = {
 const MemoizedNoVideos = memo(NoVideos);
 
 export function VideoList({ videoListPromise }: VideoListProps) {
-  const { videos } = use(videoListPromise);
+  const { videos, totalPages, currentPage } = use(videoListPromise);
 
   if (!videos.length) return <MemoizedNoVideos />;
 
@@ -89,8 +89,52 @@ export function VideoList({ videoListPromise }: VideoListProps) {
           </TableBody>
         </Table>
       </CardContent>
-      <CardFooter>{/* Pagination placeholder location */}</CardFooter>
+      <CardFooter>
+        <Pagination currentPage={currentPage} totalPages={totalPages} />
+      </CardFooter>
     </Card>
+  );
+}
+
+function Pagination({
+  currentPage,
+  totalPages,
+}: {
+  currentPage: number;
+  totalPages: number;
+}) {
+  const hasPrev = currentPage <= 1;
+  const hasNext = currentPage >= totalPages;
+
+  return (
+    <div className="flex justify-between items-end w-full">
+      <span className="text-sm text-muted-foreground">{`Page ${currentPage} of ${totalPages}`}</span>
+
+      <div className="flex gap-2">
+        <Link
+          href={`${ROUTES.dashboard.tableTopics.manage}?page=${
+            currentPage - 1
+          }`}
+          aria-label="Previous page"
+          className={cn(hasPrev && "pointer-events-none")}
+        >
+          <Button variant="outline" size="sm" disabled={hasPrev}>
+            <ChevronLeft />
+          </Button>
+        </Link>
+        <Link
+          href={`${ROUTES.dashboard.tableTopics.manage}?page=${
+            currentPage + 1
+          }`}
+          aria-label="Next page"
+          className={cn(hasNext && "pointer-events-none")}
+        >
+          <Button variant="outline" size="sm" disabled={hasNext}>
+            <ChevronRight />
+          </Button>
+        </Link>
+      </div>
+    </div>
   );
 }
 
