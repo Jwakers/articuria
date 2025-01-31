@@ -180,7 +180,20 @@ export function VideoListSkeleton() {
           </TableBody>
         </Table>
       </CardContent>
-      <CardFooter>{/* Pagination placeholder location */}</CardFooter>
+      <CardFooter>
+        <div className="flex justify-between items-end w-full">
+          <Skeleton className="w-32 h-5" />
+
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" disabled>
+              <ChevronLeft />
+            </Button>
+            <Button variant="outline" size="sm" disabled>
+              <ChevronRight />
+            </Button>
+          </div>
+        </div>
+      </CardFooter>
     </Card>
   );
 }
