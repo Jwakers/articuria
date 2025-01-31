@@ -24,10 +24,10 @@ export default async function DashboardPage() {
         <Suspense fallback={<StatCardSkeleton />}>
           <TotalVideosCard />
         </Suspense>
-        <Suspense>
+        <Suspense fallback={<StatCardSkeleton />}>
           <AverageVideoDurationCard />
         </Suspense>
-        <Suspense>
+        <Suspense fallback={<StatCardSkeleton />}>
           <TotalVideoDurationCard />
         </Suspense>
       </div>
