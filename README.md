@@ -24,7 +24,7 @@
   - [x] Find a nicer background gradient and store in tailwind config
   - [x] Add light/dark toggle and infrastructure
 - [x] Add a persistent sidebar menu (create topic, user dashboard, home) etc. This should be a layout level feature and only for logged in users.
-- [ ] Mobile menu
+- [x] Mobile menu / Header layout
 
 ## 2. Database Schema Design
 
@@ -77,9 +77,9 @@
 - [x] Create root page for table topics (it should redirect to the manage page for now)
 - [x] Download video functionality (useManageVideo)
 - [x] Close the sidebar on mobile
-- [ ] Add duration to video table. Add this duration to the video list component
-- [ ] Set video ID to UUID rather than incremental number (it looks weird in the URL)
-- [ ] Add no recordings page component
+- [x] Add duration to video table. Add this duration to the video list component
+- [x] Set video ID to UUID rather than incremental number (it looks weird in the URL)
+- [x] Add no recordings page component
 - [ ] Add pagination to recording list
 - [ ] Add proper dynamic dashboard stats rather than the current hardcoded values
 
@@ -123,6 +123,3 @@
 ## Optional Enhancements for MVP
 
 - [ ] Video expiry (automatic delete) on free accounts (use a webhook to manage the database / or a cron job and do it directly from the server)
-- [ ] Add user profile customization (e.g., profile pictures).
-- [ ] Allow users to delete or rename saved videos.
-- [ ] Add timestamps or metadata to saved videos (e.g., topic name, date).

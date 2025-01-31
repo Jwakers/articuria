@@ -43,7 +43,7 @@ export default function VideoPlayer({ videoPromise }: VideoPlayerProps) {
   };
 
   return (
-    <Card className="w-full max-w-4xl mx-auto">
+    <Card>
       <CardContent className="p-6 space-y-4">
         <h1 className="text-2xl font-bold">{video?.tableTopic.topic}</h1>
         <iframe
@@ -97,7 +97,7 @@ export default function VideoPlayer({ videoPromise }: VideoPlayerProps) {
 
 export function VideoPlayerSkeleton() {
   return (
-    <Card className="w-full max-w-4xl mx-auto">
+    <Card>
       <CardContent className="p-6 space-y-4">
         <Skeleton className="h-8 w-44" />
         <Skeleton className="w-full aspect-video" />
