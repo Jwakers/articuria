@@ -164,16 +164,16 @@ export function VideoListSkeleton() {
             {Array.from({ length: 5 }).map((_, index) => (
               <TableRow key={index}>
                 <TableCell>
-                  <Skeleton className="h-[20px] rounded-full" />
+                  <Skeleton className="h-[20px]" />
                 </TableCell>
                 <TableCell>
-                  <Skeleton className="h-[20px] rounded-full" />
+                  <Skeleton className="h-[20px]" />
                 </TableCell>
                 <TableCell>
-                  <Skeleton className="h-[20px] rounded-full" />
+                  <Skeleton className="h-[20px]" />
                 </TableCell>
                 <TableCell className="text-right">
-                  <Skeleton className="h-[20px] rounded-full" />
+                  <Skeleton className="h-[20px]" />
                 </TableCell>
               </TableRow>
             ))}
