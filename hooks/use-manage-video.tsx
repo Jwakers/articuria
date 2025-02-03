@@ -29,7 +29,9 @@ export default function useManageVideo({ video }: { video: Video | null }) {
         error: (err) => {
           console.log(err);
           setIsDownloading(false);
-          return "There was an error getting this download";
+          setDownloadUrl(null);
+          setDownloadDialogOpen(false);
+          return `Failed to get download: ${err.message || "Unknown error"}`;
         },
       });
     } catch (error) {

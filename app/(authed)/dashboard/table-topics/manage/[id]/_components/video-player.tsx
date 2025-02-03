@@ -70,7 +70,10 @@ export default function VideoPlayer({ videoPromise }: VideoPlayerProps) {
           loading="lazy"
         ></iframe>
         <div className="mt-4 flex flex-wrap gap-2 justify-between items-center">
-          <AlertDialog open={downloadDialogOpen}>
+          <AlertDialog
+            open={downloadDialogOpen}
+            onOpenChange={setDownloadDialogOpen}
+          >
             <Button
               variant="secondary"
               onClick={handleDownload}
@@ -84,14 +87,21 @@ export default function VideoPlayer({ videoPromise }: VideoPlayerProps) {
 
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>Download video</AlertDialogTitle>
+                <AlertDialogTitle>
+                  Click Download to start downloading your video
+                </AlertDialogTitle>
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel onClick={() => setDownloadDialogOpen(false)}>
                   Cancel
                 </AlertDialogCancel>
                 <AlertDialogAction onClick={handleDownloadClick}>
-                  <a href={downloadUrl ?? "/"} download>
+                  <a
+                    href={downloadUrl ?? "/"}
+                    download
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
                     Download
                   </a>
                 </AlertDialogAction>
