@@ -29,8 +29,14 @@ type VideoPlayerProps = {
 export default function VideoPlayer({ videoPromise }: VideoPlayerProps) {
   const video = use(videoPromise);
   const router = useRouter();
-  const { isDeleting, deleteVideo, isDownloading, downloadVideo } =
-    useManageVideo({ video });
+  const {
+    isDeleting,
+    deleteVideo,
+    isDownloading,
+    downloadVideo,
+    downloadUrl,
+    setDownloadUrl,
+  } = useManageVideo({ video });
 
   const handleDelete = async () => {
     await deleteVideo({
@@ -56,16 +62,38 @@ export default function VideoPlayer({ videoPromise }: VideoPlayerProps) {
           loading="lazy"
         ></iframe>
         <div className="mt-4 flex flex-wrap gap-2 justify-between items-center">
-          <Button
-            variant="secondary"
-            onClick={handleDownload}
-            disabled={isDownloading}
-            aria-busy={isDownloading}
-            aria-live="polite"
-          >
-            {isDownloading ? <Spinner /> : <Download />}
-            <span>{isDownloading ? "Downloading..." : "Download"}</span>
-          </Button>
+          <AlertDialog open={!!downloadUrl}>
+            <Button
+              variant="secondary"
+              onClick={handleDownload}
+              disabled={isDownloading}
+              aria-busy={isDownloading}
+              aria-live="polite"
+            >
+              {isDownloading ? <Spinner /> : <Download />}
+              <span>{isDownloading ? "Downloading..." : "Download"}</span>
+            </Button>
+
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Download video</AlertDialogTitle>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() => {
+                    setTimeout(() => {
+                      setDownloadUrl(null);
+                    }, 500);
+                  }}
+                >
+                  <a href={downloadUrl ?? "/"} target="_blank">
+                    Download
+                  </a>
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button variant="destructive" disabled={isDeleting}>

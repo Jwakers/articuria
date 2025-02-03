@@ -11,6 +11,7 @@
 - [x] Home page sign up button does not work
 - [x] Add all routes to a constant and replace hard coded instances
 - [x] User should be redirected to dashboard on sign in/up
+- [x] Download video (from cloudflare) on video page is not working. Behaviour is sporadic.
 - [ ] Fix clerk button pop-in
 - [ ] Make videos more secure in cloudflare using requireSignedURLs.
 
