@@ -34,6 +34,21 @@ export async function getVideoUploadUrl({ title }: { title: string }) {
   }
 }
 
+export async function uploadVideoToCloudflare(
+  uploadURL: string,
+  formData: FormData
+) {
+  const res = await fetch(uploadURL, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+    },
+    body: formData,
+  });
+
+  if (!res.ok) throw new Error(`Video upload failed: ${res.status}`);
+}
+
 export async function getVideoById(id: string) {
   const user = await currentUser();
   if (!user?.id) throw new Error("Unauthorized");

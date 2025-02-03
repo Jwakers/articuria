@@ -20,7 +20,7 @@ export const ACCOUNT_LIMITS = {
   },
 } as const;
 
-export const ERROR_CODES = {
-  reachedVideoLimit: "VL",
-  videoSizeLimitExceeded: "SL",
-};
+export enum ERROR_CODES {
+  reachedVideoLimit = "VL",
+  videoSizeLimitExceeded = "SL",
+}

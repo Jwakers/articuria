@@ -4,8 +4,14 @@ import { auth } from "@clerk/nextjs/server";
 import { Prisma, Video } from "@prisma/client";
 import { isSameMonth, subMonths } from "date-fns";
 import "server-only";
-import { deleteVideoById, getVideoUploadUrl } from "../cloudflare-actions";
+import {
+  deleteVideoById,
+  getVideoUploadUrl,
+  uploadVideoToCloudflare,
+} from "../cloudflare-actions";
 import topics from "./topics.json";
+
+const TRANSACTION_TIMEOUT_MS = 10000;
 
 export async function getRandomTableTopic() {
   await isAuth();
@@ -56,15 +62,7 @@ export async function createUserVideo({
         );
       }
 
-      const res = await fetch(uploadURL, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-        },
-        body: formData,
-      });
-
-      if (!res.ok) throw new Error(`Video upload failed: ${res.status}`);
+      await uploadVideoToCloudflare(uploadURL, formData);
 
       const videoData = await prisma.video.create({
         data: {
@@ -77,7 +75,7 @@ export async function createUserVideo({
       return videoData;
     },
     {
-      timeout: 10000,
+      timeout: TRANSACTION_TIMEOUT_MS,
     }
   );
 

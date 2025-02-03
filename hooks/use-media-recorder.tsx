@@ -118,34 +118,6 @@ export const useMediaRecorder = () => {
 
     try {
       validateFile(file);
-      const formData = new FormData();
-      formData.append("file", file);
-
-      setIsSaving(true);
-
-      const promise = createVideo({
-        tableTopicId,
-        title,
-        formData,
-      });
-
-      toast.promise(promise, {
-        loading: "Saving...",
-        success: () => {
-          setIsSaved(true);
-          return "Recoding saved";
-        },
-        error: (error) => {
-          const message =
-            error instanceof Error ? error.message : "Unknown error";
-          console.error("Failed to upload video:", message);
-          setIsSaved(false);
-          return `Recording failed to save: ${message}`;
-        },
-        finally: () => {
-          setIsSaving(false);
-        },
-      });
     } catch (error) {
       toast.error(
         error instanceof Error
@@ -153,6 +125,35 @@ export const useMediaRecorder = () => {
           : "Failed to upload video. Please try again later."
       );
     }
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    setIsSaving(true);
+
+    const promise = createVideo({
+      tableTopicId,
+      title,
+      formData,
+    });
+
+    toast.promise(promise, {
+      loading: "Saving...",
+      success: () => {
+        setIsSaved(true);
+        return "Recoding saved";
+      },
+      error: (error) => {
+        const message =
+          error instanceof Error ? error.message : "Unknown error";
+        console.error("Failed to upload video:", message);
+        setIsSaved(false);
+        return `Recording failed to save: ${message}`;
+      },
+      finally: () => {
+        setIsSaving(false);
+      },
+    });
   };
 
   useEffect(() => {
