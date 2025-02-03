@@ -55,6 +55,7 @@
 - [x] Add a memory limit on video uploads
   - [x] Move the whole upload function to a server action to safely limit upload size
 - [ ] Add a limit to how many videos a user can upload
+- [ ] After recording is saved. Add section to link to that video
 
 ## 5. Saving Videos to the Database
 
