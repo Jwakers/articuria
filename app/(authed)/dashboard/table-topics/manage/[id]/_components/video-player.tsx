@@ -21,6 +21,7 @@ import { ROUTES } from "@/lib/constants";
 import { Download, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { use } from "react";
+import { toast } from "sonner";
 
 type VideoPlayerProps = {
   videoPromise: ReturnType<typeof getUserVideoById>;
@@ -35,7 +36,8 @@ export default function VideoPlayer({ videoPromise }: VideoPlayerProps) {
     isDownloading,
     downloadVideo,
     downloadUrl,
-    setDownloadUrl,
+    downloadDialogOpen,
+    setDownloadDialogOpen,
   } = useManageVideo({ video });
 
   const handleDelete = async () => {
@@ -45,7 +47,13 @@ export default function VideoPlayer({ videoPromise }: VideoPlayerProps) {
   };
 
   const handleDownload = async () => {
+    if (downloadUrl) return setDownloadDialogOpen(true);
     await downloadVideo();
+  };
+
+  const handleDownloadClick = () => {
+    toast.success("Download started");
+    setDownloadDialogOpen(false);
   };
 
   return (
@@ -62,7 +70,7 @@ export default function VideoPlayer({ videoPromise }: VideoPlayerProps) {
           loading="lazy"
         ></iframe>
         <div className="mt-4 flex flex-wrap gap-2 justify-between items-center">
-          <AlertDialog open={!!downloadUrl}>
+          <AlertDialog open={downloadDialogOpen}>
             <Button
               variant="secondary"
               onClick={handleDownload}
@@ -79,15 +87,11 @@ export default function VideoPlayer({ videoPromise }: VideoPlayerProps) {
                 <AlertDialogTitle>Download video</AlertDialogTitle>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction
-                  onClick={() => {
-                    setTimeout(() => {
-                      setDownloadUrl(null);
-                    }, 500);
-                  }}
-                >
-                  <a href={downloadUrl ?? "/"} target="_blank">
+                <AlertDialogCancel onClick={() => setDownloadDialogOpen(false)}>
+                  Cancel
+                </AlertDialogCancel>
+                <AlertDialogAction onClick={handleDownloadClick}>
+                  <a href={downloadUrl ?? "/"} download>
                     Download
                   </a>
                 </AlertDialogAction>

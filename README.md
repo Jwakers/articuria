@@ -52,11 +52,10 @@
 - [x] Add error messages on the front end
 - [x] Add toast component for error handling and messaging
 - [x] Delete recording toast should be swapped out for a more visible modal
-- [ ] Compress recordings before upload
 - [x] Add a memory limit on video uploads
   - [x] Move the whole upload function to a server action to safely limit upload size
+- [ ] Compress recordings before upload
 - [ ] Add a limit to how many videos a user can upload
-- [ ] After recording is saved. Add section to link to that video
 
 ## 5. Saving Videos to the Database
 
@@ -138,3 +137,11 @@
 ## Optional Enhancements for MVP
 
 - [ ] Video expiry (automatic delete) on free accounts (use a webhook to manage the database / or a cron job and do it directly from the server)
+- Enhance video recording page:
+  - [ ] Countdown timer before recording.
+  - [ ] Better prominence of the table topic with animations (overlay the video. Start large and then reduce size)
+  - [ ] Center the video when recording starts
+  - [ ] After recording is saved. Add section to link to that video
+- Improve the traffic light indicator:
+  - [ ] Make it more visible
+  - [ ] Have a section that explains the traffic light system

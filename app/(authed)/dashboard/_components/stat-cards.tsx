@@ -44,8 +44,6 @@ export async function AverageVideoDurationCard() {
         ? `+${difference}s from last month`
         : `${difference}s from last month`;
 
-    console.log({ averageDuration, lastMonthAverageDuration });
-
     return (
       <StatCard
         title="Average duration"

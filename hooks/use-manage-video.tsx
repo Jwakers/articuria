@@ -8,6 +8,7 @@ export default function useManageVideo({ video }: { video: Video | null }) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
+  const [downloadDialogOpen, setDownloadDialogOpen] = useState(false);
 
   const downloadVideo = async () => {
     setIsDownloading(true);
@@ -21,6 +22,7 @@ export default function useManageVideo({ video }: { video: Video | null }) {
 
           setDownloadUrl(data.default.url);
           setIsDownloading(false);
+          setDownloadDialogOpen(true);
 
           return "Download available";
         },
@@ -68,6 +70,7 @@ export default function useManageVideo({ video }: { video: Video | null }) {
     isDownloading,
     downloadVideo,
     downloadUrl,
-    setDownloadUrl,
+    downloadDialogOpen,
+    setDownloadDialogOpen,
   };
 }
