@@ -1,4 +1,5 @@
 import { db } from "@/app/server/db";
+import { ACCOUNT_LIMITS, ERROR_CODES } from "@/lib/constants";
 import { auth } from "@clerk/nextjs/server";
 import { Prisma, Video } from "@prisma/client";
 import { isSameMonth, subMonths } from "date-fns";
@@ -34,32 +35,51 @@ export async function createUserVideo({
 }) {
   const user = await isAuth();
 
-  const video = await db.$transaction(async (prisma) => {
-    const { uploadURL, uid } = await getVideoUploadUrl({ title });
+  const video = await db.$transaction(
+    async (prisma) => {
+      const { uploadURL, uid } = await getVideoUploadUrl({ title });
 
-    if (!uploadURL) throw new Error("Unable to get upload URL");
-    if (!uid) throw new Error("Could not get video ID");
+      if (!uploadURL) throw new Error("Unable to get upload URL");
+      if (!uid) throw new Error("Could not get video ID");
+      const videoCount = await prisma.video.count({
+        where: {
+          userId: user.userId,
+        },
+      });
 
-    const res = await fetch(uploadURL, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-      },
-      body: formData,
-    });
+      if (videoCount >= ACCOUNT_LIMITS.free.tableTopicLimit) {
+        throw new Error(
+          "Video limit reached on free account. Upgrade your account to save more videos",
+          {
+            cause: ERROR_CODES.reachedVideoLimit,
+          }
+        );
+      }
 
-    if (!res.ok) throw new Error(`Video upload failed: ${res.status}`);
+      const res = await fetch(uploadURL, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+        },
+        body: formData,
+      });
 
-    const videoData = await prisma.video.create({
-      data: {
-        cloudflareId: uid,
-        tableTopicId,
-        userId: user.userId,
-      },
-    });
+      if (!res.ok) throw new Error(`Video upload failed: ${res.status}`);
 
-    return videoData;
-  });
+      const videoData = await prisma.video.create({
+        data: {
+          cloudflareId: uid,
+          tableTopicId,
+          userId: user.userId,
+        },
+      });
+
+      return videoData;
+    },
+    {
+      timeout: 10000,
+    }
+  );
 
   return video;
 }

@@ -116,37 +116,44 @@ export const useMediaRecorder = () => {
       type: recordedBlob.type,
     });
 
-    validateFile(file);
+    try {
+      validateFile(file);
+      const formData = new FormData();
+      formData.append("file", file);
 
-    const formData = new FormData();
-    formData.append("file", file);
+      setIsSaving(true);
 
-    setIsSaving(true);
+      const promise = createVideo({
+        tableTopicId,
+        title,
+        formData,
+      });
 
-    const promise = createVideo({
-      tableTopicId,
-      title,
-      formData,
-    });
-
-    toast.promise(promise, {
-      loading: "Saving...",
-      success: () => {
-        setIsSaved(true);
-        return "Recoding saved";
-      },
-      error: (error) => {
-        const message =
-          error instanceof Error ? error.message : "Unknown error";
-        console.error("Failed to upload video:", message);
-        setIsSaved(false);
-        toast.error(`Recording failed to save: ${message}`);
-        return "There was an error saving this recording";
-      },
-      finally: () => {
-        setIsSaving(false);
-      },
-    });
+      toast.promise(promise, {
+        loading: "Saving...",
+        success: () => {
+          setIsSaved(true);
+          return "Recoding saved";
+        },
+        error: (error) => {
+          const message =
+            error instanceof Error ? error.message : "Unknown error";
+          console.error("Failed to upload video:", message);
+          setIsSaved(false);
+          toast.error(`Recording failed to save: ${message}`);
+          return "There was an error saving this recording";
+        },
+        finally: () => {
+          setIsSaving(false);
+        },
+      });
+    } catch (error) {
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Failed to upload video. Please try again later."
+      );
+    }
   };
 
   useEffect(() => {

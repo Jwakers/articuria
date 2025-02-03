@@ -12,8 +12,8 @@
 - [x] Add all routes to a constant and replace hard coded instances
 - [x] User should be redirected to dashboard on sign in/up
 - [x] Download video (from cloudflare) on video page is not working. Behaviour is sporadic.
-- [ ] Fix clerk button pop-in
-- [ ] Make videos more secure in cloudflare using requireSignedURLs.
+- [ ] Table topics indicator is not working correctly. Should show on one minute not be green the whole time.
+- [ ] Error uploading large videos > 1:30. Prisma transaction is timing out.
 
 ## 1. Project Setup
 
@@ -55,7 +55,7 @@
 - [x] Add a memory limit on video uploads
   - [x] Move the whole upload function to a server action to safely limit upload size
 - [ ] Compress recordings before upload
-- [ ] Add a limit to how many videos a user can upload
+- [x] Add a limit to how many videos a user can upload
 
 ## 5. Saving Videos to the Database
 
@@ -101,16 +101,18 @@
 
 - [x] Protect routes so only signed-in users can access dashboard and video features.
 - [x] Redirect user on sign in
-- [ ] Create account limits and apply to the FE + BE
+- [x] Create account limits and apply to the FE + BE
+  - [x] Video upload limits
+  - [x] Video length/size limit
 - [ ] On account deletion all data should be removed from the DB and cloudflare
 
 ## 8. UI/UX
 
 - [x] Design a clean and intuitive UI using TailwindCSS or a similar framework.
 - [x] Include key components like:
-  - Landing page.
-  - Sign-in/sign-up page (integrated with Clerk).
-  - Dashboard for viewing and recording topics.
+  - [x] Landing page.
+  - [x] Sign-in/sign-up page (integrated with Clerk).
+  - [x] Dashboard for viewing and recording topics.
 
 ## 9. Hosting and Deployment
 
