@@ -19,7 +19,7 @@ export default function Breadcrumbs() {
   const currentPage = breadcrumbs.pop();
 
   const getLabel = (text: string) => {
-    return text.charAt(0).toUpperCase() + text.slice(1);
+    return text.replace(/-/g, " ");
   };
 
   return (
@@ -36,7 +36,9 @@ export default function Breadcrumbs() {
             <Fragment key={pathname}>
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link href={pathname}>{getLabel(crumb)}</Link>
+                  <Link href={pathname} className="capitalize">
+                    {getLabel(crumb)}
+                  </Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
@@ -45,7 +47,9 @@ export default function Breadcrumbs() {
         })}
         {currentPage ? (
           <BreadcrumbItem>
-            <BreadcrumbPage>{getLabel(currentPage)}</BreadcrumbPage>
+            <BreadcrumbPage className="capitalize">
+              {getLabel(currentPage)}
+            </BreadcrumbPage>
           </BreadcrumbItem>
         ) : null}
       </BreadcrumbList>

@@ -116,7 +116,15 @@ export const useMediaRecorder = () => {
       type: recordedBlob.type,
     });
 
-    validateFile(file);
+    try {
+      validateFile(file);
+    } catch (error) {
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Failed to upload video. Please try again later."
+      );
+    }
 
     const formData = new FormData();
     formData.append("file", file);
@@ -140,8 +148,7 @@ export const useMediaRecorder = () => {
           error instanceof Error ? error.message : "Unknown error";
         console.error("Failed to upload video:", message);
         setIsSaved(false);
-        toast.error(`Recording failed to save: ${message}`);
-        return "There was an error saving this recording";
+        return `Recording failed to save: ${message}`;
       },
       finally: () => {
         setIsSaving(false);
