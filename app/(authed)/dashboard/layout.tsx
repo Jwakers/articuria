@@ -19,7 +19,7 @@ export default function DashboardShell({
       </Button>
       <SidebarProvider>
         <DashboardSidebar />
-        <main className="container px-4 pb-4">
+        <main className="w-full px-4 pb-4 max-w-[1440px] mx-auto">
           <Header />
           <div id="main-content">{children}</div>
         </main>

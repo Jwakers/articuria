@@ -41,8 +41,8 @@ export async function AverageVideoDurationCard() {
     const difference = averageDuration - lastMonthAverageDuration;
     const differenceString =
       difference > 0
-        ? `+${formatDuration(difference)} from last month`
-        : `${formatDuration(difference)} from last month`;
+        ? `+${difference}s from last month`
+        : `${difference}s from last month`;
 
     return (
       <StatCard
@@ -74,9 +74,11 @@ export async function TotalVideoDurationCard() {
       <StatCard
         title="Total recording time"
         stat={formatDuration(totalDuration)}
-        relativeStat={`${formatDuration(
+        relativeStat={
           thisMonthsTotalDuration
-        )} recorded this month`}
+            ? `${formatDuration(thisMonthsTotalDuration)} recorded this month`
+            : "No recordings this month"
+        }
         icon={<Activity />}
       />
     );

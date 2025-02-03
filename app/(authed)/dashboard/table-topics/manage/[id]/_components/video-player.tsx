@@ -21,6 +21,7 @@ import { ROUTES } from "@/lib/constants";
 import { Download, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { use } from "react";
+import { toast } from "sonner";
 
 type VideoPlayerProps = {
   videoPromise: ReturnType<typeof getUserVideoById>;
@@ -29,8 +30,15 @@ type VideoPlayerProps = {
 export default function VideoPlayer({ videoPromise }: VideoPlayerProps) {
   const video = use(videoPromise);
   const router = useRouter();
-  const { isDeleting, deleteVideo, isDownloading, downloadVideo } =
-    useManageVideo({ video });
+  const {
+    isDeleting,
+    deleteVideo,
+    isDownloading,
+    downloadVideo,
+    downloadUrl,
+    downloadDialogOpen,
+    setDownloadDialogOpen,
+  } = useManageVideo({ video });
 
   const handleDelete = async () => {
     await deleteVideo({
@@ -39,7 +47,13 @@ export default function VideoPlayer({ videoPromise }: VideoPlayerProps) {
   };
 
   const handleDownload = async () => {
+    if (downloadUrl) return setDownloadDialogOpen(true);
     await downloadVideo();
+  };
+
+  const handleDownloadClick = () => {
+    toast.success("Download started");
+    setDownloadDialogOpen(false);
   };
 
   return (
@@ -56,16 +70,44 @@ export default function VideoPlayer({ videoPromise }: VideoPlayerProps) {
           loading="lazy"
         ></iframe>
         <div className="mt-4 flex flex-wrap gap-2 justify-between items-center">
-          <Button
-            variant="secondary"
-            onClick={handleDownload}
-            disabled={isDownloading}
-            aria-busy={isDownloading}
-            aria-live="polite"
+          <AlertDialog
+            open={downloadDialogOpen}
+            onOpenChange={setDownloadDialogOpen}
           >
-            {isDownloading ? <Spinner /> : <Download />}
-            <span>{isDownloading ? "Downloading..." : "Download"}</span>
-          </Button>
+            <Button
+              variant="secondary"
+              onClick={handleDownload}
+              disabled={isDownloading}
+              aria-busy={isDownloading}
+              aria-live="polite"
+            >
+              {isDownloading ? <Spinner /> : <Download />}
+              <span>{isDownloading ? "Downloading..." : "Download"}</span>
+            </Button>
+
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>
+                  Click Download to start downloading your video
+                </AlertDialogTitle>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel onClick={() => setDownloadDialogOpen(false)}>
+                  Cancel
+                </AlertDialogCancel>
+                <AlertDialogAction onClick={handleDownloadClick}>
+                  <a
+                    href={downloadUrl ?? "/"}
+                    download
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
+                    Download
+                  </a>
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button variant="destructive" disabled={isDeleting}>

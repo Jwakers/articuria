@@ -11,6 +11,7 @@
 - [x] Home page sign up button does not work
 - [x] Add all routes to a constant and replace hard coded instances
 - [x] User should be redirected to dashboard on sign in/up
+- [x] Download video (from cloudflare) on video page is not working. Behaviour is sporadic.
 - [ ] Fix clerk button pop-in
 - [ ] Make videos more secure in cloudflare using requireSignedURLs.
 
@@ -51,9 +52,9 @@
 - [x] Add error messages on the front end
 - [x] Add toast component for error handling and messaging
 - [x] Delete recording toast should be swapped out for a more visible modal
-- [ ] Compress recordings before upload
 - [x] Add a memory limit on video uploads
   - [x] Move the whole upload function to a server action to safely limit upload size
+- [ ] Compress recordings before upload
 - [ ] Add a limit to how many videos a user can upload
 
 ## 5. Saving Videos to the Database
@@ -85,7 +86,7 @@
 - [x] Set video ID to UUID rather than incremental number (it looks weird in the URL)
 - [x] Add no recordings page component
 - [x] Add pagination to recording list
-- [ ] Add proper dynamic dashboard stats rather than the current hardcoded values
+- [x] Add proper dynamic dashboard stats rather than the current hardcoded values
 
 ## 6.5 Contact
 
@@ -105,8 +106,8 @@
 
 ## 8. UI/UX
 
-- [ ] Design a clean and intuitive UI using TailwindCSS or a similar framework.
-- [ ] Include key components like:
+- [x] Design a clean and intuitive UI using TailwindCSS or a similar framework.
+- [x] Include key components like:
   - Landing page.
   - Sign-in/sign-up page (integrated with Clerk).
   - Dashboard for viewing and recording topics.
@@ -130,9 +131,17 @@
 
 ## Legal
 
-- Privacy page
-- Terms page
+- [ ] Privacy page
+- [ ] Terms page
 
 ## Optional Enhancements for MVP
 
 - [ ] Video expiry (automatic delete) on free accounts (use a webhook to manage the database / or a cron job and do it directly from the server)
+- Enhance video recording page:
+  - [ ] Countdown timer before recording.
+  - [ ] Better prominence of the table topic with animations (overlay the video. Start large and then reduce size)
+  - [ ] Center the video when recording starts
+  - [ ] After recording is saved. Add section to link to that video
+- Improve the traffic light indicator:
+  - [ ] Make it more visible
+  - [ ] Have a section that explains the traffic light system

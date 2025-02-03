@@ -7,6 +7,8 @@ import { toast } from "sonner";
 export default function useManageVideo({ video }: { video: Video | null }) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
+  const [downloadDialogOpen, setDownloadDialogOpen] = useState(false);
 
   const downloadVideo = async () => {
     setIsDownloading(true);
@@ -14,23 +16,22 @@ export default function useManageVideo({ video }: { video: Video | null }) {
 
     try {
       toast.promise(getDownloadDataById(video.cloudflareId), {
-        loading: "Downloading video...",
+        loading: "Getting download...",
         success: (data) => {
-          const link = document.createElement("a");
           if (!data) throw new Error("Download link not found");
 
-          link.href = data.default.url;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
+          setDownloadUrl(data.default.url);
           setIsDownloading(false);
+          setDownloadDialogOpen(true);
 
-          return "Video downloaded";
+          return "Download available";
         },
         error: (err) => {
           console.log(err);
           setIsDownloading(false);
-          return "There was an error downloading this video";
+          setDownloadUrl(null);
+          setDownloadDialogOpen(false);
+          return `Failed to get download: ${err.message || "Unknown error"}`;
         },
       });
     } catch (error) {
@@ -65,5 +66,13 @@ export default function useManageVideo({ video }: { video: Video | null }) {
     }
   };
 
-  return { isDeleting, deleteVideo, isDownloading, downloadVideo };
+  return {
+    isDeleting,
+    deleteVideo,
+    isDownloading,
+    downloadVideo,
+    downloadUrl,
+    downloadDialogOpen,
+    setDownloadDialogOpen,
+  };
 }
