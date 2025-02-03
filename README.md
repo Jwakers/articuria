@@ -85,7 +85,7 @@
 - [x] Set video ID to UUID rather than incremental number (it looks weird in the URL)
 - [x] Add no recordings page component
 - [x] Add pagination to recording list
-- [ ] Add proper dynamic dashboard stats rather than the current hardcoded values
+- [x] Add proper dynamic dashboard stats rather than the current hardcoded values
 
 ## 6.5 Contact
 
@@ -105,8 +105,8 @@
 
 ## 8. UI/UX
 
-- [ ] Design a clean and intuitive UI using TailwindCSS or a similar framework.
-- [ ] Include key components like:
+- [x] Design a clean and intuitive UI using TailwindCSS or a similar framework.
+- [x] Include key components like:
   - Landing page.
   - Sign-in/sign-up page (integrated with Clerk).
   - Dashboard for viewing and recording topics.
@@ -130,8 +130,8 @@
 
 ## Legal
 
-- Privacy page
-- Terms page
+- [ ] Privacy page
+- [ ] Terms page
 
 ## Optional Enhancements for MVP
 
