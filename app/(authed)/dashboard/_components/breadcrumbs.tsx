@@ -48,7 +48,6 @@ export default function Breadcrumbs() {
         {currentPage ? (
           <BreadcrumbItem>
             <BreadcrumbPage className="capitalize">
-              {" "}
               {getLabel(currentPage)}
             </BreadcrumbPage>
           </BreadcrumbItem>
