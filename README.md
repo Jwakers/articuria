@@ -12,9 +12,9 @@
 - [x] Add all routes to a constant and replace hard coded instances
 - [x] User should be redirected to dashboard on sign in/up
 - [x] Download video (from cloudflare) on video page is not working. Behaviour is sporadic.
+- [x] Redirect to home page after deleting account
 - [ ] Table topics indicator is not working correctly. Should show on one minute not be green the whole time.
 - [ ] Error uploading large videos > 1:30. Prisma transaction is timing out.
-- [ ] Redirect to home page after deleting account
 
 ## 1. Project Setup
 
@@ -114,7 +114,7 @@
 ## 9. Hosting and Deployment
 
 - [ ] Deploy the Next.js app on Vercel.
-- [ ] Ensure Clerk is configured correctly for the deployed domain.
+- [ ] Ensure Clerk is configured correctly for the deployed domain including webhook URLs
 - [ ] Test the database connection with Supabase in the production environment.
 
 ## 10. Testing and QA

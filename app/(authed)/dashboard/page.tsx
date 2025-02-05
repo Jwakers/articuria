@@ -1,3 +1,4 @@
+import { getUserVideoCount } from "@/app/server/db/queries";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ROUTES } from "@/lib/constants";
@@ -10,6 +11,7 @@ import {
   TotalVideoDurationCard,
   TotalVideosCard,
 } from "./_components/stat-cards";
+import NoVideos from "./table-topics/_components/no-videos";
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -18,6 +20,10 @@ export const metadata: Metadata = {
 };
 
 export default async function DashboardPage() {
+  const { videoCount } = await getUserVideoCount();
+
+  if (!videoCount) return <NoVideos />;
+
   return (
     <div className="space-y-4">
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
