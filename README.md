@@ -87,12 +87,13 @@
 
 ## 6.5 Contact
 
-- [ ] Add a contact page
-  - [ ] Hidden fields: user ID
-  - [ ] Should have options (issues, app feedback, other etc)
-  - [ ] Build endpoint to send email with node-mailer
-- [ ] Add a section on the dashboard where users can link to contact
-- [ ] Contact page should be a protected routes
+- [x] Add a contact page
+  - [x] Should have options (issues, app feedback, other etc)
+  - [x] Build endpoint to send email with node-mailer
+- [x] Update message to HTML. Send user ID with message
+- [x] Add contact page link to the sidebar
+- [x] Add section to dashboard asking for app feedback and direct to the form
+- [ ] Set up dedicated email for this app
 
 ## 7. Authentication
 
