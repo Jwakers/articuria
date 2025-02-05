@@ -12,7 +12,7 @@ const cloudflareClient = new Cloudflare({
 async function backfillDurations() {
   const videos = await db.video.findMany({
     where: {
-      duration: null,
+      duration: null || 0,
     },
   });
 

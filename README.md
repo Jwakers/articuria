@@ -13,7 +13,7 @@
 - [x] User should be redirected to dashboard on sign in/up
 - [x] Download video (from cloudflare) on video page is not working. Behaviour is sporadic.
 - [x] Redirect to home page after deleting account
-- [ ] Table topics indicator is not working correctly. Should show on one minute not be green the whole time.
+- [x] Table topics indicator is not working correctly. Should show on one minute not be green the whole time.
 - [ ] Error uploading large videos > 1:30. Prisma transaction is timing out.
 
 ## 1. Project Setup
