@@ -173,3 +173,9 @@
   - [ ] Test this by uploading a longer video
   - [ ] Show progress indicator in toast.promise
 - [ ] On recorder page warn that data will be lost on redirect or refresh (trigger alert dialog when navigating without saving)
+
+- Contact form
+  - [ ] Rate limiting to prevent abuse
+  - [ ] Input sanitization before sending emails (DOMPurify)
+  - [ ] Moving email templates to a separate file for better maintainability
+  - [ ] Validate input client side before submission

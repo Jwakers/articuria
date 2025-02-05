@@ -23,8 +23,8 @@ export default function FeedbackSection() {
       </CardHeader>
       <CardContent className="opacity-90 space-y-4">
         <p>
-          We're committed to continually improving our service, and your input
-          is invaluable in this process.
+          We&apos;re committed to continually improving our service, and your
+          input is invaluable in this process.
         </p>
         <p>
           Whether you have praise, constructive criticism, or ideas for new

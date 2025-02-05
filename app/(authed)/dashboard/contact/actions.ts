@@ -47,7 +47,7 @@ export async function submitContactForm(_: unknown, formData: FormData) {
   try {
     await transporter.sendMail({
       from: `Table Topics <${process.env.HOSTINGER_CONTACT_EMAIL}>`,
-      to: "wakehamretail+tabletopics@gmail.com",
+      to: process.env.CONTACT_FORM_RECIPIENT_EMAIL,
       replyTo: email,
       subject: `Contact Form Submission from ${name} - ${reason}`,
       text: `

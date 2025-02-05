@@ -15,7 +15,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { CONTACT_FORM_REASONS, ROUTES } from "@/lib/constants";
 import { useUser } from "@clerk/nextjs";
 import { Send } from "lucide-react";
-import { redirect, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useActionState, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { submitContactForm } from "../actions";
@@ -26,6 +26,7 @@ export default function ContactForm() {
     null
   );
   const { user } = useUser();
+  const router = useRouter();
   const params = useSearchParams();
   const [reason, setReason] = useState<string>(params.get("reason") ?? "");
 
@@ -35,8 +36,9 @@ export default function ContactForm() {
     if (!state.success) toast.error(state.message);
     if (state.success) {
       toast.success(state.message);
+
       setTimeout(() => {
-        redirect(ROUTES.dashboard.root);
+        router.push(ROUTES.dashboard.root);
       }, 2000);
     }
   }, [state]);
