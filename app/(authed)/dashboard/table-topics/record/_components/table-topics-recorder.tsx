@@ -91,9 +91,10 @@ export default function TableTopicsRecorder() {
   };
 
   const getTimingColor = () => {
-    if (timeElapsed < 90) return "bg-green-500";
-    if (timeElapsed < 120) return "bg-amber-500";
-    return "bg-red-500";
+    if (timeElapsed <= 60) return "bg-transparent";
+    if (timeElapsed > 120) return "bg-red-500";
+    if (timeElapsed > 90) return "bg-amber-500";
+    if (timeElapsed > 60) return "bg-green-500";
   };
 
   return (
@@ -127,7 +128,7 @@ export default function TableTopicsRecorder() {
           {isRecording ? (
             <div
               className={cn(
-                "size-4 absolute top-4 right-4 rounded-full",
+                "size-8 absolute top-4 right-4 rounded-full transition-colors",
                 getTimingColor()
               )}
             />

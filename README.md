@@ -12,9 +12,9 @@
 - [x] Add all routes to a constant and replace hard coded instances
 - [x] User should be redirected to dashboard on sign in/up
 - [x] Download video (from cloudflare) on video page is not working. Behaviour is sporadic.
-- [ ] Table topics indicator is not working correctly. Should show on one minute not be green the whole time.
+- [x] Redirect to home page after deleting account
+- [x] Table topics indicator is not working correctly. Should show on one minute not be green the whole time.
 - [ ] Error uploading large videos > 1:30. Prisma transaction is timing out.
-- [ ] Redirect to home page after deleting account
 
 ## 1. Project Setup
 
@@ -87,12 +87,13 @@
 
 ## 6.5 Contact
 
-- [ ] Add a contact page
-  - [ ] Hidden fields: user ID
-  - [ ] Should have options (issues, app feedback, other etc)
-  - [ ] Build endpoint to send email with node-mailer
-- [ ] Add a section on the dashboard where users can link to contact
-- [ ] Contact page should be a protected routes
+- [x] Add a contact page
+  - [x] Should have options (issues, app feedback, other etc)
+  - [x] Build endpoint to send email with node-mailer
+- [x] Update message to HTML. Send user ID with message
+- [x] Add contact page link to the sidebar
+- [x] Add section to dashboard asking for app feedback and direct to the form
+- [ ] Set up dedicated email for this app
 
 ## 7. Authentication
 
@@ -114,7 +115,7 @@
 ## 9. Hosting and Deployment
 
 - [ ] Deploy the Next.js app on Vercel.
-- [ ] Ensure Clerk is configured correctly for the deployed domain.
+- [ ] Ensure Clerk is configured correctly for the deployed domain including webhook URLs
 - [ ] Test the database connection with Supabase in the production environment.
 
 ## 10. Testing and QA
@@ -172,3 +173,9 @@
   - [ ] Test this by uploading a longer video
   - [ ] Show progress indicator in toast.promise
 - [ ] On recorder page warn that data will be lost on redirect or refresh (trigger alert dialog when navigating without saving)
+
+- Contact form
+  - [ ] Rate limiting to prevent abuse
+  - [ ] Input sanitization before sending emails (DOMPurify)
+  - [ ] Moving email templates to a separate file for better maintainability
+  - [ ] Validate input client side before submission
