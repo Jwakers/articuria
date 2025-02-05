@@ -37,11 +37,12 @@ export default function ContactForm() {
     if (state.success) {
       toast.success(state.message);
 
-      setTimeout(() => {
+      const timeout = setTimeout(() => {
         router.push(ROUTES.dashboard.root);
       }, 2000);
+      return () => clearTimeout(timeout);
     }
-  }, [state]);
+  }, [state, router]);
 
   return (
     <form action={formAction} className="max-w-xl grid md:grid-cols-2 gap-4">
