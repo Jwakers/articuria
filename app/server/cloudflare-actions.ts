@@ -60,9 +60,9 @@ export async function getVideoById(id: string) {
   return video;
 }
 
-export async function deleteVideoById(id: string) {
+export async function deleteVideoById(id: string, userId?: string) {
   const user = await currentUser();
-  if (!user?.id) throw new Error("Unauthorized");
+  if (!user?.id && !userId) throw new Error("Unauthorized");
 
   try {
     await cloudflareClient.stream.delete(id, {
