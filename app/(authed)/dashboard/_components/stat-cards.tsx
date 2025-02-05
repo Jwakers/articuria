@@ -5,7 +5,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDuration } from "@/lib/utils";
-import { Activity, Mic } from "lucide-react";
+import { Activity, AudioLines, Mic } from "lucide-react";
 import { JSX } from "react";
 
 export async function TotalVideosCard() {
@@ -79,7 +79,7 @@ export async function TotalVideoDurationCard() {
             ? `${formatDuration(thisMonthsTotalDuration)} recorded this month`
             : "No recordings this month"
         }
-        icon={<Activity />}
+        icon={<AudioLines />}
       />
     );
   } catch (error) {
@@ -89,7 +89,7 @@ export async function TotalVideoDurationCard() {
         title="Total recording time"
         stat="--"
         relativeStat="Failed to load"
-        icon={<Activity />}
+        icon={<AudioLines />}
       />
     );
   }
