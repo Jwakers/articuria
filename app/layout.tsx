@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "sonner";
-import { ThemeProvider } from "./_components/theme-provider";
+import { ThemeProvider } from "../components/theme-provider";
 import "./globals.css";
 
 const geistSans = Geist({
