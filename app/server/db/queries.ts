@@ -143,7 +143,7 @@ export async function getUserVideoCount() {
 }
 
 export async function getUserVideoDurationData() {
-  const user = await isAuth();
+  await isAuth();
 
   const videos = await db.video.findMany({
     where: {

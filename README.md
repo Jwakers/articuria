@@ -117,6 +117,7 @@
 - [ ] Deploy the Next.js app on Vercel.
 - [ ] Ensure Clerk is configured correctly for the deployed domain including webhook URLs
 - [ ] Test the database connection with Supabase in the production environment.
+- [ ] Setup cloudflare webhook
 
 ## 10. Testing and QA
 
