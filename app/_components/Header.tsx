@@ -19,7 +19,6 @@ import {
   SignInButton,
   SignUpButton,
   UserButton,
-  useUser,
 } from "@clerk/nextjs";
 import { Menu } from "lucide-react";
 import Link from "next/link";
@@ -71,8 +70,6 @@ export function Header() {
 }
 
 function MobileMenu() {
-  const { user } = useUser();
-
   return (
     <Sheet>
       <SheetTrigger>
