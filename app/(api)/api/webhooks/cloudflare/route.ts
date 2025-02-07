@@ -11,6 +11,10 @@ export async function POST(request: Request) {
 
     validateRequestData(data);
     const video = await updateVideoDuration(data);
+
+    console.log(
+      `Updated video ${video.cloudflareId} with duration ${data.duration}`
+    );
     return new Response(JSON.stringify({ video }), { status: 200 });
   } catch (error) {
     console.error(error);
@@ -50,14 +54,6 @@ async function verifySignature(request: Request) {
     .createHmac("sha256", process.env.CLOUDFLARE_WEBHOOK_SECRET)
     .update(signatureSource)
     .digest("hex");
-
-  console.log({
-    sig1,
-    expectedSignature,
-    signatureSource,
-    requestTime,
-    signatureHeader,
-  });
 
   // Step 4: Compare expected and actual signatures
   if (
