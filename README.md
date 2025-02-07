@@ -121,11 +121,11 @@
 
 ## 9. Hosting and Deployment
 
-- [ ] Deploy the Next.js app on Vercel.
-- [ ] Ensure Clerk is configured correctly for the deployed domain including webhook URLs
-- [ ] Test the database connection with Supabase in the production environment.
+- [x] Deploy the Next.js app on Vercel.
+- [x] Ensure Clerk is configured correctly for the deployed domain including webhook URLs
+- [x] Test the database connection with Supabase in the production environment.
 - [ ] Setup cloudflare webhook
-- [ ] Add meta data to all pages
+- [x] Add meta data to all pages
 
 ## 10. Testing and QA
 

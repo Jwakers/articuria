@@ -44,6 +44,14 @@ async function verifySignature(request: Request) {
     .update(signatureSource)
     .digest("hex");
 
+  console.log({
+    sig1,
+    expectedSignature,
+    signatureSource,
+    requestTime,
+    signatureHeader,
+  });
+
   // Step 4: Compare expected and actual signatures
   if (
     !crypto.timingSafeEqual(Buffer.from(sig1), Buffer.from(expectedSignature))
