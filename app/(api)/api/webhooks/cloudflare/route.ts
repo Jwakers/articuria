@@ -15,6 +15,7 @@ export async function POST(request: Request) {
     console.log(
       `Updated video ${video.cloudflareId} with duration ${data.duration}`
     );
+    console.log(data);
     return new Response(JSON.stringify({ video }), { status: 200 });
   } catch (error) {
     console.error(error);
