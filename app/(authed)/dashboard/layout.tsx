@@ -1,8 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import { Metadata } from "next";
 import type * as React from "react";
 import { Header } from "./_components/header";
 import DashboardSidebar from "./_components/sidebar";
+
+export const metadata: Metadata = {
+  title: "Dashboard",
+  description: "Manage your videos and account",
+};
 
 export default function DashboardShell({
   children,

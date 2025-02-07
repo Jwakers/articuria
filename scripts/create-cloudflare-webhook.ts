@@ -12,7 +12,7 @@ async function createWebhook() {
   try {
     const webhook = await cloudflareClient.stream.webhooks.update({
       account_id: process.env.CLOUDFLARE_ACCOUNT_ID!,
-      notificationUrl: `${process.env.NEXT_PUBLIC_APP_URL}/api/webhooks/cloudflare`,
+      notificationUrl: `https://www.articuria.com/api/webhooks/cloudflare`,
     });
 
     return console.log(webhook);
