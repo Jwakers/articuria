@@ -34,10 +34,7 @@
   - [x] Update in supabase
   - [x] Update repo name
   - [x] Update in vercel
-  - [ ] Update in code
-
-  Shortlist:
-  Articuria.com
+  - [x] Update in code
 
 ## 2. Database Schema Design
 
@@ -128,6 +125,7 @@
 - [ ] Ensure Clerk is configured correctly for the deployed domain including webhook URLs
 - [ ] Test the database connection with Supabase in the production environment.
 - [ ] Setup cloudflare webhook
+- [ ] Add meta data to all pages
 
 ## 10. Testing and QA
 

@@ -30,13 +30,6 @@ async function verifySignature(request: Request) {
     .map((part) => part.split("=")[1]);
   const requestTime = parseInt(timeStr, 10);
 
-  // Discard requests with timestamps that are too old
-  const currentTime = Math.floor(Date.now() / 1000);
-  if (currentTime - requestTime > 300) {
-    // 5 minutes threshold
-    throw new Error("Request timestamp is too old");
-  }
-
   const body = await request.clone().text(); // Get the request body as text
 
   // Step 2: Create the signature source string
