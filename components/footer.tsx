@@ -6,7 +6,7 @@ export function Footer() {
     <footer className="py-6 px-6">
       <div className="container px-4 mx-auto flex justify-between items-center">
         <p className="text-sm">
-          © {new Date().getFullYear()} TableTopics. All rights reserved.
+          © {new Date().getFullYear()} Articuria. All rights reserved.
         </p>
         <nav role="navigation" aria-label="Footer navigation">
           <ul className="flex space-x-4">

@@ -46,7 +46,7 @@ export async function submitContactForm(_: unknown, formData: FormData) {
   // Send email
   try {
     await transporter.sendMail({
-      from: `Table Topics <${process.env.HOSTINGER_CONTACT_EMAIL}>`,
+      from: `Articuria <${process.env.HOSTINGER_CONTACT_EMAIL}>`,
       to: process.env.CONTACT_FORM_RECIPIENT_EMAIL,
       replyTo: email,
       subject: `Contact Form Submission from ${name} - ${reason}`,

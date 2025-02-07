@@ -42,7 +42,7 @@ export function VideoList({ videoListPromise }: VideoListProps) {
       <CardContent>
         <Table>
           <TableCaption>
-            A list of your recent Table Topics recordings.
+            A list of your recent Table topic recordings.
           </TableCaption>
           <TableHeader>
             <TableRow>
@@ -150,7 +150,7 @@ export function VideoListSkeleton() {
       <CardContent>
         <Table>
           <TableCaption>
-            Loading your recent Table Topics recordings...
+            Loading your recent Table topic recordings...
           </TableCaption>
           <TableHeader>
             <TableRow>

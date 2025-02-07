@@ -28,6 +28,16 @@
 - [x] Add a persistent sidebar menu (create topic, user dashboard, home) etc. This should be a layout level feature and only for logged in users.
 - [x] Mobile menu / Header layout
 - [ ] Update favicon
+- Update project name. Check for domains
+
+  - [x] Update in clerk
+  - [x] Update in supabase
+  - [x] Update repo name
+  - [x] Update in vercel
+  - [ ] Update in code
+
+  Shortlist:
+  Articuria.com
 
 ## 2. Database Schema Design
 
