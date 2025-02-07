@@ -17,13 +17,13 @@ export default function NoVideos() {
       <CardHeader>
         <CardTitle>Embark on Your Speaking Adventure</CardTitle>
         <CardDescription>
-          Unleash your impromptu speaking skills with Table Topics!
+          Unleash your impromptu speaking skills with Articuria!
         </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
           <p>
-            Table Topics are your gateway to mastering the art of thinking on
+            Table topics are your gateway to mastering the art of thinking on
             your feet. In just 1-2 minutes, transform a surprise subject into a
             captivating mini-speech. It&apos;s not just practice—it&apos;s your
             personal growth adventure!

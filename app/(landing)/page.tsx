@@ -9,7 +9,7 @@ export default function LandingPage() {
       <section className="relative py-20 overflow-hidden">
         <div className="container px-4 mx-auto text-center relative z-10">
           <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            Master Table Topics with Confidence
+            Master public speaking with confidence
           </h1>
           <p className="text-xl mb-8">
             Practice impromptu speaking skills with AI-generated topics and
