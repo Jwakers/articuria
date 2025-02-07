@@ -25,10 +25,17 @@ async function verifySignature(request: Request) {
     throw new Error("Missing Webhook-Signature header");
   }
 
-  const [sig1, timeStr] = signatureHeader
+  const [timeStr, sig1] = signatureHeader
     .split(",")
     .map((part) => part.split("=")[1]);
   const requestTime = parseInt(timeStr, 10);
+
+  // Discard requests with timestamps that are too old
+  const currentTime = Math.floor(Date.now() / 1000);
+  const fiveMinutesAgo = currentTime - 300;
+  if (requestTime < fiveMinutesAgo) {
+    throw new Error("Request timestamp is too old");
+  }
 
   const body = await request.clone().text(); // Get the request body as text
 
