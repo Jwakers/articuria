@@ -1,3 +1,4 @@
+import { cloudflareClient } from "@/app/server/cloudflare-client";
 import { db } from "@/app/server/db";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import crypto from "crypto";
@@ -10,13 +11,23 @@ export async function POST(request: Request) {
     if (!data) throw new Error("No data received");
 
     validateRequestData(data);
-    const video = await updateVideoDuration(data);
 
-    console.log(
-      `Updated video ${video.cloudflareId} with duration ${data.duration}`
+    let video;
+
+    if (!data.duration) {
+      video = await updateVideoWithRetry(data);
+    } else {
+      video = await updateVideoDuration(data);
+    }
+
+    if (!video) {
+      throw new Error("Video not found");
+    }
+
+    return new Response(
+      `Updated video ${video.cloudflareId} with duration ${data.duration}`,
+      { status: 200 }
     );
-    console.log(data);
-    return new Response(JSON.stringify({ video }), { status: 200 });
   } catch (error) {
     console.error(error);
     return handleError(error);
@@ -63,19 +74,36 @@ async function verifySignature(request: Request) {
     throw new Error("Invalid signature");
 }
 
-function validateRequestData(data: ResponseData) {
-  if (
-    !data ||
-    typeof data !== "object" ||
-    !("uid" in data) ||
-    !("duration" in data) ||
-    typeof data.duration !== "number" ||
-    data.duration < 0
-  ) {
-    throw new Error(
-      "Invalid request data: uid must be a string and duration must be a non-negative number"
+async function updateVideoWithRetry(data: ResponseData, attempt = 1) {
+  const maxAttempts = 5;
+  const delay = 5000; // 5 seconds
+
+  const duration = await fetchVideoDuration(data.uid);
+
+  if (duration && duration > 0) {
+    console.log(`Fetched duration: ${duration} for video ${data.uid}`);
+    const video = await updateVideoDuration(data);
+    return video;
+  }
+
+  if (attempt < maxAttempts) {
+    console.log(
+      `Retrying (${attempt}/${maxAttempts}) for video ${data.uid}...`
+    );
+    setTimeout(() => updateVideoWithRetry(data, attempt + 1), delay);
+  } else {
+    console.warn(
+      `Max retries reached. Could not fetch duration for video ${data.uid}.`
     );
   }
+}
+
+async function fetchVideoDuration(uid: string) {
+  const video = await cloudflareClient.stream.get(uid, {
+    account_id: process.env.CLOUDFLARE_ACCOUNT_ID!,
+  });
+
+  return video.duration;
 }
 
 async function updateVideoDuration(data: ResponseData) {
@@ -112,6 +140,21 @@ function handleError(error: unknown) {
       status,
     }
   );
+}
+
+function validateRequestData(data: ResponseData) {
+  if (
+    !data ||
+    typeof data !== "object" ||
+    !("uid" in data) ||
+    !("duration" in data) ||
+    typeof data.duration !== "number" ||
+    data.duration < 0
+  ) {
+    throw new Error(
+      "Invalid request data: uid must be a string and duration must be a non-negative number"
+    );
+  }
 }
 
 type ResponseData = {

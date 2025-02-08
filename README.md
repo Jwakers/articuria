@@ -126,6 +126,7 @@
 - [x] Test the database connection with Supabase in the production environment.
 - [ ] Setup cloudflare webhook
 - [x] Add meta data to all pages
+- [ ] Video limit reached is not outputting a user friendly error on production
 
 ## 10. Testing and QA
 
@@ -182,6 +183,8 @@
   - [ ] Test this by uploading a longer video
   - [ ] Show progress indicator in toast.promise
 - [ ] On recorder page warn that data will be lost on redirect or refresh (trigger alert dialog when navigating without saving)
+- [ ] On recorder page add a warning banner that someone is exceeding their video limit and should delete or upgrade their account AND
+      The video still gets sent to cloudflare for some reason
 
 - Contact form
   - [ ] Rate limiting to prevent abuse
