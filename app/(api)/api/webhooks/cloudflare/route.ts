@@ -94,7 +94,7 @@ async function updateVideoWithRetry(
 
   if (duration && duration > 0) {
     console.log(`Fetched duration: ${duration} for video ${data.uid}`);
-    const video = await updateVideoDuration(data);
+    const video = await updateVideoDuration({ ...data, duration });
     return video;
   }
 

@@ -15,6 +15,7 @@
 - [x] Redirect to home page after deleting account
 - [x] Table topics indicator is not working correctly. Should show on one minute not be green the whole time.
 - [ ] Error uploading large videos > 1:30. Prisma transaction is timing out.
+- [ ] Properly clean up media recorded api on unmount. It remains in a ready to record state even on unrelated pages.
 
 ## 1. Project Setup
 
