@@ -10,13 +10,12 @@ export async function POST(request: Request) {
 
     if (!data) throw new Error("No data received");
 
-    validateRequestData(data);
-
     let video;
 
     if (!data.duration) {
       video = await updateVideoWithRetry(data);
     } else {
+      validateRequestData(data);
       video = await updateVideoDuration(data);
     }
 
@@ -169,11 +168,11 @@ function handleError(error: unknown) {
   );
 }
 
-function validateRequestData(data: ResponseData) {
+function validateRequestData(data: unknown): asserts data is ResponseData {
   if (!data || typeof data !== "object") {
     throw new Error("Request data must be an object");
   }
-  if (!("uid" in data)) {
+  if (!("uid" in data) || typeof data.uid !== "string") {
     throw new Error("Missing required field: uid");
   }
   if (!("duration" in data)) {
