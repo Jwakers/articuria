@@ -25,8 +25,19 @@ export async function POST(request: Request) {
     }
 
     return new Response(
-      `Updated video ${video.cloudflareId} with duration ${data.duration}`,
-      { status: 200 }
+      JSON.stringify({
+        message: `Updated video ${video.cloudflareId} with duration ${data.duration}`,
+        video: {
+          id: video.cloudflareId,
+          duration: data.duration,
+        },
+      }),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
     );
   } catch (error) {
     console.error(error);
@@ -74,10 +85,12 @@ async function verifySignature(request: Request) {
     throw new Error("Invalid signature");
 }
 
-async function updateVideoWithRetry(data: ResponseData, attempt = 1) {
-  const maxAttempts = 5;
-  const delay = 5000; // 5 seconds
-
+async function updateVideoWithRetry(
+  data: ResponseData,
+  attempt = 1,
+  maxAttempts = 5,
+  delayMs = 5000
+) {
   const duration = await fetchVideoDuration(data.uid);
 
   if (duration && duration > 0) {
@@ -90,20 +103,16 @@ async function updateVideoWithRetry(data: ResponseData, attempt = 1) {
     console.log(
       `Retrying (${attempt}/${maxAttempts}) for video ${data.uid}...`
     );
-    setTimeout(() => updateVideoWithRetry(data, attempt + 1), delay);
+    await new Promise((resolve) => setTimeout(resolve, delayMs));
+    return updateVideoWithRetry(data, attempt + 1, maxAttempts, delayMs);
   } else {
     console.warn(
       `Max retries reached. Could not fetch duration for video ${data.uid}.`
     );
+    throw new Error(
+      `Could not fetch duration for video ${data.uid} after ${maxAttempts} attempts`
+    );
   }
-}
-
-async function fetchVideoDuration(uid: string) {
-  const video = await cloudflareClient.stream.get(uid, {
-    account_id: process.env.CLOUDFLARE_ACCOUNT_ID!,
-  });
-
-  return video.duration;
 }
 
 async function updateVideoDuration(data: ResponseData) {
@@ -127,6 +136,24 @@ async function updateVideoDuration(data: ResponseData) {
   }
 }
 
+async function fetchVideoDuration(uid: string) {
+  const accountId = process.env.CLOUDFLARE_ACCOUNT_ID;
+  if (!accountId) {
+    throw new Error("CLOUDFLARE_ACCOUNT_ID is not configured");
+  }
+
+  try {
+    const video = await cloudflareClient.stream.get(uid, {
+      account_id: accountId,
+    });
+
+    return video.duration;
+  } catch (error) {
+    console.error(`Failed to fetch duration for video ${uid}:`, error);
+    throw error;
+  }
+}
+
 function handleError(error: unknown) {
   const message = error instanceof Error ? error.message : "Unknown error";
   const status =
@@ -143,17 +170,20 @@ function handleError(error: unknown) {
 }
 
 function validateRequestData(data: ResponseData) {
-  if (
-    !data ||
-    typeof data !== "object" ||
-    !("uid" in data) ||
-    !("duration" in data) ||
-    typeof data.duration !== "number" ||
-    data.duration < 0
-  ) {
-    throw new Error(
-      "Invalid request data: uid must be a string and duration must be a non-negative number"
-    );
+  if (!data || typeof data !== "object") {
+    throw new Error("Request data must be an object");
+  }
+  if (!("uid" in data)) {
+    throw new Error("Missing required field: uid");
+  }
+  if (!("duration" in data)) {
+    throw new Error("Missing required field: duration");
+  }
+  if (typeof data.duration !== "number") {
+    throw new Error("Duration must be a number");
+  }
+  if (data.duration < 0) {
+    throw new Error("Duration cannot be negative");
   }
 }
 
