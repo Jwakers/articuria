@@ -1,3 +1,4 @@
+import { cloudflareClient } from "@/app/server/cloudflare-client";
 import { db } from "@/app/server/db";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import crypto from "crypto";
@@ -9,14 +10,34 @@ export async function POST(request: Request) {
 
     if (!data) throw new Error("No data received");
 
-    validateRequestData(data);
-    const video = await updateVideoDuration(data);
+    let video;
 
-    console.log(
-      `Updated video ${video.cloudflareId} with duration ${data.duration}`
+    if (!data.duration) {
+      video = await updateVideoWithRetry(data);
+    } else {
+      validateRequestData(data);
+      video = await updateVideoDuration(data);
+    }
+
+    if (!video) {
+      throw new Error("Video not found");
+    }
+
+    return new Response(
+      JSON.stringify({
+        message: `Updated video ${video.cloudflareId} with duration ${data.duration}`,
+        video: {
+          id: video.cloudflareId,
+          duration: data.duration,
+        },
+      }),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
     );
-    console.log(data);
-    return new Response(JSON.stringify({ video }), { status: 200 });
   } catch (error) {
     console.error(error);
     return handleError(error);
@@ -63,17 +84,32 @@ async function verifySignature(request: Request) {
     throw new Error("Invalid signature");
 }
 
-function validateRequestData(data: ResponseData) {
-  if (
-    !data ||
-    typeof data !== "object" ||
-    !("uid" in data) ||
-    !("duration" in data) ||
-    typeof data.duration !== "number" ||
-    data.duration < 0
-  ) {
+async function updateVideoWithRetry(
+  data: ResponseData,
+  attempt = 1,
+  maxAttempts = 5,
+  delayMs = 5000
+) {
+  const duration = await fetchVideoDuration(data.uid);
+
+  if (duration && duration > 0) {
+    console.log(`Fetched duration: ${duration} for video ${data.uid}`);
+    const video = await updateVideoDuration(data);
+    return video;
+  }
+
+  if (attempt < maxAttempts) {
+    console.log(
+      `Retrying (${attempt}/${maxAttempts}) for video ${data.uid}...`
+    );
+    await new Promise((resolve) => setTimeout(resolve, delayMs));
+    return updateVideoWithRetry(data, attempt + 1, maxAttempts, delayMs);
+  } else {
+    console.warn(
+      `Max retries reached. Could not fetch duration for video ${data.uid}.`
+    );
     throw new Error(
-      "Invalid request data: uid must be a string and duration must be a non-negative number"
+      `Could not fetch duration for video ${data.uid} after ${maxAttempts} attempts`
     );
   }
 }
@@ -99,6 +135,24 @@ async function updateVideoDuration(data: ResponseData) {
   }
 }
 
+async function fetchVideoDuration(uid: string) {
+  const accountId = process.env.CLOUDFLARE_ACCOUNT_ID;
+  if (!accountId) {
+    throw new Error("CLOUDFLARE_ACCOUNT_ID is not configured");
+  }
+
+  try {
+    const video = await cloudflareClient.stream.get(uid, {
+      account_id: accountId,
+    });
+
+    return video.duration;
+  } catch (error) {
+    console.error(`Failed to fetch duration for video ${uid}:`, error);
+    throw error;
+  }
+}
+
 function handleError(error: unknown) {
   const message = error instanceof Error ? error.message : "Unknown error";
   const status =
@@ -112,6 +166,24 @@ function handleError(error: unknown) {
       status,
     }
   );
+}
+
+function validateRequestData(data: unknown): asserts data is ResponseData {
+  if (!data || typeof data !== "object") {
+    throw new Error("Request data must be an object");
+  }
+  if (!("uid" in data) || typeof data.uid !== "string") {
+    throw new Error("Missing required field: uid");
+  }
+  if (!("duration" in data)) {
+    throw new Error("Missing required field: duration");
+  }
+  if (typeof data.duration !== "number") {
+    throw new Error("Duration must be a number");
+  }
+  if (data.duration < 0) {
+    throw new Error("Duration cannot be negative");
+  }
 }
 
 type ResponseData = {
