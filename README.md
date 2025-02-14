@@ -15,7 +15,9 @@
 - [x] Redirect to home page after deleting account
 - [x] Table topics indicator is not working correctly. Should show on one minute not be green the whole time.
 - [ ] Error uploading large videos > 1:30. Prisma transaction is timing out.
-- [ ] Properly clean up media recorded api on unmount. It remains in a ready to record state even on unrelated pages.
+- [x] Properly clean up media recorded api on unmount. It remains in a ready to record state even on unrelated pages.
+- [ ] On IPhone the media recorded goes full screen making it harder to stop the video and see the topic
+- [ ] On selecting a menu item on mobile the sidebar should close
 
 ## 1. Project Setup
 
@@ -125,7 +127,7 @@
 - [x] Deploy the Next.js app on Vercel.
 - [x] Ensure Clerk is configured correctly for the deployed domain including webhook URLs
 - [x] Test the database connection with Supabase in the production environment.
-- [ ] Setup cloudflare webhook
+- [x] Setup cloudflare webhook
 - [x] Add meta data to all pages
 - [ ] Video limit reached is not outputting a user friendly error on production
 
