@@ -119,9 +119,9 @@ function Pagination({
             currentPage - 1
           }`}
           aria-label="Previous page"
-          className={cn(hasPrev && "pointer-events-none")}
+          className={cn(!hasPrev && "pointer-events-none")}
         >
-          <Button variant="outline" size="sm" disabled={hasPrev}>
+          <Button variant="outline" size="sm" disabled={!hasPrev}>
             <ChevronLeft />
           </Button>
         </Link>
@@ -130,9 +130,9 @@ function Pagination({
             currentPage + 1
           }`}
           aria-label="Next page"
-          className={cn(hasNext && "pointer-events-none")}
+          className={cn(!hasNext && "pointer-events-none")}
         >
-          <Button variant="outline" size="sm" disabled={hasNext}>
+          <Button variant="outline" size="sm" disabled={!hasNext}>
             <ChevronRight />
           </Button>
         </Link>

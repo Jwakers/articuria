@@ -36,7 +36,7 @@ export function Header() {
         <nav role="navigation" aria-label="Main navigation">
           {!isMobile ? (
             <ul className="flex items-center space-x-4">
-              <li className="flex">
+              <li className="flex gap-2">
                 <SignedOut>
                   <Button variant="ghost" asChild>
                     <SignInButton />

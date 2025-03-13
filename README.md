@@ -14,10 +14,12 @@
 - [x] Download video (from cloudflare) on video page is not working. Behaviour is sporadic.
 - [x] Redirect to home page after deleting account
 - [x] Table topics indicator is not working correctly. Should show on one minute not be green the whole time.
-- [ ] Error uploading large videos > 1:30. Prisma transaction is timing out.
+- [x] Pagination not correctly disabled causes error
 - [x] Properly clean up media recorded api on unmount. It remains in a ready to record state even on unrelated pages.
+- [ ] Error uploading large videos > 1:30. Prisma transaction is timing out.
 - [ ] On IPhone the media recorded goes full screen making it harder to stop the video and see the topic
 - [ ] On selecting a menu item on mobile the sidebar should close
+- [ ] Download does not work on mobile (ios)
 
 ## 1. Project Setup
 
@@ -48,8 +50,8 @@
 
 ## 3. AI-Generated Table Topics
 
-- [ ] Integrate an AI API (like OpenAI) for generating random table topics.
-- [ ] Create an API route in Next.js to fetch a new table topic on demand.
+- [ ] Integrate an AI API (like Gemini) for generating random table topics.
+- [ ] Create an API route / sever action in Next.js to fetch a new table topic on demand.
 
 ## 4. Video Recording and Playback
 
@@ -149,7 +151,6 @@
 
 ## Optional Enhancements for MVP
 
-- [ ] Video expiry (automatic delete) on free accounts (use a webhook to manage the database / or a cron job and do it directly from the server)
 - Enhance video recording page:
   - [ ] Countdown timer before recording.
   - [ ] Better prominence of the table topic with animations (overlay the video. Start large and then reduce size)
