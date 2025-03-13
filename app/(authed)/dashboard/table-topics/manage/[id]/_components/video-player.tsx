@@ -52,8 +52,18 @@ export default function VideoPlayer({ videoPromise }: VideoPlayerProps) {
   };
 
   const handleDownloadClick = () => {
-    toast.success("Download started");
+    if (!downloadUrl) return;
+
+    const isIOS =
+      /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+      (navigator.userAgent.includes("Mac") && "ontouchend" in document);
+
+    if (isIOS) {
+      window.open(downloadUrl, "_blank");
+    }
+
     setDownloadDialogOpen(false);
+    toast.success("Download started");
   };
 
   return (
@@ -95,7 +105,10 @@ export default function VideoPlayer({ videoPromise }: VideoPlayerProps) {
                 <AlertDialogCancel onClick={() => setDownloadDialogOpen(false)}>
                   Cancel
                 </AlertDialogCancel>
-                <AlertDialogAction onClick={handleDownloadClick}>
+                <AlertDialogAction
+                  onClick={handleDownloadClick}
+                  disabled={!downloadUrl}
+                >
                   <a
                     href={downloadUrl ?? "/"}
                     download
