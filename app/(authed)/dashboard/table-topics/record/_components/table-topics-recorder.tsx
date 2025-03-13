@@ -123,6 +123,7 @@ export default function TableTopicsRecorder() {
             muted={!recordedVideoURL}
             controls={!!recordedVideoURL}
             src={recordedVideoURL || undefined}
+            playsInline
             aria-label="Table topic recording preview"
           />
           {isRecording ? (
