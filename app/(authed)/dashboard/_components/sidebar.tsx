@@ -78,7 +78,7 @@ export default async function DashboardSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
+                <SidebarMenuButton asChild closeMobile>
                   <Link href={ROUTES.dashboard.contact}>
                     <Send />
                     Contact us
