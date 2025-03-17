@@ -11,7 +11,7 @@ export function Header() {
       aria-label="Dashboard header"
     >
       <SidebarTrigger />
-      <Separator orientation="vertical" className="h-4 mr-1" />
+      <Separator orientation="vertical" className="mr-1 h-4" />
       <Breadcrumbs />
 
       <div className="ml-auto">

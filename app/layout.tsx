@@ -27,7 +27,7 @@ export default function RootLayout({
           className={cn(geistSans.variable, geistMono.variable, "antialiased")}
         >
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <div className="relative grid grid-rows-[auto_1fr_auto] min-h-dvh">
+            <div className="relative grid min-h-dvh grid-rows-[auto_1fr_auto]">
               {children}
             </div>
             <Toaster richColors />

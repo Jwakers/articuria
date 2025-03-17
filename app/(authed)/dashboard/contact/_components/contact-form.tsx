@@ -23,7 +23,7 @@ import { submitContactForm } from "../actions";
 export default function ContactForm() {
   const [state, formAction, isPending] = useActionState(
     submitContactForm,
-    null
+    null,
   );
   const { user } = useUser();
   const router = useRouter();
@@ -45,7 +45,7 @@ export default function ContactForm() {
   }, [state, router]);
 
   return (
-    <form action={formAction} className="max-w-xl grid md:grid-cols-2 gap-4">
+    <form action={formAction} className="grid max-w-xl gap-4 md:grid-cols-2">
       <div className="space-y-2">
         <Label htmlFor="name">Name</Label>
         <Input

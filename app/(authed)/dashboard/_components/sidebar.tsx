@@ -53,7 +53,7 @@ export default async function DashboardSidebar() {
                       <SidebarMenuSubItem className="w-full">
                         <Link
                           href={ROUTES.dashboard.tableTopics.record}
-                          className="w-full block hover:underline"
+                          className="block w-full hover:underline"
                         >
                           Record
                         </Link>
@@ -61,7 +61,7 @@ export default async function DashboardSidebar() {
                       <SidebarMenuSubItem>
                         <Link
                           href={ROUTES.dashboard.tableTopics.manage}
-                          className="w-full block hover:underline"
+                          className="block w-full hover:underline"
                         >
                           Manage recordings
                         </Link>
@@ -78,7 +78,7 @@ export default async function DashboardSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
+                <SidebarMenuButton asChild closeMobile>
                   <Link href={ROUTES.dashboard.contact}>
                     <Send />
                     Contact us

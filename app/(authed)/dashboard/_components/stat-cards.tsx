@@ -109,7 +109,7 @@ function StatCard({
   return (
     <Card>
       <CardHeader>
-        <div className="flex flex-row justify-between gap-2 items-center">
+        <div className="flex flex-row items-center justify-between gap-2">
           <CardTitle className="text-sm font-medium">{title}</CardTitle>
           {icon}
         </div>
@@ -125,5 +125,5 @@ function StatCard({
 }
 
 export function StatCardSkeleton() {
-  return <Skeleton className="w-full h-36" />;
+  return <Skeleton className="h-36 w-full" />;
 }

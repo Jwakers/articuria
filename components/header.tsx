@@ -28,15 +28,15 @@ export function Header() {
   const isMobile = useIsMobile();
 
   return (
-    <header className="py-4 px-6 shadow-sm sticky top-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/40 z-50">
-      <div className="container px-4 mx-auto flex justify-between items-center">
+    <header className="sticky top-0 z-50 bg-background/95 px-6 py-4 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/40">
+      <div className="container mx-auto flex items-center justify-between px-4">
         <Link href={ROUTES.landing} className="text-2xl font-bold">
           Articuria
         </Link>
         <nav role="navigation" aria-label="Main navigation">
           {!isMobile ? (
             <ul className="flex items-center space-x-4">
-              <li className="flex">
+              <li className="flex gap-2">
                 <SignedOut>
                   <Button variant="ghost" asChild>
                     <SignInButton />

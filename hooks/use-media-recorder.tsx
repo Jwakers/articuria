@@ -17,10 +17,13 @@ export const useMediaRecorder = () => {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const videoElementRef = useRef<HTMLVideoElement | null>(null);
+  const hasInitUserMedia = useRef(false);
 
   const user = useUser();
 
   const setVideoToStream = async () => {
+    if (streamRef.current || hasInitUserMedia.current) return;
+
     const constraints: MediaStreamConstraints = {
       video: {
         width: { ideal: 1280 },
@@ -29,6 +32,7 @@ export const useMediaRecorder = () => {
       },
       audio: true,
     };
+    hasInitUserMedia.current = true;
 
     try {
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
@@ -38,6 +42,7 @@ export const useMediaRecorder = () => {
         throw new Error("Unable to set stream to video");
 
       videoElementRef.current.srcObject = streamRef.current;
+      hasInitUserMedia.current = false;
     } catch (error) {
       toast.error("Error accessing media devices.", {
         description:
@@ -56,10 +61,10 @@ export const useMediaRecorder = () => {
     const mimeType = MediaRecorder.isTypeSupported("video/webm; codecs=vp8")
       ? "video/webm; codecs=vp8"
       : MediaRecorder.isTypeSupported(
-          "video/mp4; codecs=avc1.42E01E, mp4a.40.2"
-        )
-      ? "video/mp4; codecs=avc1.42E01E, mp4a.40.2"
-      : null;
+            "video/mp4; codecs=avc1.42E01E, mp4a.40.2",
+          )
+        ? "video/mp4; codecs=avc1.42E01E, mp4a.40.2"
+        : null;
 
     if (!mimeType) throw new Error("No supported MIME type found");
 
@@ -91,7 +96,6 @@ export const useMediaRecorder = () => {
     setIsRecording(false);
     setRecordedBlob(null);
     setRecordedVideoURL(null);
-    setVideoToStream();
     setIsSaved(false);
     if (recordedVideoURL) URL.revokeObjectURL(recordedVideoURL);
     if (!streamRef.current) return;
@@ -122,7 +126,7 @@ export const useMediaRecorder = () => {
       toast.error(
         error instanceof Error
           ? error.message
-          : "Failed to upload video. Please try again later."
+          : "Failed to upload video. Please try again later.",
       );
     }
 
@@ -156,6 +160,27 @@ export const useMediaRecorder = () => {
     });
   };
 
+  const stopMediaStream = () => {
+    if (mediaRecorderRef.current?.state === "recording") {
+      mediaRecorderRef.current.stop();
+    }
+
+    if (videoElementRef.current) {
+      videoElementRef.current.srcObject = null;
+    }
+
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => {
+        track.stop();
+      });
+      streamRef.current = null;
+    }
+
+    if (recordedVideoURL) URL.revokeObjectURL(recordedVideoURL);
+
+    mediaRecorderRef.current = null;
+  };
+
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
 
@@ -175,15 +200,8 @@ export const useMediaRecorder = () => {
   useEffect(() => {
     void setVideoToStream();
 
-    if (mediaRecorderRef.current?.state === "recording") {
-      mediaRecorderRef.current.stop();
-    }
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach((track) => track.stop());
-    }
-
     return () => {
-      if (recordedVideoURL) URL.revokeObjectURL(recordedVideoURL);
+      stopMediaStream();
     };
   }, []);
 

@@ -20,7 +20,7 @@ async function backfillDurations() {
     try {
       const cloudflareVideo = await cloudflareClient.stream.get(
         video.cloudflareId,
-        { account_id: process.env.CLOUDFLARE_ACCOUNT_ID! }
+        { account_id: process.env.CLOUDFLARE_ACCOUNT_ID! },
       );
 
       await db.video.update({

@@ -17,8 +17,8 @@ export default function Error({
   }, [error]);
 
   return (
-    <section className="container px-4 mx-auto flex flex-col gap-y-4 items-center py-10">
-      <h2 className="text-2xl md:text-4xl font-bold">Something went wrong!</h2>
+    <section className="container mx-auto flex flex-col items-center gap-y-4 px-4 py-10">
+      <h2 className="text-2xl font-bold md:text-4xl">Something went wrong!</h2>
       <div className="flex gap-2">
         <Button
           onClick={

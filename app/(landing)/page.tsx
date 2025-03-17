@@ -6,12 +6,12 @@ export default function LandingPage() {
   return (
     <div>
       {/* Hero Section */}
-      <section className="relative py-20 overflow-hidden">
-        <div className="container px-4 mx-auto text-center relative z-10">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">
+      <section className="relative overflow-hidden py-20">
+        <div className="container relative z-10 mx-auto px-4 text-center">
+          <h1 className="mb-6 text-4xl font-bold md:text-6xl">
             Master public speaking with confidence
           </h1>
-          <p className="text-xl mb-8">
+          <p className="mb-8 text-xl">
             Practice impromptu speaking skills with AI-generated topics and
             video recording
           </p>
@@ -23,11 +23,11 @@ export default function LandingPage() {
 
       {/* Features Section */}
       <section className="py-2">
-        <div className="container px-4 mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12">How It Works</h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center p-6 rounded-lg">
-              <div className="rounded-full p-4 inline-block mb-4">
+        <div className="container mx-auto px-4">
+          <h2 className="mb-12 text-center text-3xl font-bold">How It Works</h2>
+          <div className="grid gap-8 md:grid-cols-3">
+            <div className="rounded-lg p-6 text-center">
+              <div className="mb-4 inline-block rounded-full p-4">
                 <Zap size={32} />
               </div>
               <h3 className="text-xl font-semibold">Generate Topics</h3>
@@ -36,8 +36,8 @@ export default function LandingPage() {
                 level
               </p>
             </div>
-            <div className="text-center p-6 rounded-lg">
-              <div className="rounded-full p-4 inline-block mb-4">
+            <div className="rounded-lg p-6 text-center">
+              <div className="mb-4 inline-block rounded-full p-4">
                 <Camera size={32} />
               </div>
               <h3 className="text-xl font-semibold">Record Your Speech</h3>
@@ -46,8 +46,8 @@ export default function LandingPage() {
                 performance
               </p>
             </div>
-            <div className="text-center p-6 rounded-lg">
-              <div className="rounded-full p-4 inline-block mb-4">
+            <div className="rounded-lg p-6 text-center">
+              <div className="mb-4 inline-block rounded-full p-4">
                 <ChartArea size={32} />
               </div>
               <h3 className="text-xl font-semibold">Track Progress</h3>
@@ -61,12 +61,12 @@ export default function LandingPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="relative py-20 overflow-hidden">
-        <div className="container px-4 mx-auto text-center relative z-10">
-          <h2 className="text-3xl font-bold mb-6">
+      <section className="relative overflow-hidden py-20">
+        <div className="container relative z-10 mx-auto px-4 text-center">
+          <h2 className="mb-6 text-3xl font-bold">
             Ready to Improve Your Public Speaking?
           </h2>
-          <p className="text-xl mb-8">
+          <p className="mb-8 text-xl">
             sign up today and take your communication skills to the next level
           </p>
           <SignUpButton>

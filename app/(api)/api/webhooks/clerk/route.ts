@@ -89,7 +89,7 @@ async function userDeleted(userId: string | undefined) {
     // Delete videos from cloudflare
     console.log("deleting from cloudflare...");
     await Promise.all(
-      videos.map((video) => deleteVideoById(video.cloudflareId, userId))
+      videos.map((video) => deleteVideoById(video.cloudflareId, userId)),
     );
   });
 }

@@ -110,26 +110,27 @@ export default function TableTopicsRecorder() {
           {!recordedVideoURL ? "Generate topic" : "Generate new topic"}
         </Button>
         {currentTopic && (
-          <div className="p-4 bg-muted rounded-md">
-            <h3 className="font-semibold mb-2">Topic:</h3>
+          <div className="rounded-md bg-muted p-4">
+            <h3 className="mb-2 font-semibold">Topic:</h3>
             <p>{currentTopic}</p>
           </div>
         )}
-        <div className="aspect-video bg-black rounded-md overflow-hidden relative">
+        <div className="relative aspect-video overflow-hidden rounded-md bg-black">
           <video
             ref={videoElementRef}
-            className="w-full h-full"
+            className="h-full w-full"
             autoPlay={!recordedVideoURL} // Autoplay is required to see the stream without manually calling .play()
             muted={!recordedVideoURL}
             controls={!!recordedVideoURL}
             src={recordedVideoURL || undefined}
+            playsInline
             aria-label="Table topic recording preview"
           />
           {isRecording ? (
             <div
               className={cn(
-                "size-8 absolute top-4 right-4 rounded-full transition-colors",
-                getTimingColor()
+                "absolute right-4 top-4 size-8 rounded-full transition-colors",
+                getTimingColor(),
               )}
             />
           ) : null}
@@ -144,7 +145,7 @@ export default function TableTopicsRecorder() {
       </CardContent>
       <CardFooter>
         {recordedVideoURL && (
-          <div className="flex justify-between w-full flex-wrap gap-4">
+          <div className="flex w-full flex-wrap justify-between gap-4">
             <div className="flex gap-2">
               {!isSaved ? (
                 <Button

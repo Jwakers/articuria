@@ -13,7 +13,7 @@ export function validateFile(file: File, isServer: boolean = false) {
       "File size exceeds the maximum file size on the free account. Upgrade your account to increase this limit.",
       {
         cause: ERROR_CODES.videoSizeLimitExceeded,
-      }
+      },
     );
   }
 

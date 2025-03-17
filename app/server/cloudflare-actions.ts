@@ -36,7 +36,7 @@ export async function getVideoUploadUrl({ title }: { title: string }) {
 
 export async function uploadVideoToCloudflare(
   uploadURL: string,
-  formData: FormData
+  formData: FormData,
 ) {
   const res = await fetch(uploadURL, {
     method: "POST",

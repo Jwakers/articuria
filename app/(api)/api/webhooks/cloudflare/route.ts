@@ -36,7 +36,7 @@ export async function POST(request: Request) {
         headers: {
           "Content-Type": "application/json",
         },
-      }
+      },
     );
   } catch (error) {
     console.error(error);
@@ -88,7 +88,7 @@ async function updateVideoWithRetry(
   data: ResponseData,
   attempt = 1,
   maxAttempts = 5,
-  delayMs = 5000
+  delayMs = 5000,
 ) {
   const duration = await fetchVideoDuration(data.uid);
 
@@ -100,16 +100,16 @@ async function updateVideoWithRetry(
 
   if (attempt < maxAttempts) {
     console.log(
-      `Retrying (${attempt}/${maxAttempts}) for video ${data.uid}...`
+      `Retrying (${attempt}/${maxAttempts}) for video ${data.uid}...`,
     );
     await new Promise((resolve) => setTimeout(resolve, delayMs));
     return updateVideoWithRetry(data, attempt + 1, maxAttempts, delayMs);
   } else {
     console.warn(
-      `Max retries reached. Could not fetch duration for video ${data.uid}.`
+      `Max retries reached. Could not fetch duration for video ${data.uid}.`,
     );
     throw new Error(
-      `Could not fetch duration for video ${data.uid} after ${maxAttempts} attempts`
+      `Could not fetch duration for video ${data.uid} after ${maxAttempts} attempts`,
     );
   }
 }
@@ -164,7 +164,7 @@ function handleError(error: unknown) {
     }),
     {
       status,
-    }
+    },
   );
 }
 
