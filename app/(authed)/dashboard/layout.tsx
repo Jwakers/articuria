@@ -18,14 +18,14 @@ export default function DashboardShell({
   return (
     <>
       <Button
-        className="fixed top-4 left-1/2 -translate-x-1/2 opacity-0 pointer-events-none focus:pointer-events-auto focus:opacity-100 z-50 transition-opacity"
+        className="pointer-events-none fixed left-1/2 top-4 z-50 -translate-x-1/2 opacity-0 transition-opacity focus:pointer-events-auto focus:opacity-100"
         asChild
       >
         <a href="#main-content">Skip to content</a>
       </Button>
       <SidebarProvider>
         <DashboardSidebar />
-        <main className="w-full px-4 pb-4 max-w-[1440px] mx-auto">
+        <main className="mx-auto w-full max-w-[1440px] px-4 pb-4">
           <Header />
           <div id="main-content">{children}</div>
         </main>

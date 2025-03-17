@@ -14,14 +14,14 @@ import Link from "next/link";
 
 export default function FeedbackSection() {
   return (
-    <Card className="bg-accent text-accent-foreground dark:border-white max-w-[760px]">
+    <Card className="max-w-[760px] bg-accent text-accent-foreground dark:border-white">
       <CardHeader>
-        <CardTitle className="opacity-90 flex gap-2 items-center">
+        <CardTitle className="flex items-center gap-2 opacity-90">
           <MessageSquareHeart />
           Your Feedback Matters
         </CardTitle>
       </CardHeader>
-      <CardContent className="opacity-90 space-y-4">
+      <CardContent className="space-y-4 opacity-90">
         <p>
           We&apos;re committed to continually improving our service, and your
           input is invaluable in this process.

@@ -29,7 +29,7 @@ export default function Breadcrumbs() {
           const { pathname } = new URL(
             `${window.location.origin}/${breadcrumbs
               .slice(0, index + 1)
-              .join("/")}`
+              .join("/")}`,
           );
 
           return (

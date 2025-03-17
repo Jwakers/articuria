@@ -58,7 +58,7 @@ export async function createUserVideo({
           "Video limit reached on free account. Upgrade your account to save more videos",
           {
             cause: ERROR_CODES.reachedVideoLimit,
-          }
+          },
         );
       }
 
@@ -76,7 +76,7 @@ export async function createUserVideo({
     },
     {
       timeout: TRANSACTION_TIMEOUT_MS,
-    }
+    },
   );
 
   return video;
@@ -84,7 +84,7 @@ export async function createUserVideo({
 
 export async function getUserVideos(
   page: string | number = 1,
-  pageSize: number = 10
+  pageSize: number = 10,
 ) {
   const user = await isAuth();
 
@@ -133,7 +133,7 @@ export async function getUserVideoCount() {
   });
 
   const { length: countThisMonth } = videos.filter((video) =>
-    isSameMonth(video.createdAt, new Date())
+    isSameMonth(video.createdAt, new Date()),
   );
 
   return {
@@ -164,17 +164,17 @@ export async function getUserVideoDurationData() {
   };
 
   const lastMonthsVideos = videos.filter((video) =>
-    isSameMonth(subMonths(new Date(), 1), video.createdAt)
+    isSameMonth(subMonths(new Date(), 1), video.createdAt),
   );
   const thisMonthsVideos = videos.filter((video) =>
-    isSameMonth(new Date(), video.createdAt)
+    isSameMonth(new Date(), video.createdAt),
   );
   const averageDuration = getAverage(videos);
   const lastMonthAverageDuration = getAverage(lastMonthsVideos);
   const totalDuration = videos.reduce((acc, cur) => (acc += cur.duration!), 0);
   const thisMonthsTotalDuration = thisMonthsVideos.reduce(
     (acc, cur) => (acc += cur.duration!),
-    0
+    0,
   );
 
   return {

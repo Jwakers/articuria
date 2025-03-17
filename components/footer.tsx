@@ -3,8 +3,8 @@ import Link from "next/link";
 
 export function Footer() {
   return (
-    <footer className="py-6 px-6">
-      <div className="container px-4 mx-auto flex justify-between items-center">
+    <footer className="px-6 py-6">
+      <div className="container mx-auto flex items-center justify-between px-4">
         <p className="text-sm">
           © {new Date().getFullYear()} Articuria. All rights reserved.
         </p>
@@ -13,7 +13,7 @@ export function Footer() {
             <li>
               <Link
                 href={ROUTES.privacy}
-                className="text-sm hover:opacity-60 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="text-sm transition-colors hover:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 aria-label="Privacy Policy"
               >
                 Privacy Policy
@@ -22,7 +22,7 @@ export function Footer() {
             <li>
               <Link
                 href={ROUTES.terms}
-                className="text-sm hover:opacity-60 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="text-sm transition-colors hover:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 aria-label="Terms of Service"
               >
                 Terms of Service

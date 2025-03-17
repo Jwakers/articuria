@@ -55,7 +55,7 @@ export default function NoVideos() {
       </CardContent>
       <CardFooter className="flex flex-col items-start gap-3">
         <h3 className="text-lg font-semibold">Ready to Get Started?</h3>
-        <div className="flex flex-col sm:flex-row gap-4">
+        <div className="flex flex-col gap-4 sm:flex-row">
           <Button asChild>
             <Link href={ROUTES.dashboard.tableTopics.record}>
               <Video className="mr-2 h-4 w-4" /> Record Your First Topic
@@ -81,7 +81,7 @@ function BenefitCard({
   return (
     <Card>
       <CardContent className="flex items-center p-4">
-        <Icon className="h-8 w-8 mr-4" />
+        <Icon className="mr-4 h-8 w-8" />
         <div>
           <h4 className="font-semibold">{title}</h4>
           <p className="text-sm text-muted-foreground">{description}</p>

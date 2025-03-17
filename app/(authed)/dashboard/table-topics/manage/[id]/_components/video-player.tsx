@@ -68,7 +68,7 @@ export default function VideoPlayer({ videoPromise }: VideoPlayerProps) {
 
   return (
     <Card>
-      <CardContent className="p-6 space-y-4">
+      <CardContent className="space-y-4 p-6">
         <h1 className="text-2xl font-bold">{video?.tableTopic.topic}</h1>
         <iframe
           title={`Video for topic: ${video?.tableTopic.topic}`}
@@ -79,7 +79,7 @@ export default function VideoPlayer({ videoPromise }: VideoPlayerProps) {
           sandbox="allow-scripts allow-same-origin allow-presentation"
           loading="lazy"
         ></iframe>
-        <div className="mt-4 flex flex-wrap gap-2 justify-between items-center">
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
           <AlertDialog
             open={downloadDialogOpen}
             onOpenChange={setDownloadDialogOpen}
@@ -153,10 +153,10 @@ export default function VideoPlayer({ videoPromise }: VideoPlayerProps) {
 export function VideoPlayerSkeleton() {
   return (
     <Card>
-      <CardContent className="p-6 space-y-4">
+      <CardContent className="space-y-4 p-6">
         <Skeleton className="h-8 w-44" />
-        <Skeleton className="w-full aspect-video" />
-        <div className="mt-4 flex justify-between items-center">
+        <Skeleton className="aspect-video w-full" />
+        <div className="mt-4 flex items-center justify-between">
           <Skeleton className="h-9 w-28" />
           <Skeleton className="h-9 w-28" />
         </div>

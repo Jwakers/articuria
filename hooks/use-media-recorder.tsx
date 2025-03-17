@@ -61,10 +61,10 @@ export const useMediaRecorder = () => {
     const mimeType = MediaRecorder.isTypeSupported("video/webm; codecs=vp8")
       ? "video/webm; codecs=vp8"
       : MediaRecorder.isTypeSupported(
-          "video/mp4; codecs=avc1.42E01E, mp4a.40.2"
-        )
-      ? "video/mp4; codecs=avc1.42E01E, mp4a.40.2"
-      : null;
+            "video/mp4; codecs=avc1.42E01E, mp4a.40.2",
+          )
+        ? "video/mp4; codecs=avc1.42E01E, mp4a.40.2"
+        : null;
 
     if (!mimeType) throw new Error("No supported MIME type found");
 
@@ -126,7 +126,7 @@ export const useMediaRecorder = () => {
       toast.error(
         error instanceof Error
           ? error.message
-          : "Failed to upload video. Please try again later."
+          : "Failed to upload video. Please try again later.",
       );
     }
 
