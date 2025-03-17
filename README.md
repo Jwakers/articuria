@@ -18,8 +18,8 @@
 - [x] Properly clean up media recorded api on unmount. It remains in a ready to record state even on unrelated pages.
 - [x] On IPhone the media recorded goes full screen making it harder to stop the video and see the topic
 - [x] On selecting a menu item on mobile the sidebar should close
-- [ ] Download does not work on mobile (ios)
-- [ ] Manage recordings on mobile looks terrible and causes the sidebar to overflow
+- [x] Download does not work on mobile (ios)
+- [x] Manage recordings on mobile looks terrible and causes the sidebar to overflow
 - [ ] Error uploading large videos > 1:30. Prisma transaction is timing out.
 
 ## 1. Project Setup

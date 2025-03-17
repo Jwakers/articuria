@@ -41,27 +41,29 @@ export function VideoList({ videoListPromise }: VideoListProps) {
       </CardHeader>
       <CardContent>
         <Table>
-          <TableCaption>
-            A list of your recent Table topic recordings.
-          </TableCaption>
+          <TableCaption>Your recent table topic recordings.</TableCaption>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[400px]">Topic</TableHead>
-              <TableHead>Date</TableHead>
-              <TableHead>Duration</TableHead>
+              <TableHead className="md:w-[400px]">Topic</TableHead>
+              <TableHead className="hidden md:table-cell">Date</TableHead>
+              <TableHead className="hidden md:table-cell">Duration</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {videos.map((video) => (
               <TableRow key={video.id}>
-                <TableCell className="font-medium">
-                  {video.tableTopic.topic}
+                <TableCell className="space-y-1 font-medium">
+                  <span>{video.tableTopic.topic}</span>
+                  <div className="flex justify-between text-xs text-muted-foreground md:hidden">
+                    <div>{new Date(video.createdAt).toLocaleDateString()}</div>
+                    <div>{formatDuration(video.duration)}</div>
+                  </div>
                 </TableCell>
-                <TableCell>
+                <TableCell className="hidden md:table-cell">
                   {new Date(video.createdAt).toLocaleDateString()}
                 </TableCell>
-                <TableCell>
+                <TableCell className="hidden md:table-cell">
                   <span
                     aria-label={`Duration: ${
                       video.duration
@@ -108,7 +110,7 @@ function Pagination({
   const text = `Page ${currentPage} of ${totalPages}`;
 
   return (
-    <div className="flex justify-between items-end w-full">
+    <div className="flex w-full items-end justify-between">
       <span className="text-sm text-muted-foreground" aria-label={text}>
         {text}
       </span>
@@ -181,8 +183,8 @@ export function VideoListSkeleton() {
         </Table>
       </CardContent>
       <CardFooter>
-        <div className="flex justify-between items-end w-full">
-          <Skeleton className="w-32 h-5" />
+        <div className="flex w-full items-end justify-between">
+          <Skeleton className="h-5 w-32" />
 
           <div className="flex gap-2">
             <Button variant="outline" size="sm" disabled>
