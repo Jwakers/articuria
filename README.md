@@ -52,7 +52,7 @@
 ## 3. AI-Generated Table Topics
 
 - [ ] Integrate an AI API (like Gemini) for generating random table topics.
-- [ ] Create an API route / sever action in Next.js to fetch a new table topic on demand.
+- [ ] Create an API route / server action in Next.js to fetch a new table topic on demand.
 
 ## 4. Video Recording and Playback
 
