@@ -97,6 +97,8 @@ export default function TableTopicsRecorder() {
     if (timeElapsed > 60) return "bg-green-500";
   };
 
+  const timingColor = getTimingColor();
+
   return (
     <Card>
       <CardHeader>
@@ -127,12 +129,20 @@ export default function TableTopicsRecorder() {
             aria-label="Table topic recording preview"
           />
           {isRecording ? (
-            <div
-              className={cn(
-                "absolute right-4 top-4 size-8 rounded-full transition-colors",
-                getTimingColor(),
-              )}
-            />
+            <div className="absolute right-4 top-4 flex size-4 items-center justify-center md:size-6">
+              <span
+                className={cn(
+                  "absolute inline-flex size-full animate-ping rounded-full",
+                  timingColor,
+                )}
+              />
+              <span
+                className={cn(
+                  "relative inline-flex size-full rounded-full",
+                  timingColor,
+                )}
+              />
+            </div>
           ) : null}
         </div>
         <div className="flex justify-between">

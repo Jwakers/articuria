@@ -135,7 +135,6 @@
 
 - [ ] Test the app's functionality locally and in production.
 - [ ] Perform end-to-end testing of:
-  - AI-generated topics.
   - Video recording and playback.
   - Database operations (saving and retrieving videos).
   - Authentication.
