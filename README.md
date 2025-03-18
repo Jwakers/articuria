@@ -49,10 +49,7 @@
   - **Topic**: Details of AI-generated topics.
 - [x] Migrate the schema to the PostgreSQL database.
 
-## 3. AI-Generated Table Topics
-
-- [ ] Integrate an AI API (like Gemini) for generating random table topics.
-- [ ] Create an API route / server action in Next.js to fetch a new table topic on demand.
+~~## 3. AI-Generated Table Topics~~ (Moved to post MVP)
 
 ## 4. Video Recording and Playback
 
@@ -150,7 +147,7 @@
 - [ ] Privacy page
 - [ ] Terms page
 
-## Optional Enhancements for MVP
+## Post MVP updates
 
 - Enhance video recording page:
   - [ ] Countdown timer before recording.
@@ -158,10 +155,29 @@
   - [ ] Center the video when recording starts
   - [ ] After recording is saved. Add section to link to that video
 - Improve the traffic light indicator:
+
   - [ ] Make it more visible
   - [ ] Have a section that explains the traffic light system
 
+- [ ] Move save logic out of server actions and into an api route. There is an adjustable limit on server actions. See next.config but to be safe we should pass this data to a dedicated endpoint. This should also allow us to properly validate the file type on the server.
+  - [ ] Test this by uploading a longer video
+  - [ ] Show progress indicator in toast.promise
+- [ ] On recorder page warn that data will be lost on redirect or refresh (trigger alert dialog when navigating without saving)
+- [ ] On recorder page add a warning banner that someone is exceeding their video limit and should delete or upgrade their account AND
+      The video still gets sent to cloudflare for some reason
+
+- Contact form
+  - [ ] Rate limiting to prevent abuse
+  - [ ] Input sanitization before sending emails (DOMPurify)
+  - [ ] Moving email templates to a separate file for better maintainability
+  - [ ] Validate input client side before submission
+
 ## Post MVP features
+
+AI-Generated Table Topics
+
+- [ ] Integrate an AI API (like Gemini) for generating random table topics.
+- [ ] Create an API route / server action in Next.js to fetch a new table topic on demand.
 
 - Speech helper
   Ability to record a speech.
@@ -181,18 +197,3 @@
   - [ ] Update name
   - [ ] delete account (removing the need for the webhook)
   - [ ] any other clerk functionality offered by the API
-
-## Post MVP updates
-
-- [ ] Move save logic out of server actions and into an api route. There is an adjustable limit on server actions. See next.config but to be safe we should pass this data to a dedicated endpoint. This should also allow us to properly validate the file type on the server.
-  - [ ] Test this by uploading a longer video
-  - [ ] Show progress indicator in toast.promise
-- [ ] On recorder page warn that data will be lost on redirect or refresh (trigger alert dialog when navigating without saving)
-- [ ] On recorder page add a warning banner that someone is exceeding their video limit and should delete or upgrade their account AND
-      The video still gets sent to cloudflare for some reason
-
-- Contact form
-  - [ ] Rate limiting to prevent abuse
-  - [ ] Input sanitization before sending emails (DOMPurify)
-  - [ ] Moving email templates to a separate file for better maintainability
-  - [ ] Validate input client side before submission
