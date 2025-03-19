@@ -24,7 +24,7 @@ import Spinner from "@/components/ui/spinner";
 import { useMediaRecorder } from "@/hooks/use-media-recorder";
 import { cn } from "@/lib/utils";
 import { Video } from "@prisma/client";
-import { Download, Save, Trash2 } from "lucide-react";
+import { Download, HelpCircle, Save, Trash2 } from "lucide-react";
 import { useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 
@@ -97,11 +97,20 @@ export default function TableTopicsRecorder() {
     if (timeElapsed > 60) return "bg-green-500";
   };
 
+  const timingColor = getTimingColor();
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>
+        <CardTitle className="flex items-center gap-2">
           <h1 className="text-2xl md:text-3xl">Table topics recorder</h1>
+          <a
+            href="#table-topics-guide"
+            title="Find out more about table topics"
+            aria-label="Learn about table topics"
+          >
+            <HelpCircle className="size-4" />
+          </a>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -127,12 +136,20 @@ export default function TableTopicsRecorder() {
             aria-label="Table topic recording preview"
           />
           {isRecording ? (
-            <div
-              className={cn(
-                "absolute right-4 top-4 size-8 rounded-full transition-colors",
-                getTimingColor(),
-              )}
-            />
+            <div className="absolute right-4 top-4 flex size-4 items-center justify-center md:size-6">
+              <span
+                className={cn(
+                  "absolute inline-flex size-full animate-ping rounded-full",
+                  timingColor,
+                )}
+              />
+              <span
+                className={cn(
+                  "relative inline-flex size-full rounded-full",
+                  timingColor,
+                )}
+              />
+            </div>
           ) : null}
         </div>
         <div className="flex justify-between">

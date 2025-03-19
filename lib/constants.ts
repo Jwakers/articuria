@@ -29,5 +29,6 @@ export enum ERROR_CODES {
 export const CONTACT_FORM_REASONS = {
   issue: { key: "issue", value: "Issue" },
   feedback: { key: "feedback", value: "Application feedback" },
+  support: { key: "support", value: "Application support" },
   other: { key: "other", value: "Other" },
 };
