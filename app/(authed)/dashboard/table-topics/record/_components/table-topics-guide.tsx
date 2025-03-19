@@ -43,9 +43,9 @@ export default function TableTopicsGuide() {
             <div className="space-y-4 pt-2">
               <p>
                 Table Topics is an impromptu speaking exercise that forms a core
-                part of Toastmasters meetings. It's designed to help members
-                develop their ability to organize thoughts quickly and speak
-                coherently without preparation.
+                part of Toastmasters meetings. It&apos;s designed to help
+                members develop their ability to organize thoughts quickly and
+                speak coherently without preparation.
               </p>
 
               <p>
@@ -73,8 +73,8 @@ export default function TableTopicsGuide() {
                     </li>
                     <li>
                       You can then either save the video or delete it. If you
-                      choose to delete the video, you don't get another try at
-                      the same topic. The Topics will always be random.
+                      choose to delete the video, you don&apos;t get another try
+                      at the same topic. The Topics will always be random.
                     </li>
                     <li>
                       Responses should be 1-2 minutes long (more on this below
@@ -121,7 +121,8 @@ export default function TableTopicsGuide() {
                         would it be and why?
                       </li>
                       <li>
-                        What's the most important lesson you've learned in life?
+                        What&apos;s the most important lesson you&apos;ve
+                        learned in life?
                       </li>
                       <li>
                         Describe a challenge you overcame and what you learned

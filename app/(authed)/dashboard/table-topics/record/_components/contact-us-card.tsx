@@ -18,7 +18,7 @@ export default function ContactUsCard() {
       <CardContent>
         <p>
           If you need additional support or have any questions about this page,
-          please don't hesitate to reach out using our contact form.
+          please don&apos;t hesitate to reach out using our contact form.
         </p>
       </CardContent>
       <CardFooter>
