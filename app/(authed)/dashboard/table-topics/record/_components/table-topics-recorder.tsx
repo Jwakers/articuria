@@ -107,6 +107,7 @@ export default function TableTopicsRecorder() {
           <a
             href="#table-topics-guide"
             title="Find out more about table topics"
+            aria-label="Learn about table topics"
           >
             <HelpCircle className="size-4" />
           </a>

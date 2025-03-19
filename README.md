@@ -192,7 +192,10 @@ AI-Generated Table Topics
 - [ ] Save large videos with TUS (note need to use a tus client to accomplish this, check out the tus website as well as the Couldflare docs) https://developers.cloudflare.com/api/node/resources/stream/methods/create/
 
 - Custom account management page
+
   - [ ] update image
   - [ ] Update name
   - [ ] delete account (removing the need for the webhook)
   - [ ] any other clerk functionality offered by the API
+
+- Add colour blind option in user settings that adds number to the color indicators on the traffic light system (green circle should have a 1, orange a 2 and red a 3). Don't forget to include these indicators in the guide section of the page too.
