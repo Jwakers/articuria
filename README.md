@@ -155,8 +155,8 @@
   - [ ] After recording is saved. Add section to link to that video
 - Improve the traffic light indicator:
 
-  - [ ] Make it more visible
-  - [ ] Have a section that explains the traffic light system
+  - [x] Make it more visible
+  - [x] Have a section that explains the traffic light system
 
 - [ ] Move save logic out of server actions and into an api route. There is an adjustable limit on server actions. See next.config but to be safe we should pass this data to a dedicated endpoint. This should also allow us to properly validate the file type on the server.
   - [ ] Test this by uploading a longer video

@@ -24,7 +24,7 @@ import Spinner from "@/components/ui/spinner";
 import { useMediaRecorder } from "@/hooks/use-media-recorder";
 import { cn } from "@/lib/utils";
 import { Video } from "@prisma/client";
-import { Download, Save, Trash2 } from "lucide-react";
+import { Download, HelpCircle, Save, Trash2 } from "lucide-react";
 import { useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 
@@ -102,8 +102,14 @@ export default function TableTopicsRecorder() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>
+        <CardTitle className="flex items-center gap-2">
           <h1 className="text-2xl md:text-3xl">Table topics recorder</h1>
+          <a
+            href="#table-topics-guide"
+            title="Find out more about table topics"
+          >
+            <HelpCircle className="size-4" />
+          </a>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
