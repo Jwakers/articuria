@@ -25,13 +25,14 @@ import { useMediaRecorder } from "@/hooks/use-media-recorder";
 import { cn } from "@/lib/utils";
 import { Video } from "@prisma/client";
 import { Download, HelpCircle, Save, Trash2 } from "lucide-react";
-import { useRef, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 
 export default function TableTopicsRecorder() {
   const [currentTopic, setCurrentTopic] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const topicId = useRef<Video["tableTopicId"] | null>(null);
+  const [countdown, setCountdown] = useState<number | null>(null);
 
   const {
     isRecording,
@@ -49,10 +50,11 @@ export default function TableTopicsRecorder() {
   const handleGenerateTopic = () => {
     startTransition(async () => {
       try {
+        if (currentTopic) handleDiscardRecording(); // Note: awaiting here causes some strange behaviour where the stream is not properly reset
         const { topic, id } = await getTableTopic();
         setCurrentTopic(topic);
-        await startRecording();
         topicId.current = id;
+        setCountdown(3);
       } catch (error) {
         const message =
           error instanceof Error ? error.message : "Failed to generate topic";
@@ -60,6 +62,17 @@ export default function TableTopicsRecorder() {
       }
     });
   };
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (countdown !== null && countdown > 0) {
+      timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+    } else if (countdown === 0) {
+      startRecording();
+      setCountdown(null);
+    }
+    return () => clearTimeout(timer);
+  }, [countdown]);
 
   const handleSaveRecording = async () => {
     if (!topicId.current)
@@ -84,8 +97,8 @@ export default function TableTopicsRecorder() {
     document.body.removeChild(downloadLink);
   };
 
-  const handleDiscardRecording = () => {
-    resetRecording();
+  const handleDiscardRecording = async () => {
+    await resetRecording();
     setCurrentTopic(null);
     topicId.current = null;
   };
@@ -151,14 +164,23 @@ export default function TableTopicsRecorder() {
               />
             </div>
           ) : null}
+          <div
+            className={cn(
+              "pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 bg-black/60 text-center text-white backdrop-blur-md transition-opacity duration-1000",
+              countdown !== null ? "opacity-100" : "opacity-0",
+            )}
+          >
+            <div className="text-xl">Recording starts in</div>
+            <div className="text-6xl font-bold">{countdown ?? 0}</div>
+          </div>
         </div>
-        <div className="flex justify-between">
-          {isRecording && (
+        {isRecording && (
+          <div className="flex justify-between">
             <Button onClick={stopRecording} variant="destructive">
               Stop Recording
             </Button>
-          )}
-        </div>
+          </div>
+        )}
       </CardContent>
       <CardFooter>
         {recordedVideoURL && (
@@ -172,12 +194,12 @@ export default function TableTopicsRecorder() {
                   aria-live="polite"
                 >
                   {isSaving ? <Spinner /> : <Save />}
-                  {isSaving ? "Saving..." : "Save recording"}
+                  {isSaving ? "Saving..." : "Save"}
                 </Button>
               ) : null}
               <Button onClick={handleDownloadRecording} variant="secondary">
                 <Download />
-                Download Recording
+                Download
               </Button>
             </div>
             {!isSaved ? (
@@ -185,7 +207,7 @@ export default function TableTopicsRecorder() {
                 <AlertDialogTrigger asChild>
                   <Button variant="destructive">
                     <Trash2 className="mr-2 h-4 w-4" />
-                    Delete Video
+                    Delete
                   </Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
