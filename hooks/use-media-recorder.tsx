@@ -52,8 +52,6 @@ export const useMediaRecorder = () => {
   };
 
   const startRecording = async () => {
-    resetRecording();
-
     if (!streamRef.current) await setVideoToStream();
     if (!streamRef.current) throw new Error("Unable to set media stream");
 
@@ -92,7 +90,7 @@ export const useMediaRecorder = () => {
     setIsRecording(false);
   };
 
-  const resetRecording = () => {
+  const resetRecording = async () => {
     setIsRecording(false);
     setRecordedBlob(null);
     setRecordedVideoURL(null);
@@ -102,6 +100,7 @@ export const useMediaRecorder = () => {
     const tracks = streamRef.current.getTracks();
     tracks.forEach((track) => track.stop());
     streamRef.current = null;
+    await setVideoToStream();
   };
 
   const uploadVideo = async ({

@@ -149,10 +149,10 @@
 ## Post MVP updates
 
 - Enhance video recording page:
-  - [ ] Countdown timer before recording.
+  - [x] Countdown timer before recording.
   - [ ] Better prominence of the table topic with animations (overlay the video. Start large and then reduce size)
-  - [ ] Center the video when recording starts
   - [ ] After recording is saved. Add section to link to that video
+  - [ ] Refactor media recorder to use one video element for stream and one for playback
 - Improve the traffic light indicator:
 
   - [x] Make it more visible
