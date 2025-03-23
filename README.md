@@ -150,7 +150,8 @@
 
 - Enhance video recording page:
   - [x] Countdown timer before recording.
-  - [ ] Better prominence of the table topic with animations (overlay the video. Start large and then reduce size)
+  - [x] Better prominence of the table topic with animations (overlay the video. Start large and then reduce size)
+  - [ ] Refactor background and spinner colors to conform with the theming in global.css
   - [ ] After recording is saved. Add section to link to that video
   - [ ] Refactor media recorder to use one video element for stream and one for playback
 - Improve the traffic light indicator:
