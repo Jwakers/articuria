@@ -164,6 +164,17 @@ export default function TableTopicsRecorder() {
           ) : null}
 
           <AnimatePresence>
+            {isPending && !currentTopic && !recordedVideoURL ? (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="absolute inset-0 flex items-center justify-center bg-black/60 text-white backdrop-blur-md"
+              >
+                <Spinner />
+              </motion.div>
+            ) : null}
             {currentTopic && !recordedVideoURL ? (
               <motion.div
                 key={currentTopic}

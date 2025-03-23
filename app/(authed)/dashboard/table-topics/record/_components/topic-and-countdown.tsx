@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 
 type CurrentTopicProps = {
   topic: string | null;
@@ -15,6 +15,9 @@ export default function TopicAndCountdown({
   move,
   countdown,
 }: CurrentTopicProps) {
+  const prefersReducedMotion = useReducedMotion();
+  const shouldAnimate = !prefersReducedMotion;
+
   return (
     <div
       className={cn(
@@ -45,13 +48,13 @@ export default function TopicAndCountdown({
                 top: "100%",
                 scale: 0.8,
                 opacity: 0.4,
-                transition: { duration: 1 },
+                transition: { duration: shouldAnimate ? 1 : 0 },
               }
             : {
                 y: "-50%",
                 scale: 1,
                 opacity: 1,
-                transition: { duration: 1 },
+                transition: { duration: shouldAnimate ? 1 : 0 },
               }
         }
       >
