@@ -25,8 +25,12 @@ import { useMediaRecorder } from "@/hooks/use-media-recorder";
 import { cn } from "@/lib/utils";
 import { Video } from "@prisma/client";
 import { Download, HelpCircle, Save, Trash2 } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
+import TopicAndCountdown from "./topic-and-countdown";
+
+const COUNTDOWN_TIME = 5;
 
 export default function TableTopicsRecorder() {
   const [currentTopic, setCurrentTopic] = useState<string | null>(null);
@@ -54,7 +58,7 @@ export default function TableTopicsRecorder() {
         const { topic, id } = await getTableTopic();
         setCurrentTopic(topic);
         topicId.current = id;
-        setCountdown(3);
+        setCountdown(COUNTDOWN_TIME);
       } catch (error) {
         const message =
           error instanceof Error ? error.message : "Failed to generate topic";
@@ -131,12 +135,6 @@ export default function TableTopicsRecorder() {
           {isPending ? <Spinner /> : null}
           {!recordedVideoURL ? "Generate topic" : "Generate new topic"}
         </Button>
-        {currentTopic && (
-          <div className="rounded-md bg-muted p-4">
-            <h3 className="mb-2 font-semibold">Topic:</h3>
-            <p>{currentTopic}</p>
-          </div>
-        )}
         <div className="relative aspect-video overflow-hidden rounded-md bg-black">
           <video
             ref={videoElementRef}
@@ -164,15 +162,25 @@ export default function TableTopicsRecorder() {
               />
             </div>
           ) : null}
-          <div
-            className={cn(
-              "pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 bg-black/60 text-center text-white backdrop-blur-md transition-opacity duration-1000",
-              countdown !== null ? "opacity-100" : "opacity-0",
-            )}
-          >
-            <div className="text-xl">Recording starts in</div>
-            <div className="text-6xl font-bold">{countdown ?? 0}</div>
-          </div>
+
+          <AnimatePresence>
+            {currentTopic && !recordedVideoURL ? (
+              <motion.div
+                key={currentTopic}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <TopicAndCountdown
+                  topic={currentTopic}
+                  countdown={countdown}
+                  showBackground={!isRecording}
+                  move={isRecording}
+                />
+              </motion.div>
+            ) : null}
+          </AnimatePresence>
         </div>
         {isRecording && (
           <div className="flex justify-between">
