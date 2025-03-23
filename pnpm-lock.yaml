@@ -8,9 +8,6 @@ dependencies:
   '@clerk/nextjs':
     specifier: ^6.9.5
     version: 6.9.5(next@15.1.2)(react-dom@19.0.0)(react@19.0.0)
-  '@gsap/react':
-    specifier: ^2.1.2
-    version: 2.1.2(gsap@3.12.7)(react@19.0.0)
   '@prisma/client':
     specifier: 6.1.0
     version: 6.1.0(prisma@6.1.0)
@@ -62,9 +59,6 @@ dependencies:
   dotenv:
     specifier: ^16.4.7
     version: 16.4.7
-  gsap:
-    specifier: ^3.12.7
-    version: 3.12.7
   lucide-react:
     specifier: ^0.468.0
     version: 0.468.0(react@19.0.0)
@@ -328,16 +322,6 @@ packages:
 
   /@floating-ui/utils@0.2.8:
     resolution: {integrity: sha512-kym7SodPp8/wloecOpcmSnWJsK7M0E5Wg8UcFA+uO4B9s5d0ywXOEro/8HM9x0rW+TljRzul/14UYz3TleT3ig==}
-    dev: false
-
-  /@gsap/react@2.1.2(gsap@3.12.7)(react@19.0.0):
-    resolution: {integrity: sha512-JqliybO1837UcgH2hVOM4VO+38APk3ECNrsuSM4MuXp+rbf+/2IG2K1YJiqfTcXQHH7XlA0m3ykniFYstfq0Iw==}
-    peerDependencies:
-      gsap: ^3.12.5
-      react: '>=17'
-    dependencies:
-      gsap: 3.12.7
-      react: 19.0.0
     dev: false
 
   /@humanfs/core@0.19.1:
@@ -2963,10 +2947,6 @@ packages:
   /graphemer@1.4.0:
     resolution: {integrity: sha512-EtKwoO6kxCL9WO5xipiHTZlSzBm7WLT627TqC/uVRd0HKmq8NXyebnNYxDoBi7wt8eTWrUrKXCOVaFq9x1kgag==}
     dev: true
-
-  /gsap@3.12.7:
-    resolution: {integrity: sha512-V4GsyVamhmKefvcAKaoy0h6si0xX7ogwBoBSs2CTJwt7luW0oZzC0LhdkyuKV8PJAXr7Yaj8pMjCKD4GJ+eEMg==}
-    dev: false
 
   /has-bigints@1.1.0:
     resolution: {integrity: sha512-R3pbpkcIqv2Pm3dUwgjclDRVmWpTJW2DcMzcIhEXEx1oh/CEMObMm3KLmRJOdvhM7o4uQBnwr8pzRK2sJWIqfg==}
