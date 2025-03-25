@@ -33,7 +33,6 @@
   - [x] Add light/dark toggle and infrastructure
 - [x] Add a persistent sidebar menu (create topic, user dashboard, home) etc. This should be a layout level feature and only for logged in users.
 - [x] Mobile menu / Header layout
-- [ ] Update favicon
 - Update project name. Check for domains
 
   - [x] Update in clerk
@@ -151,7 +150,7 @@
 - Enhance video recording page:
   - [x] Countdown timer before recording.
   - [x] Better prominence of the table topic with animations (overlay the video. Start large and then reduce size)
-  - [ ] Refactor background and spinner colors to conform with the theming in global.css
+  - [x] Refactor background and spinner colors to conform with the theming in global.css
   - [ ] After recording is saved. Add section to link to that video
   - [ ] Refactor media recorder to use one video element for stream and one for playback
 - Improve the traffic light indicator:
@@ -159,18 +158,21 @@
   - [x] Make it more visible
   - [x] Have a section that explains the traffic light system
 
-- [ ] Move save logic out of server actions and into an api route. There is an adjustable limit on server actions. See next.config but to be safe we should pass this data to a dedicated endpoint. This should also allow us to properly validate the file type on the server.
-  - [ ] Test this by uploading a longer video
-  - [ ] Show progress indicator in toast.promise
 - [ ] On recorder page warn that data will be lost on redirect or refresh (trigger alert dialog when navigating without saving)
-- [ ] On recorder page add a warning banner that someone is exceeding their video limit and should delete or upgrade their account AND
-      The video still gets sent to cloudflare for some reason
+- [ ] On recorder page add a warning banner that someone is exceeding their video limit and should delete or upgrade their account. ALSO the video still gets sent to cloudflare for some reason
 
 - Contact form
+
   - [ ] Rate limiting to prevent abuse
   - [ ] Input sanitization before sending emails (DOMPurify)
   - [ ] Moving email templates to a separate file for better maintainability
   - [ ] Validate input client side before submission
+
+- [ ] Update favicon
+
+- [ ] Move save logic out of server actions and into an api route. There is an adjustable limit on server actions. See next.config but to be safe we should pass this data to a dedicated endpoint. This should also allow us to properly validate the file type on the server.
+  - [ ] Test this by uploading a longer video
+  - [ ] Show progress indicator in toast.promise
 
 ## Post MVP features
 
