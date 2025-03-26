@@ -20,7 +20,6 @@
 - [x] On selecting a menu item on mobile the sidebar should close
 - [x] Download does not work on mobile (ios)
 - [x] Manage recordings on mobile looks terrible and causes the sidebar to overflow
-- [ ] Error uploading large videos > 1:30. Prisma transaction is timing out.
 
 ## 1. Project Setup
 
@@ -145,13 +144,18 @@
 - [ ] Privacy page
 - [ ] Terms page
 
+## Bugs
+
+- [x] Manage video page has padding issue on video card
+- [ ] Error uploading large videos > 1:30. Prisma transaction is timing out.
+
 ## Post MVP updates
 
 - Enhance video recording page:
   - [x] Countdown timer before recording.
   - [x] Better prominence of the table topic with animations (overlay the video. Start large and then reduce size)
   - [x] Refactor background and spinner colors to conform with the theming in global.css
-  - [ ] After recording is saved. Add section to link to that video
+  - [x] After recording is saved. Add section to link to that video
   - [ ] Refactor media recorder to use one video element for stream and one for playback
 - Improve the traffic light indicator:
 

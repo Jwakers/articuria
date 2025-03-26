@@ -22,10 +22,12 @@ import {
 } from "@/components/ui/card";
 import Spinner from "@/components/ui/spinner";
 import { useMediaRecorder } from "@/hooks/use-media-recorder";
+import { ROUTES } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { Video } from "@prisma/client";
 import { Download, HelpCircle, Save, Trash2 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
+import Link from "next/link";
 import { useEffect, useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 import TopicAndCountdown from "./topic-and-countdown";
@@ -42,6 +44,7 @@ export default function TableTopicsRecorder() {
     isRecording,
     isSaving,
     isSaved,
+    savedVideoId,
     recordedVideoURL,
     videoElementRef,
     timeElapsed,
@@ -231,6 +234,15 @@ export default function TableTopicsRecorder() {
                 >
                   {isSaving ? <Spinner /> : <Save />}
                   {isSaving ? "Saving..." : "Save"}
+                </Button>
+              ) : null}
+              {savedVideoId ? (
+                <Button asChild variant="link">
+                  <Link
+                    href={`${ROUTES.dashboard.tableTopics.manage}/${savedVideoId}`}
+                  >
+                    Go to video
+                  </Link>
                 </Button>
               ) : null}
               <Button onClick={handleDownloadRecording} variant="secondary">

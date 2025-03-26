@@ -1,7 +1,7 @@
 import { getUserVideos } from "@/app/server/db/queries";
 import { Metadata } from "next";
 import { Suspense } from "react";
-import { VideoList, VideoListSkeleton } from "../_components/video-list";
+import { VideoList, VideoListSkeleton } from "./_components/video-list";
 
 export const metadata: Metadata = {
   title: "Manage",
