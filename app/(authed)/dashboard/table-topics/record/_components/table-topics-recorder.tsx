@@ -131,11 +131,16 @@ export default function TableTopicsRecorder() {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <Button onClick={handleGenerateTopic} disabled={isRecording}>
+        <Button
+          onClick={handleGenerateTopic}
+          disabled={
+            isRecording || isPending || (countdown !== null && countdown > 0)
+          }
+        >
           {isPending ? <Spinner /> : null}
           {!recordedVideoURL ? "Generate topic" : "Generate new topic"}
         </Button>
-        <div className="relative aspect-video overflow-hidden rounded-md bg-black">
+        <div className="relative aspect-video overflow-hidden rounded-md bg-accent">
           <video
             ref={videoElementRef}
             className="h-full w-full"
@@ -169,12 +174,25 @@ export default function TableTopicsRecorder() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.3 }}
-                className="absolute inset-0 flex items-center justify-center bg-black/60 text-white backdrop-blur-md"
+                transition={{
+                  duration: 0.3,
+                }}
+                className="bg-overlay text-overlay-foreground absolute inset-0 flex items-center justify-center"
               >
                 <Spinner />
               </motion.div>
             ) : null}
+
+            {/* Backdrop blur must be outside of conditional rendering to properly transition */}
+            <div
+              key="backdrop-blur"
+              className={cn(
+                "pointer-events-none absolute inset-0 backdrop-blur-sm transition-opacity duration-500",
+                currentTopic && !recordedVideoURL && !isRecording
+                  ? "opacity-100"
+                  : "opacity-0",
+              )}
+            />
             {currentTopic && !recordedVideoURL ? (
               <motion.div
                 key={currentTopic}
@@ -187,7 +205,6 @@ export default function TableTopicsRecorder() {
                   topic={currentTopic}
                   countdown={countdown}
                   showBackground={!isRecording}
-                  move={isRecording}
                 />
               </motion.div>
             ) : null}

@@ -5,14 +5,12 @@ import { motion, useReducedMotion } from "motion/react";
 type CurrentTopicProps = {
   topic: string | null;
   showBackground: boolean;
-  move: boolean;
   countdown: number | null;
 };
 
 export default function TopicAndCountdown({
   topic,
   showBackground,
-  move,
   countdown,
 }: CurrentTopicProps) {
   const prefersReducedMotion = useReducedMotion();
@@ -21,8 +19,8 @@ export default function TopicAndCountdown({
   return (
     <div
       className={cn(
-        "absolute inset-0 size-full transition-opacity",
-        showBackground && !move && "bg-black/60 backdrop-blur-md",
+        "transition-color absolute inset-0 size-full duration-1000",
+        showBackground && "bg-overlay",
       )}
     >
       <motion.div
@@ -40,9 +38,12 @@ export default function TopicAndCountdown({
           x: "-50%",
           top: "100%",
           scale: 0.8,
+          transition: {
+            duration: 0.6,
+          },
         }}
         animate={
-          move
+          !showBackground
             ? {
                 y: "-100%",
                 top: "100%",
@@ -67,7 +68,7 @@ export default function TopicAndCountdown({
         </div>
         <div
           className={cn(
-            "absolute inset-x-2 top-full py-4 text-center text-xl text-white transition-opacity md:text-2xl",
+            "absolute inset-x-2 top-full py-4 text-center text-xl text-white md:text-2xl",
             countdown !== null ? "opacity-100" : "opacity-0",
           )}
         >
