@@ -96,6 +96,7 @@ export const useMediaRecorder = () => {
     setRecordedBlob(null);
     setRecordedVideoURL(null);
     setIsSaved(false);
+    setSavedVideoId(null);
     if (recordedVideoURL) URL.revokeObjectURL(recordedVideoURL);
     if (!streamRef.current) return;
     const tracks = streamRef.current.getTracks();
