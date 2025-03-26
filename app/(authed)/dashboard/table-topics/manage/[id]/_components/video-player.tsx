@@ -13,7 +13,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import Spinner from "@/components/ui/spinner";
 import useManageVideo from "@/hooks/use-manage-video";
@@ -68,8 +68,12 @@ export default function VideoPlayer({ videoPromise }: VideoPlayerProps) {
 
   return (
     <Card>
+      <CardHeader>
+        <CardTitle>
+          <h1 className="text-2xl font-bold">{video?.tableTopic.topic}</h1>
+        </CardTitle>
+      </CardHeader>
       <CardContent className="space-y-4 p-6">
-        <h1 className="text-2xl font-bold">{video?.tableTopic.topic}</h1>
         <iframe
           title={`Video for topic: ${video?.tableTopic.topic}`}
           src={`https://iframe.videodelivery.net/${video?.cloudflareId}`}

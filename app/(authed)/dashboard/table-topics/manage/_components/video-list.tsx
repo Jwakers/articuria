@@ -21,7 +21,7 @@ import { cn, formatDuration } from "@/lib/utils";
 import { ChevronLeft, ChevronRight, Play } from "lucide-react";
 import Link from "next/link";
 import { memo, use } from "react";
-import NoVideos from "./no-videos";
+import NoVideos from "../../_components/no-videos";
 
 type VideoListProps = {
   videoListPromise: ReturnType<typeof getUserVideos>;

@@ -9,6 +9,7 @@ export const useMediaRecorder = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const [savedVideoId, setSavedVideoId] = useState<Video["id"] | null>(null);
 
   const [recordedBlob, setRecordedBlob] = useState<Blob | null>(null);
   const [recordedVideoURL, setRecordedVideoURL] = useState<string | null>(null);
@@ -95,6 +96,7 @@ export const useMediaRecorder = () => {
     setRecordedBlob(null);
     setRecordedVideoURL(null);
     setIsSaved(false);
+    setSavedVideoId(null);
     if (recordedVideoURL) URL.revokeObjectURL(recordedVideoURL);
     if (!streamRef.current) return;
     const tracks = streamRef.current.getTracks();
@@ -142,8 +144,9 @@ export const useMediaRecorder = () => {
 
     toast.promise(promise, {
       loading: "Saving...",
-      success: () => {
+      success: (data) => {
         setIsSaved(true);
+        setSavedVideoId(data.id);
         return "Recoding saved";
       },
       error: (error) => {
@@ -212,6 +215,7 @@ export const useMediaRecorder = () => {
     videoElementRef,
     isSaving,
     isSaved,
+    savedVideoId,
     startRecording,
     stopRecording,
     resetRecording,
