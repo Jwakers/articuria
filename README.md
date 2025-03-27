@@ -127,7 +127,6 @@
 - [x] Test the database connection with Supabase in the production environment.
 - [x] Setup cloudflare webhook
 - [x] Add meta data to all pages
-- [ ] Video limit reached is not outputting a user friendly error on production
 
 ## 10. Testing and QA
 
@@ -148,6 +147,7 @@
 
 - [x] Manage video page has padding issue on video card
 - [ ] Error uploading large videos > 1:30. Prisma transaction is timing out.
+- [ ] Video limit reached is not outputting a user friendly error on production
 
 ## Post MVP updates
 
@@ -163,7 +163,8 @@
   - [x] Have a section that explains the traffic light system
 
 - [ ] On recorder page warn that data will be lost on redirect or refresh (trigger alert dialog when navigating without saving)
-- [ ] On recorder page add a warning banner that someone is exceeding their video limit and should delete or upgrade their account. ALSO the video still gets sent to cloudflare for some reason
+- [x] On recorder page add a warning banner that someone is exceeding their video limit and should delete or upgrade their account.
+- [ ] Video still gets sent to cloudflare if limit is reached
 
 - Contact form
 
