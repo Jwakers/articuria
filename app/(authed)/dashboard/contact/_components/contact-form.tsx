@@ -16,9 +16,11 @@ import { CONTACT_FORM_REASONS, ROUTES } from "@/lib/constants";
 import { useUser } from "@clerk/nextjs";
 import { Send } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useActionState, useEffect, useState } from "react";
+import { startTransition, useActionState, useEffect, useState } from "react";
 import { toast } from "sonner";
+import { z } from "zod";
 import { submitContactForm } from "../actions";
+import { contactFormSchema } from "../schema";
 
 export default function ContactForm() {
   const [state, formAction, isPending] = useActionState(
@@ -29,6 +31,28 @@ export default function ContactForm() {
   const router = useRouter();
   const params = useSearchParams();
   const [reason, setReason] = useState<string>(params.get("reason") ?? "");
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    console.log("Handle submit");
+    const formData = new FormData(event.currentTarget);
+    formData.set("reason", reason);
+    const data = Object.fromEntries(formData.entries());
+
+    try {
+      contactFormSchema.parse(data);
+      startTransition(() => {
+        formAction(formData);
+      });
+    } catch (error) {
+      console.log({ error });
+      if (error instanceof z.ZodError) {
+        error.errors.forEach((err) => {
+          toast.error(err.message);
+        });
+      }
+    }
+  };
 
   useEffect(() => {
     if (!state) return;
@@ -45,7 +69,10 @@ export default function ContactForm() {
   }, [state, router]);
 
   return (
-    <form action={formAction} className="grid max-w-xl gap-4 md:grid-cols-2">
+    <form
+      onSubmit={handleSubmit}
+      className="grid max-w-xl gap-4 md:grid-cols-2"
+    >
       <div className="space-y-2">
         <Label htmlFor="name">Name</Label>
         <Input

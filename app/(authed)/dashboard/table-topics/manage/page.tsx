@@ -1,6 +1,7 @@
 import { getUserVideos } from "@/app/server/db/queries";
 import { Metadata } from "next";
 import { Suspense } from "react";
+import VideoLimitAlert from "../../_components/video-limit-alert";
 import { VideoList, VideoListSkeleton } from "./_components/video-list";
 
 export const metadata: Metadata = {
@@ -18,7 +19,8 @@ export default async function ManageRecordingsPage({
 
   return (
     <div>
-      <div className="space-y-4">
+      <div className="space-y-2">
+        <VideoLimitAlert />
         <Suspense fallback={<VideoListSkeleton />}>
           <VideoList videoListPromise={videoListPromise} />
         </Suspense>

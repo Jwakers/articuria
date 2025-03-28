@@ -13,6 +13,7 @@ import {
   TotalVideoDurationCard,
   TotalVideosCard,
 } from "./_components/stat-cards";
+import VideoLimitAlert from "./_components/video-limit-alert";
 import NoVideos from "./table-topics/_components/no-videos";
 
 export const metadata: Metadata = {
@@ -28,6 +29,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-4">
+      <VideoLimitAlert />
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <Suspense fallback={<StatCardSkeleton />}>
           <TotalVideosCard />
