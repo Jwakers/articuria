@@ -169,7 +169,7 @@
   - [ ] Rate limiting to prevent abuse
   - [x] Input sanitization before sending emails (DOMPurify)
   - [ ] Moving email templates to a separate file for better maintainability
-  - [ ] Validate input client side before submission
+  - [x] Validate input client side before submission
 
 - [ ] Update favicon
 
