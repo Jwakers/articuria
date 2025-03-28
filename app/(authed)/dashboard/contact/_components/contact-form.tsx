@@ -34,7 +34,6 @@ export default function ContactForm() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log("Handle submit");
     const formData = new FormData(event.currentTarget);
     formData.set("reason", reason);
     const data = Object.fromEntries(formData.entries());
@@ -45,7 +44,6 @@ export default function ContactForm() {
         formAction(formData);
       });
     } catch (error) {
-      console.log({ error });
       if (error instanceof z.ZodError) {
         error.errors.forEach((err) => {
           toast.error(err.message);
