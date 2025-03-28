@@ -148,6 +148,7 @@
 - [x] Manage video page has padding issue on video card
 - [ ] Error uploading large videos > 1:30. Prisma transaction is timing out.
 - [ ] Video limit reached is not outputting a user friendly error on production
+- [ ] Video still gets sent to cloudflare if limit is reached
 
 ## Post MVP updates
 
@@ -156,20 +157,17 @@
   - [x] Better prominence of the table topic with animations (overlay the video. Start large and then reduce size)
   - [x] Refactor background and spinner colors to conform with the theming in global.css
   - [x] After recording is saved. Add section to link to that video
-  - [ ] Refactor media recorder to use one video element for stream and one for playback
 - Improve the traffic light indicator:
 
   - [x] Make it more visible
   - [x] Have a section that explains the traffic light system
 
-- [ ] On recorder page warn that data will be lost on redirect or refresh (trigger alert dialog when navigating without saving)
 - [x] On recorder page add a warning banner that someone is exceeding their video limit and should delete or upgrade their account.
-- [ ] Video still gets sent to cloudflare if limit is reached
 
 - Contact form
 
   - [ ] Rate limiting to prevent abuse
-  - [ ] Input sanitization before sending emails (DOMPurify)
+  - [x] Input sanitization before sending emails (DOMPurify)
   - [ ] Moving email templates to a separate file for better maintainability
   - [ ] Validate input client side before submission
 
@@ -207,3 +205,5 @@ AI-Generated Table Topics
   - [ ] any other clerk functionality offered by the API
 
 - Add colour blind option in user settings that adds number to the color indicators on the traffic light system (green circle should have a 1, orange a 2 and red a 3). Don't forget to include these indicators in the guide section of the page too.
+
+- [ ] On recorder page warn that data will be lost on redirect or refresh (trigger alert dialog when navigating without saving) - This is complex and cannot be handled with beforeunload event. Next.js uses 'soft' navigation so the event does not fire. Need to find a way to intercept route changes before they happen.
