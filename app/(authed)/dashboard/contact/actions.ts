@@ -1,15 +1,9 @@
 "use server";
 
 import { currentUser } from "@clerk/nextjs/server";
+import DOMPurify from "isomorphic-dompurify";
 import nodemailer from "nodemailer";
-import { z } from "zod";
-
-const contactFormSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  email: z.string().email("Invalid email address"),
-  reason: z.string().min(1, "Reason is required"),
-  message: z.string().min(1, "Message is required"),
-});
+import { contactFormSchema } from "./schema";
 
 export async function submitContactForm(_: unknown, formData: FormData) {
   const user = await currentUser();
@@ -30,7 +24,10 @@ export async function submitContactForm(_: unknown, formData: FormData) {
     };
   }
 
-  const { name, email, reason, message } = parsedData.data;
+  const name = DOMPurify.sanitize(parsedData.data.name),
+    email = DOMPurify.sanitize(parsedData.data.email),
+    reason = DOMPurify.sanitize(parsedData.data.reason),
+    message = DOMPurify.sanitize(parsedData.data.message);
 
   // Setup nodemailer transporter
   const transporter = nodemailer.createTransport({
