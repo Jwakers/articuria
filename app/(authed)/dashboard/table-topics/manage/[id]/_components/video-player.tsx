@@ -157,8 +157,10 @@ export default function VideoPlayer({ videoPromise }: VideoPlayerProps) {
 export function VideoPlayerSkeleton() {
   return (
     <Card>
-      <CardContent className="space-y-4 p-6">
+      <CardHeader>
         <Skeleton className="h-8 w-44" />
+      </CardHeader>
+      <CardContent className="space-y-4 p-6">
         <Skeleton className="aspect-video w-full" />
         <div className="mt-4 flex items-center justify-between">
           <Skeleton className="h-9 w-28" />
