@@ -48,6 +48,9 @@ export default function ContactForm() {
         error.errors.forEach((err) => {
           toast.error(err.message);
         });
+      } else {
+        toast.error("An unexpected error occurred. Please try again.");
+        console.error(error);
       }
     }
   };
