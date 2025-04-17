@@ -147,8 +147,8 @@
 
 - [x] Manage video page has padding issue on video card
 - [ ] Error uploading large videos > 1:30. Prisma transaction is timing out.
-- [ ] Video limit reached is not outputting a user friendly error on production
-- [ ] Video still gets sent to cloudflare if limit is reached
+- [x] Video limit reached is not outputting a user friendly error on production
+- [x] Video still gets sent to cloudflare if limit is reached
 
 ## Post MVP updates
 

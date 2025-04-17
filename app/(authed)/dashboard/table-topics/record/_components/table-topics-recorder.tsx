@@ -180,7 +180,7 @@ export default function TableTopicsRecorder() {
                 transition={{
                   duration: 0.3,
                 }}
-                className="bg-overlay text-overlay-foreground absolute inset-0 flex items-center justify-center"
+                className="absolute inset-0 flex items-center justify-center bg-overlay text-overlay-foreground"
               >
                 <Spinner />
               </motion.div>

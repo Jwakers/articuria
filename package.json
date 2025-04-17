@@ -7,7 +7,8 @@
     "dev:secure": "next dev --experimental-https",
     "build": "prisma generate && prisma migrate deploy && next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "backfill-duration": "pnpm dlx tsx scripts/backfill-video-durations.ts"
   },
   "prisma": {
     "schema": "app/server/db/schema.prisma"

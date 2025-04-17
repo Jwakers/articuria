@@ -40,6 +40,16 @@ export async function createUserVideo({
   formData: FormData;
 }) {
   const user = await isAuth();
+  const { videoCount } = await getUserVideoCount();
+
+  if (videoCount >= ACCOUNT_LIMITS.free.tableTopicLimit) {
+    throw new Error(
+      "You have reached your account limit for table topics. Upgrade your account or delete some videos to save more.",
+      {
+        cause: ERROR_CODES.reachedVideoLimit,
+      },
+    );
+  }
 
   const video = await db.$transaction(
     async (prisma) => {
@@ -47,20 +57,6 @@ export async function createUserVideo({
 
       if (!uploadURL) throw new Error("Unable to get upload URL");
       if (!uid) throw new Error("Could not get video ID");
-      const videoCount = await prisma.video.count({
-        where: {
-          userId: user.userId,
-        },
-      });
-
-      if (videoCount >= ACCOUNT_LIMITS.free.tableTopicLimit) {
-        throw new Error(
-          "Video limit reached on free account. Upgrade your account to save more videos",
-          {
-            cause: ERROR_CODES.reachedVideoLimit,
-          },
-        );
-      }
 
       await uploadVideoToCloudflare(uploadURL, formData);
 
