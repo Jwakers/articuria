@@ -8,11 +8,16 @@ const cloudflareClient = new Cloudflare({
   apiKey: process.env.CLOUDFLARE_API_TOKEN,
 });
 
+const notificationUrl =
+  process.env.NODE_ENV === "production"
+    ? "https://www.articuria.com/api/webhooks/cloudflare"
+    : "https://a497-92-238-170-122.ngrok-free.app/api/webhooks/cloudflare";
+
 async function createWebhook() {
   try {
     const webhook = await cloudflareClient.stream.webhooks.update({
       account_id: process.env.CLOUDFLARE_ACCOUNT_ID!,
-      notificationUrl: `https://www.articuria.com/api/webhooks/cloudflare`,
+      notificationUrl,
     });
 
     return console.log(webhook);

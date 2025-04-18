@@ -1,6 +1,7 @@
 import { getUserVideoById } from "@/app/server/db/queries";
 import { currentUser } from "@clerk/nextjs/server";
 import { Suspense } from "react";
+import VideoNotProcessed from "./_components/video-not-processed";
 import VideoPlayer, { VideoPlayerSkeleton } from "./_components/video-player";
 
 export default async function VideoPage({
@@ -16,7 +17,10 @@ export default async function VideoPage({
 
   return (
     <Suspense fallback={<VideoPlayerSkeleton />}>
-      <VideoPlayer videoPromise={videoPromise} />
+      <div className="space-y-2">
+        <VideoNotProcessed videoPromise={videoPromise} />
+        <VideoPlayer videoPromise={videoPromise} />
+      </div>
     </Suspense>
   );
 }

@@ -6,6 +6,7 @@ import { isSameMonth, subMonths } from "date-fns";
 import "server-only";
 import {
   deleteVideoById,
+  getVideoById,
   getVideoUploadUrl,
   uploadVideoToCloudflare,
 } from "../cloudflare-actions";
@@ -184,7 +185,7 @@ export async function getUserVideoDurationData() {
 export async function getUserVideoById(id: Video["id"]) {
   const user = await isAuth();
 
-  const video = await db.video.findFirst({
+  let video = await db.video.findFirst({
     where: {
       id,
       userId: user.userId,
@@ -194,6 +195,32 @@ export async function getUserVideoById(id: Video["id"]) {
     },
   });
 
+  if (video && !video?.readyToStream) {
+    const cloudflareVideo = await getVideoById(video.cloudflareId);
+    video = await _updateUserVideoReadyState(
+      video.id,
+      cloudflareVideo.readyToStream,
+    );
+  }
+
+  return video;
+}
+
+async function _updateUserVideoReadyState(
+  id: Video["id"],
+  readyToStream: boolean | undefined,
+) {
+  const video = await db.video.update({
+    where: {
+      id,
+    },
+    data: {
+      readyToStream,
+    },
+    include: {
+      tableTopic: true,
+    },
+  });
   return video;
 }
 

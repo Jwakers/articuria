@@ -1,12 +1,16 @@
 import { cloudflareClient } from "@/app/server/cloudflare-client";
 import { db } from "@/app/server/db";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
+import type Cloudflare from "cloudflare";
 import crypto from "crypto";
+
+type StreamVideoGet = Cloudflare.Stream["get"];
+type CloudflareVideo = Awaited<ReturnType<StreamVideoGet>>;
 
 export async function POST(request: Request) {
   try {
     await verifySignature(request);
-    const data: ResponseData | undefined = await request.json();
+    const data: CloudflareVideo | undefined = await request.json();
 
     if (!data) throw new Error("No data received");
 
@@ -85,12 +89,15 @@ async function verifySignature(request: Request) {
 }
 
 async function updateVideoWithRetry(
-  data: ResponseData,
+  data: CloudflareVideo,
   attempt = 1,
   maxAttempts = 5,
   delayMs = 5000,
 ) {
+  if (!data.uid) throw new Error("Could not get video UID");
   const duration = await fetchVideoDuration(data.uid);
+
+  if (data.readyToStream) await updateVideoReadyState(data);
 
   if (duration && duration > 0) {
     console.log(`Fetched duration: ${duration} for video ${data.uid}`);
@@ -114,7 +121,7 @@ async function updateVideoWithRetry(
   }
 }
 
-async function updateVideoDuration(data: ResponseData) {
+async function updateVideoDuration(data: CloudflareVideo) {
   try {
     return await db.video.update({
       where: {
@@ -122,6 +129,27 @@ async function updateVideoDuration(data: ResponseData) {
       },
       data: {
         duration: data.duration,
+      },
+    });
+  } catch (error) {
+    if (
+      error instanceof PrismaClientKnownRequestError &&
+      error.code === "P2025"
+    ) {
+      throw new Error(`No video found with cloudflareId: ${data.uid}`);
+    }
+    throw error; // Re-throw other database errors
+  }
+}
+
+async function updateVideoReadyState(data: CloudflareVideo) {
+  try {
+    return await db.video.update({
+      where: {
+        cloudflareId: data.uid,
+      },
+      data: {
+        readyToStream: data.readyToStream,
       },
     });
   } catch (error) {
@@ -168,7 +196,7 @@ function handleError(error: unknown) {
   );
 }
 
-function validateRequestData(data: unknown): asserts data is ResponseData {
+function validateRequestData(data: unknown): asserts data is CloudflareVideo {
   if (!data || typeof data !== "object") {
     throw new Error("Request data must be an object");
   }
@@ -185,48 +213,3 @@ function validateRequestData(data: unknown): asserts data is ResponseData {
     throw new Error("Duration cannot be negative");
   }
 }
-
-type ResponseData = {
-  uid: string;
-  creator: null;
-  thumbnail: string;
-  thumbnailTimestampPct: number;
-  readyToStream: boolean;
-  readyToStreamAt: string;
-  status: {
-    state: string;
-    step: string;
-    pctComplete: string;
-    errorReasonCode: string;
-    errorReasonText: string;
-  };
-  meta: {
-    created: string;
-    name: string;
-    title: string;
-    userId: string;
-  };
-  created: string;
-  modified: string;
-  scheduledDeletion: null;
-  size: number;
-  preview: string;
-  allowedOrigins: string[];
-  requireSignedURLs: boolean;
-  uploaded: string;
-  uploadExpiry: string;
-  maxSizeBytes: null;
-  maxDurationSeconds: number;
-  duration: number;
-  input: {
-    width: number;
-    height: number;
-  };
-  playback: {
-    hls: string;
-    dash: string;
-  };
-  watermark: null;
-  clippedFrom: null;
-  publicDetails: null;
-};
