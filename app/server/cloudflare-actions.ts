@@ -1,6 +1,7 @@
 "use server";
 
 import { currentUser } from "@clerk/nextjs/server";
+import { unstable_cache } from "next/cache";
 import { cloudflareClient } from "./cloudflare-client";
 
 export async function getVideoUploadUrl({ title }: { title: string }) {
@@ -49,13 +50,23 @@ export async function uploadVideoToCloudflare(
   if (!res.ok) throw new Error(`Video upload failed: ${res.status}`);
 }
 
+const _getCachedVideo = unstable_cache(
+  async (id) => {
+    return cloudflareClient.stream.get(id, {
+      account_id: process.env.CLOUDFLARE_ACCOUNT_ID!,
+    });
+  },
+  undefined,
+  {
+    revalidate: 20,
+  },
+);
+
 export async function getVideoById(id: string) {
   const user = await currentUser();
   if (!user?.id) throw new Error("Unauthorized");
 
-  const video = await cloudflareClient.stream.get(id, {
-    account_id: process.env.CLOUDFLARE_ACCOUNT_ID!,
-  });
+  const video = await _getCachedVideo(id);
 
   return video;
 }

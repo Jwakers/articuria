@@ -198,6 +198,8 @@ export async function getUserVideoById(id: Video["id"]) {
 
   if (video && !video?.readyToStream) {
     const cloudflareVideo = await getVideoById(video.cloudflareId);
+
+    if (!cloudflareVideo.readyToStream) return video;
     video = await _updateUserVideoReadyState(
       video.id,
       cloudflareVideo.readyToStream,

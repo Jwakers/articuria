@@ -21,7 +21,7 @@ export async function POST(request: Request) {
       video = await updateVideoWithRetry(data);
     } else {
       validateRequestData(data);
-      video = await updateVideoDuration(data);
+      video = await updateVideo(data);
     }
 
     if (!video) {
@@ -98,11 +98,11 @@ async function updateVideoWithRetry(
   if (!data.uid) throw new Error("Could not get video UID");
   const duration = await fetchVideoDuration(data.uid);
 
-  if (data.readyToStream) await updateVideoReadyState(data);
+  if (data.readyToStream) await updateVideo(data);
 
   if (duration && duration > 0) {
     console.log(`Fetched duration: ${duration} for video ${data.uid}`);
-    const video = await updateVideoDuration({ ...data, duration });
+    const video = await updateVideo({ ...data, duration });
     return video;
   }
 
@@ -122,35 +122,15 @@ async function updateVideoWithRetry(
   }
 }
 
-async function updateVideoDuration(data: CloudflareVideo) {
+async function updateVideo(data: CloudflareVideo) {
   try {
     return await db.video.update({
-      where: {
-        cloudflareId: data.uid,
-      },
+      where: { cloudflareId: data.uid },
       data: {
-        duration: data.duration,
-      },
-    });
-  } catch (error) {
-    if (
-      error instanceof PrismaClientKnownRequestError &&
-      error.code === "P2025"
-    ) {
-      throw new Error(`No video found with cloudflareId: ${data.uid}`);
-    }
-    throw error; // Re-throw other database errors
-  }
-}
-
-async function updateVideoReadyState(data: CloudflareVideo) {
-  try {
-    return await db.video.update({
-      where: {
-        cloudflareId: data.uid,
-      },
-      data: {
-        readyToStream: data.readyToStream,
+        ...(data.duration !== undefined && { duration: data.duration }),
+        ...(data.readyToStream !== undefined && {
+          readyToStream: data.readyToStream,
+        }),
       },
     });
   } catch (error) {
@@ -215,4 +195,8 @@ function validateRequestData(data: unknown): asserts data is CloudflareVideo {
   }
   if (!("readyToStream" in data))
     throw new Error("Missing required field: readyToStream");
+
+  if (typeof data.readyToStream !== "boolean") {
+    throw new Error("readyToStream must be a boolean when provided");
+  }
 }
