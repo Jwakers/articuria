@@ -8,12 +8,10 @@ const cloudflareClient = new Cloudflare({
   apiKey: process.env.CLOUDFLARE_API_TOKEN,
 });
 
-const notificationUrl =
-  process.env.NODE_ENV === "production"
-    ? "https://www.articuria.com/api/webhooks/cloudflare"
-    : "https://a497-92-238-170-122.ngrok-free.app/api/webhooks/cloudflare";
+const notificationUrl = process.env.CLOUDFLARE_WEBHOOK_URL;
 
 async function createWebhook() {
+  if (!notificationUrl) throw new Error("Webhook URL is not defined");
   try {
     const webhook = await cloudflareClient.stream.webhooks.update({
       account_id: process.env.CLOUDFLARE_ACCOUNT_ID!,
