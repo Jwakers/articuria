@@ -10,9 +10,10 @@ type CloudflareVideo = Awaited<ReturnType<StreamVideoGet>>;
 export async function POST(request: Request) {
   try {
     await verifySignature(request);
-    const data: CloudflareVideo | undefined = await request.json();
+    const data = (await request.json()) as unknown;
 
     if (!data) throw new Error("No data received");
+    validateRequestData(data);
 
     let video;
 
@@ -212,4 +213,6 @@ function validateRequestData(data: unknown): asserts data is CloudflareVideo {
   if (data.duration < 0) {
     throw new Error("Duration cannot be negative");
   }
+  if (!("readyToStream" in data))
+    throw new Error("Missing required field: readyToStream");
 }
