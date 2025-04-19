@@ -41,19 +41,20 @@ export async function createUserVideo({
   formData: FormData;
 }) {
   const user = await isAuth();
-  const { videoCount } = await getUserVideoCount();
-
-  if (videoCount >= ACCOUNT_LIMITS.free.tableTopicLimit) {
-    throw new Error(
-      "You have reached your account limit for table topics. Upgrade your account or delete some videos to save more.",
-      {
-        cause: ERROR_CODES.reachedVideoLimit,
-      },
-    );
-  }
 
   const video = await db.$transaction(
     async (prisma) => {
+      const videoCount = await prisma.video.count({
+        where: { userId: user.userId },
+      });
+
+      if (videoCount >= ACCOUNT_LIMITS.free.tableTopicLimit) {
+        throw new Error(
+          "You have reached your account limit for table topics. Upgrade your account or delete some videos to save more.",
+          { cause: ERROR_CODES.reachedVideoLimit },
+        );
+      }
+
       const { uploadURL, uid } = await getVideoUploadUrl({ title });
 
       if (!uploadURL) throw new Error("Unable to get upload URL");
