@@ -8,11 +8,14 @@ const cloudflareClient = new Cloudflare({
   apiKey: process.env.CLOUDFLARE_API_TOKEN,
 });
 
+const notificationUrl = process.env.CLOUDFLARE_WEBHOOK_URL;
+
 async function createWebhook() {
+  if (!notificationUrl) throw new Error("Webhook URL is not defined");
   try {
     const webhook = await cloudflareClient.stream.webhooks.update({
       account_id: process.env.CLOUDFLARE_ACCOUNT_ID!,
-      notificationUrl: `https://www.articuria.com/api/webhooks/cloudflare`,
+      notificationUrl,
     });
 
     return console.log(webhook);

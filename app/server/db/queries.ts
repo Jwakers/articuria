@@ -6,6 +6,7 @@ import { isSameMonth, subMonths } from "date-fns";
 import "server-only";
 import {
   deleteVideoById,
+  getVideoById,
   getVideoUploadUrl,
   uploadVideoToCloudflare,
 } from "../cloudflare-actions";
@@ -43,24 +44,21 @@ export async function createUserVideo({
 
   const video = await db.$transaction(
     async (prisma) => {
-      const { uploadURL, uid } = await getVideoUploadUrl({ title });
-
-      if (!uploadURL) throw new Error("Unable to get upload URL");
-      if (!uid) throw new Error("Could not get video ID");
       const videoCount = await prisma.video.count({
-        where: {
-          userId: user.userId,
-        },
+        where: { userId: user.userId },
       });
 
       if (videoCount >= ACCOUNT_LIMITS.free.tableTopicLimit) {
         throw new Error(
-          "Video limit reached on free account. Upgrade your account to save more videos",
-          {
-            cause: ERROR_CODES.reachedVideoLimit,
-          },
+          "You have reached your account limit for table topics. Upgrade your account or delete some videos to save more.",
+          { cause: ERROR_CODES.reachedVideoLimit },
         );
       }
+
+      const { uploadURL, uid } = await getVideoUploadUrl({ title });
+
+      if (!uploadURL) throw new Error("Unable to get upload URL");
+      if (!uid) throw new Error("Could not get video ID");
 
       await uploadVideoToCloudflare(uploadURL, formData);
 
@@ -188,7 +186,7 @@ export async function getUserVideoDurationData() {
 export async function getUserVideoById(id: Video["id"]) {
   const user = await isAuth();
 
-  const video = await db.video.findFirst({
+  let video = await db.video.findFirst({
     where: {
       id,
       userId: user.userId,
@@ -198,6 +196,34 @@ export async function getUserVideoById(id: Video["id"]) {
     },
   });
 
+  if (video && !video?.readyToStream) {
+    const cloudflareVideo = await getVideoById(video.cloudflareId);
+
+    if (!cloudflareVideo.readyToStream) return video;
+    video = await _updateUserVideoReadyState(
+      video.id,
+      cloudflareVideo.readyToStream,
+    );
+  }
+
+  return video;
+}
+
+async function _updateUserVideoReadyState(
+  id: Video["id"],
+  readyToStream: boolean | undefined,
+) {
+  const video = await db.video.update({
+    where: {
+      id,
+    },
+    data: {
+      readyToStream,
+    },
+    include: {
+      tableTopic: true,
+    },
+  });
   return video;
 }
 

@@ -152,7 +152,7 @@ export const useMediaRecorder = () => {
       error: (error) => {
         const message =
           error instanceof Error ? error.message : "Unknown error";
-        console.error("Failed to upload video:", message);
+
         setIsSaved(false);
         return `Recording failed to save: ${message}`;
       },

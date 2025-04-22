@@ -1,14 +1,19 @@
 import { cloudflareClient } from "@/app/server/cloudflare-client";
 import { db } from "@/app/server/db";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
+import type Cloudflare from "cloudflare";
 import crypto from "crypto";
+
+type StreamVideoGet = Cloudflare.Stream["get"];
+type CloudflareVideo = Awaited<ReturnType<StreamVideoGet>>;
 
 export async function POST(request: Request) {
   try {
     await verifySignature(request);
-    const data: ResponseData | undefined = await request.json();
+    const data = (await request.json()) as unknown;
 
     if (!data) throw new Error("No data received");
+    validateRequestData(data);
 
     let video;
 
@@ -16,7 +21,7 @@ export async function POST(request: Request) {
       video = await updateVideoWithRetry(data);
     } else {
       validateRequestData(data);
-      video = await updateVideoDuration(data);
+      video = await updateVideo(data);
     }
 
     if (!video) {
@@ -85,16 +90,19 @@ async function verifySignature(request: Request) {
 }
 
 async function updateVideoWithRetry(
-  data: ResponseData,
+  data: CloudflareVideo,
   attempt = 1,
   maxAttempts = 5,
   delayMs = 5000,
 ) {
+  if (!data.uid) throw new Error("Could not get video UID");
   const duration = await fetchVideoDuration(data.uid);
+
+  if (data.readyToStream !== undefined) await updateVideo(data);
 
   if (duration && duration > 0) {
     console.log(`Fetched duration: ${duration} for video ${data.uid}`);
-    const video = await updateVideoDuration({ ...data, duration });
+    const video = await updateVideo({ ...data, duration });
     return video;
   }
 
@@ -114,14 +122,15 @@ async function updateVideoWithRetry(
   }
 }
 
-async function updateVideoDuration(data: ResponseData) {
+async function updateVideo(data: CloudflareVideo) {
   try {
     return await db.video.update({
-      where: {
-        cloudflareId: data.uid,
-      },
+      where: { cloudflareId: data.uid },
       data: {
-        duration: data.duration,
+        ...(data.duration !== undefined && { duration: data.duration }),
+        ...(data.readyToStream !== undefined && {
+          readyToStream: data.readyToStream,
+        }),
       },
     });
   } catch (error) {
@@ -168,7 +177,7 @@ function handleError(error: unknown) {
   );
 }
 
-function validateRequestData(data: unknown): asserts data is ResponseData {
+function validateRequestData(data: unknown): asserts data is CloudflareVideo {
   if (!data || typeof data !== "object") {
     throw new Error("Request data must be an object");
   }
@@ -184,49 +193,10 @@ function validateRequestData(data: unknown): asserts data is ResponseData {
   if (data.duration < 0) {
     throw new Error("Duration cannot be negative");
   }
-}
+  if (!("readyToStream" in data))
+    throw new Error("Missing required field: readyToStream");
 
-type ResponseData = {
-  uid: string;
-  creator: null;
-  thumbnail: string;
-  thumbnailTimestampPct: number;
-  readyToStream: boolean;
-  readyToStreamAt: string;
-  status: {
-    state: string;
-    step: string;
-    pctComplete: string;
-    errorReasonCode: string;
-    errorReasonText: string;
-  };
-  meta: {
-    created: string;
-    name: string;
-    title: string;
-    userId: string;
-  };
-  created: string;
-  modified: string;
-  scheduledDeletion: null;
-  size: number;
-  preview: string;
-  allowedOrigins: string[];
-  requireSignedURLs: boolean;
-  uploaded: string;
-  uploadExpiry: string;
-  maxSizeBytes: null;
-  maxDurationSeconds: number;
-  duration: number;
-  input: {
-    width: number;
-    height: number;
-  };
-  playback: {
-    hls: string;
-    dash: string;
-  };
-  watermark: null;
-  clippedFrom: null;
-  publicDetails: null;
-};
+  if (typeof data.readyToStream !== "boolean") {
+    throw new Error("readyToStream must be a boolean when provided");
+  }
+}

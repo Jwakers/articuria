@@ -18,13 +18,11 @@ export default async function ManageRecordingsPage({
   const videoListPromise = getUserVideos(page);
 
   return (
-    <div>
-      <div className="space-y-2">
-        <VideoLimitAlert />
-        <Suspense fallback={<VideoListSkeleton />}>
-          <VideoList videoListPromise={videoListPromise} />
-        </Suspense>
-      </div>
+    <div className="space-y-2">
+      <VideoLimitAlert />
+      <Suspense fallback={<VideoListSkeleton />}>
+        <VideoList videoListPromise={videoListPromise} />
+      </Suspense>
     </div>
   );
 }

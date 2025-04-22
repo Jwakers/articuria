@@ -16,11 +16,12 @@ model TableTopic {
 }
 
 model Video {
-    id           String     @id @default(cuid())
-    createdAt    DateTime   @default(now())
-    cloudflareId String     @unique
-    userId       String
-    tableTopic   TableTopic @relation(fields: [tableTopicId], references: [id])
-    tableTopicId Int
-    duration     Int? // Duration in seconds
+    id            String     @id @default(cuid())
+    createdAt     DateTime   @default(now())
+    cloudflareId  String     @unique
+    userId        String
+    tableTopic    TableTopic @relation(fields: [tableTopicId], references: [id])
+    tableTopicId  Int
+    duration      Int? // Duration in seconds
+    readyToStream Boolean    @default(false)
 }

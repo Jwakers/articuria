@@ -147,10 +147,14 @@
 
 - [x] Manage video page has padding issue on video card
 - [ ] Error uploading large videos > 1:30. Prisma transaction is timing out.
-- [ ] Video limit reached is not outputting a user friendly error on production
-- [ ] Video still gets sent to cloudflare if limit is reached
+- [x] Video limit reached is not outputting a user friendly error on production
+- [x] Video still gets sent to cloudflare if limit is reached
+- [x] "Go to video" after save can result in the iframe showing "unknown error" because cloudflare has not yet processed the video
+  - [x] Show a message that the video will be ready soon and to check back momentarily
 
 ## Post MVP updates
+
+- [ ] Refine design with lovable.com
 
 - Enhance video recording page:
   - [x] Countdown timer before recording.
@@ -170,6 +174,9 @@
   - [x] Input sanitization before sending emails (DOMPurify)
   - [ ] Moving email templates to a separate file for better maintainability
   - [x] Validate input client side before submission
+
+- [ ] Create cloudflare webhook should run on every deployment
+- [ ] Should isolate development and production webhooks on cloudflare to prevent interruption of production webhook
 
 - [ ] Update favicon
 
