@@ -98,7 +98,7 @@ async function updateVideoWithRetry(
   if (!data.uid) throw new Error("Could not get video UID");
   const duration = await fetchVideoDuration(data.uid);
 
-  if (data.readyToStream) await updateVideo(data);
+  if (data.readyToStream !== undefined) await updateVideo(data);
 
   if (duration && duration > 0) {
     console.log(`Fetched duration: ${duration} for video ${data.uid}`);
