@@ -7,7 +7,7 @@ dotenv.config({ path: ".env" });
 // pnpm dlx tsx scripts/table-topics-seed.ts
 
 async function main() {
-  const topics: Partial<TableTopic>[] = [
+  const topics: Pick<TableTopic, "topic" | "difficulty" | "themes">[] = [
     // PERSONAL_EXPERIENCES
     {
       topic:
@@ -223,26 +223,19 @@ async function main() {
       difficulty: "ADVANCED",
       themes: ["CREATIVITY_AND_IMAGINATION"],
     },
-  ];
+  ] as const;
 
   console.log(`Starting to seed ${topics.length} table topics...`);
 
-  for (const topicData of topics) {
-    const { topic, difficulty, themes } = topicData;
-
-    if (!topic) continue;
-
-    // Create the table topic
-    const createdTopic = await db.tableTopic.create({
-      data: {
-        topic,
-        difficulty: difficulty,
-        themes,
-      },
-    });
-
-    console.log(`Created topic with ID: ${createdTopic.id}`);
-  }
+  await Promise.all(
+    topics.map(({ topic, difficulty, themes }) =>
+      db.tableTopic.upsert({
+        where: { topic },
+        create: { topic, difficulty, themes },
+        update: {},
+      }),
+    ),
+  );
 
   console.log(`Seeding finished.`);
 }

@@ -139,25 +139,6 @@ export async function getUserVideos(
   return { videos, totalPages, currentPage: Number(page) };
 }
 
-export async function getAllUserVideos() {
-  const user = await isAuth();
-
-  const videos = await db.video.findMany({
-    where: {
-      userId: user.userId,
-    },
-    include: {
-      tableTopic: {
-        select: {
-          topic: true,
-        },
-      },
-    },
-  });
-
-  return videos;
-}
-
 export async function getUserVideoCount() {
   const user = await isAuth();
 
@@ -236,13 +217,19 @@ export async function getUserVideoById(id: Video["id"]) {
     },
   });
 
-  if (video && !video?.readyToStream) {
+  if (
+    video &&
+    (!video?.readyToStream ||
+      video?.duration === null ||
+      video?.duration === undefined)
+  ) {
     const cloudflareVideo = await getVideoById(video.cloudflareId);
 
     if (!cloudflareVideo.readyToStream) return video;
     video = await _updateUserVideoReadyState(
       video.id,
       cloudflareVideo.readyToStream,
+      cloudflareVideo.duration,
     );
   }
 
@@ -252,6 +239,7 @@ export async function getUserVideoById(id: Video["id"]) {
 async function _updateUserVideoReadyState(
   id: Video["id"],
   readyToStream: boolean | undefined,
+  duration: number | undefined,
 ) {
   const video = await db.video.update({
     where: {
@@ -259,6 +247,7 @@ async function _updateUserVideoReadyState(
     },
     data: {
       readyToStream,
+      duration,
     },
     include: {
       tableTopic: true,

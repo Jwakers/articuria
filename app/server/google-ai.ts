@@ -42,7 +42,7 @@ export async function generateTableTopic({
     console.log(systemInstruction);
     const response = await ai.models.generateContent({
       model: "gemini-2.0-flash",
-      contents: "Please generate a table topic suitable for beginners",
+      contents: "Please generate a table topic",
       config: {
         systemInstruction,
       },

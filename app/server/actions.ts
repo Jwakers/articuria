@@ -8,7 +8,6 @@ import {
   createAiTableTopic,
   createUserVideo,
   deleteUserVideoById,
-  getAllUserVideos,
 } from "./db/queries";
 import { generateTableTopic } from "./google-ai";
 
@@ -17,7 +16,12 @@ export type GenerateTopicOptions = {
   theme: Theme | undefined;
 };
 
-export async function getTableTopic(options: GenerateTopicOptions) {
+export async function getTableTopic(
+  options: GenerateTopicOptions = {
+    difficulty: "BEGINNER",
+    theme: "GENERAL",
+  },
+) {
   try {
     let difficulty: Difficulty = "BEGINNER",
       theme: Theme = "GENERAL";
@@ -27,7 +31,9 @@ export async function getTableTopic(options: GenerateTopicOptions) {
     if (ACCOUNT_LIMITS.free.tableTopicOptions.theme && options.theme)
       theme = options.theme;
 
-    const videos = await getAllUserVideos();
+    const videos = await db.video.findMany({
+      select: { tableTopicId: true, tableTopic: { select: { topic: true } } },
+    });
     const existingTopics = videos.map((item) => item.tableTopic.topic);
     const existingTopicIds = videos.map((item) => item.tableTopicId);
 
