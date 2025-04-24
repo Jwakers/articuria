@@ -8,11 +8,32 @@ datasource db {
     directUrl = env("DIRECT_URL")
 }
 
+enum Difficulty {
+    BEGINNER
+    INTERMEDIATE
+    ADVANCED
+    EXPERT
+}
+
+enum Theme {
+    GENERAL
+    PERSONAL_EXPERIENCES
+    HYPOTHETICAL_SCENARIOS
+    CURRENT_EVENTS
+    PROFESSIONAL_DEVELOPMENT
+    ETHICAL_DILEMMAS
+    CULTURE_AND_SOCIETY
+    NATURE_AND_ENVIRONMENT
+    CREATIVITY_AND_IMAGINATION
+}
+
 model TableTopic {
-    id        Int      @id @default(autoincrement())
-    createdAt DateTime @default(now())
-    topic     String   @unique
-    videos    Video[]
+    id         Int         @id @default(autoincrement())
+    createdAt  DateTime    @default(now())
+    topic      String      @unique
+    videos     Video[]
+    difficulty Difficulty?
+    themes     Theme[]
 }
 
 model Video {

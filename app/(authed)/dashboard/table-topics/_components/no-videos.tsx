@@ -80,7 +80,7 @@ function BenefitCard({
 }) {
   return (
     <Card>
-      <CardContent className="flex items-center p-4">
+      <CardContent className="flex items-center p-4 md:pt-6">
         <Icon className="mr-4 h-8 w-8" />
         <div>
           <h4 className="font-semibold">{title}</h4>

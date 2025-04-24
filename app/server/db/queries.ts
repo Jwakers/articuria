@@ -1,34 +1,55 @@
 import { db } from "@/app/server/db";
 import { ACCOUNT_LIMITS, ERROR_CODES } from "@/lib/constants";
 import { auth } from "@clerk/nextjs/server";
-import { Prisma, Video } from "@prisma/client";
+import { Prisma, TableTopic, Video } from "@prisma/client";
 import { isSameMonth, subMonths } from "date-fns";
 import "server-only";
+import { GenerateTopicOptions } from "../actions";
 import {
   deleteVideoById,
   getVideoById,
   getVideoUploadUrl,
   uploadVideoToCloudflare,
 } from "../cloudflare-actions";
-import topics from "./topics.json";
 
 const TRANSACTION_TIMEOUT_MS = 10000;
 
-export async function getRandomTableTopic() {
-  await isAuth();
+type CreateAiTableTopicOptions = GenerateTopicOptions & {
+  topic: TableTopic["topic"];
+};
 
-  const randomTopic = topics[Math.floor(Math.random() * topics.length)];
-  const topic = await db.tableTopic.upsert({
+export async function createAiTableTopic({
+  difficulty,
+  theme,
+  topic,
+}: CreateAiTableTopicOptions) {
+  await isAuth();
+  const existingSimilarTopics = await db.tableTopic.findMany({
     where: {
-      topic: randomTopic,
-    },
-    update: {},
-    create: {
-      topic: randomTopic,
+      difficulty,
+      themes: {
+        has: theme,
+      },
+      topic,
     },
   });
 
-  return topic;
+  if (existingSimilarTopics.length) {
+    console.log(
+      `Similar topic exists. Existing: ${existingSimilarTopics[0].topic}. Generated: ${topic}`,
+    );
+    const [first] = existingSimilarTopics;
+    return first;
+  }
+
+  const newTopic = await db.tableTopic.create({
+    data: {
+      topic,
+      difficulty,
+      themes: theme ? [theme] : undefined,
+    },
+  });
+  return newTopic;
 }
 
 export async function createUserVideo({
@@ -196,13 +217,19 @@ export async function getUserVideoById(id: Video["id"]) {
     },
   });
 
-  if (video && !video?.readyToStream) {
+  if (
+    video &&
+    (!video?.readyToStream ||
+      video?.duration === null ||
+      video?.duration === undefined)
+  ) {
     const cloudflareVideo = await getVideoById(video.cloudflareId);
 
     if (!cloudflareVideo.readyToStream) return video;
     video = await _updateUserVideoReadyState(
       video.id,
       cloudflareVideo.readyToStream,
+      cloudflareVideo.duration,
     );
   }
 
@@ -212,6 +239,7 @@ export async function getUserVideoById(id: Video["id"]) {
 async function _updateUserVideoReadyState(
   id: Video["id"],
   readyToStream: boolean | undefined,
+  duration: number | undefined,
 ) {
   const video = await db.video.update({
     where: {
@@ -219,6 +247,7 @@ async function _updateUserVideoReadyState(
     },
     data: {
       readyToStream,
+      duration,
     },
     include: {
       tableTopic: true,

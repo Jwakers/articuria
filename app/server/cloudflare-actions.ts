@@ -58,7 +58,7 @@ const _getCachedVideo = unstable_cache(
   },
   undefined,
   {
-    revalidate: 20,
+    revalidate: 5,
   },
 );
 

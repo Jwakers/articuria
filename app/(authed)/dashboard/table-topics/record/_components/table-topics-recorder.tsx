@@ -58,7 +58,10 @@ export default function TableTopicsRecorder() {
     startTransition(async () => {
       try {
         if (currentTopic) handleDiscardRecording(); // Note: awaiting here causes some strange behaviour where the stream is not properly reset
-        const { topic, id } = await getTableTopic();
+        const { topic, id } = await getTableTopic({
+          difficulty: "BEGINNER",
+          theme: "GENERAL",
+        });
         setCurrentTopic(topic);
         topicId.current = id;
         setCountdown(COUNTDOWN_TIME);
