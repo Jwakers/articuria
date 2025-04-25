@@ -1,3 +1,4 @@
+import { SubscriptionBanner } from "@/components/subscription-banner";
 import { Button } from "@/components/ui/button";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Metadata } from "next";
@@ -27,6 +28,9 @@ export default function DashboardShell({
         <DashboardSidebar />
         <main className="mx-auto w-full max-w-[1440px] px-4 pb-4">
           <Header />
+          <div className="mb-4">
+            <SubscriptionBanner />
+          </div>
           <div id="main-content">{children}</div>
         </main>
       </SidebarProvider>

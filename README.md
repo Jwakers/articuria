@@ -20,6 +20,17 @@
 
 ## 2. New Features
 
+- Add Stripe
+
+  - [ ] Set up drawer UI for subscriptions
+    - [ ] Should not show for subscribed users
+    - [ ] Dashboard banner
+    - [ ] Sidebar section
+    - [ ] Trigger from header
+  - [ ] Set up KV store (Redis, Upstash) / clerk public data to sync stripe customer data
+  - [ ] Create success page
+    - [ ] Handle checkout data sync
+
 - AI-Generated Table Topics:
 
   - [ ] UI for difficulty and theme options (premium users only).
