@@ -4,6 +4,7 @@
 
 - [ ] Error uploading large videos > 1:30. Prisma transaction is timing out.
 - [ ] Generating a second topic causes the video stream to fail.
+- [ ] contact page needs a loading.tsx
 
 ## 1. Updates
 
@@ -24,15 +25,17 @@
 
   - [ ] Set up drawer UI for subscriptions
     - [ ] Should not show for subscribed users
-    - [ ] Dashboard banner
-    - [ ] Sidebar section
-    - [ ] Trigger from header
+    - [x] Dashboard banner
+    - [x] Sidebar section
+    - [x] Trigger from header
   - [ ] Set up KV store (Redis, Upstash) / clerk public data to sync stripe customer data
+    - [ ] Syn should run on success page and webhook
   - [ ] Create success page
     - [ ] Handle checkout data sync
 
 - AI-Generated Table Topics:
 
+  - [x] Generate topic
   - [ ] UI for difficulty and theme options (premium users only).
   - [ ] Performance review (premium users only. Tools: Speechmatics, AssemblyAI).=
     - [ ] UI.

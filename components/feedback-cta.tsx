@@ -14,7 +14,7 @@ import Link from "next/link";
 
 export default function FeedbackSection() {
   return (
-    <Card className="max-w-[760px] bg-accent text-accent-foreground dark:border-white">
+    <Card className="max-w-[760px] bg-accent text-accent-foreground">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 opacity-90">
           <MessageSquareHeart />
