@@ -1,4 +1,4 @@
-import { SubscriptionBanner } from "@/components/subscription-banner";
+import { SubscriptionBanner } from "@/components/subscription/subscription-banner";
 import { Button } from "@/components/ui/button";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Metadata } from "next";

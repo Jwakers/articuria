@@ -8,7 +8,7 @@ export function SubscriptionSidebarCard() {
       <div className="p-3">
         <h3 className="flex items-center gap-1.5 text-sm font-medium">
           <div className="bg-highlight/10 flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full">
-            <Check className="text-highlight h-2.5 w-2.5" />
+            <Check className="text-highlight-secondary h-2.5 w-2.5" />
           </div>
           <span className="from-highlight to-highlight-secondary bg-gradient-to-r bg-clip-text text-transparent">
             Upgrade to Pro

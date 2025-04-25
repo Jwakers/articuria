@@ -1,5 +1,5 @@
-import { SubscriptionDrawerProvider } from "@/components/context/subscription-drawer-context";
-import { SubscriptionDrawer } from "@/components/subscription-drawer";
+import { SubscriptionDrawerProvider } from "@/components/subscription/context";
+import { SubscriptionDrawer } from "@/components/subscription/subscription-drawer";
 import { cn } from "@/lib/utils";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Geist, Geist_Mono } from "next/font/google";

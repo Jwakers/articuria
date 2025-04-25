@@ -1,4 +1,4 @@
-import { SubscriptionTrigger } from "@/components/subscription-trigger";
+import { SubscriptionTrigger } from "@/components/subscription/subscription-trigger";
 import { Button } from "@/components/ui/button";
 import { SignUpButton } from "@clerk/nextjs";
 import { Camera, ChartArea, Check, Zap } from "lucide-react";
@@ -127,19 +127,19 @@ export default function LandingPage() {
                 <ul className="mb-4 space-y-2">
                   <li className="flex items-center gap-2 text-sm">
                     <div className="bg-highlight/10 flex-shrink-0 rounded-full p-1">
-                      <Check className="text-highlight-secondary h-3 w-3" />
+                      <Check className="text-highlight-secondary-secondary h-3 w-3" />
                     </div>
                     <span>All premium features included</span>
                   </li>
                   <li className="flex items-center gap-2 text-sm">
                     <div className="bg-highlight/10 flex-shrink-0 rounded-full p-1">
-                      <Check className="text-highlight-secondary h-3 w-3" />
+                      <Check className="text-highlight-secondary-secondary h-3 w-3" />
                     </div>
                     <span>No ads or interruptions</span>
                   </li>
                   <li className="flex items-center gap-2 text-sm">
                     <div className="bg-highlight/10 flex-shrink-0 rounded-full p-1">
-                      <Check className="text-highlight-secondary h-3 w-3" />
+                      <Check className="text-highlight-secondary-secondary h-3 w-3" />
                     </div>
                     <span>Cloud sync across all devices</span>
                   </li>
@@ -165,7 +165,7 @@ function FeatureCard({ title, body }: { title: string; body: string }) {
       <div className="from-highlight to-highlight-secondary h-2 bg-gradient-to-r"></div>
       <div className="p-6">
         <div className="bg-highlight/10 mb-4 flex h-10 w-10 items-center justify-center rounded-full p-2">
-          <Check className="text-highlight-secondary h-5 w-5" />
+          <Check className="text-highlight-secondary-secondary h-5 w-5" />
         </div>
         <h3 className="mb-2 text-lg font-semibold">{title}</h3>
         <p className="text-sm text-muted-foreground">{body}</p>

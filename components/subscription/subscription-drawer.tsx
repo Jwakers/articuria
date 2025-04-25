@@ -12,7 +12,7 @@ import {
   DrawerTitle,
 } from "@/components/ui/drawer";
 import { Check, CreditCard, X } from "lucide-react";
-import { useSubscriptionDrawer } from "./context/subscription-drawer-context";
+import { useSubscriptionDrawer } from "./context";
 
 export function SubscriptionDrawer() {
   const { isOpen, setIsOpen } = useSubscriptionDrawer();
@@ -57,7 +57,7 @@ export function SubscriptionDrawer() {
               <div className="flex flex-col space-y-4">
                 <div className="flex items-center space-x-3">
                   <div className="bg-highlight/10 rounded-full p-1">
-                    <Check className="text-highlight h-4 w-4" />
+                    <Check className="text-highlight-secondary h-4 w-4" />
                   </div>
                   <span className="text-sm">
                     Unlimited access to all features
@@ -65,13 +65,13 @@ export function SubscriptionDrawer() {
                 </div>
                 <div className="flex items-center space-x-3">
                   <div className="bg-highlight/10 rounded-full p-1">
-                    <Check className="text-highlight h-4 w-4" />
+                    <Check className="text-highlight-secondary h-4 w-4" />
                   </div>
                   <span className="text-sm">Priority customer support</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <div className="bg-highlight/10 rounded-full p-1">
-                    <Check className="text-highlight h-4 w-4" />
+                    <Check className="text-highlight-secondary h-4 w-4" />
                   </div>
                   <span className="text-sm">Early access to new features</span>
                 </div>
@@ -95,7 +95,7 @@ export function SubscriptionDrawer() {
             <form onSubmit={handleSubscribe} className="space-y-4">
               <Button
                 type="submit"
-                // Add variant to button, add hover effect
+                // TODO Add variant to button, add hover effect
                 className="from-highlight to-highlight-secondary w-full bg-gradient-to-r"
               >
                 <CreditCard className="mr-2 h-4 w-4" />

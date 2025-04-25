@@ -1,6 +1,6 @@
 import { Home, Mic, Send } from "lucide-react";
 
-import { SubscriptionSidebarCard } from "@/components/subscription-sidebar-card";
+import { SubscriptionSidebarCard } from "@/components/subscription/subscription-sidebar-card";
 import {
   Collapsible,
   CollapsibleContent,

@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type React from "react";
-import { useSubscriptionDrawer } from "./context/subscription-drawer-context";
+import { useSubscriptionDrawer } from "./context";
 
 type SubscriptionTriggerProps = React.ComponentProps<typeof Button>;
 
