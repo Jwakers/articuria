@@ -11,17 +11,54 @@ export const ROUTES = {
     },
     contact: "/dashboard/contact",
   },
+  subscription: {
+    success: "/subscription/success",
+    invoice: "/subscription/invoice",
+  },
   privacy: "/privacy",
   terms: "/terms",
 };
+// TODO
+// - Add all features
+// - Use this data in the frontend components
+// - Update the drawer component to display the free tier
 
-export const ACCOUNT_LIMITS = {
+export const SUBSCRIPTION_TIERS = {
+  free: {
+    price: "FREE",
+    features: [],
+  },
+  pro: {
+    price: 6.99,
+    features: [],
+  },
+} as const;
+
+export const ACCOUNT_LIMITS: Record<
+  keyof typeof SUBSCRIPTION_TIERS,
+  {
+    tableTopicLimit: number;
+    videoSizeLimit: number;
+    tableTopicOptions: {
+      difficulty: boolean;
+      theme: boolean;
+    };
+  }
+> = {
   free: {
     tableTopicLimit: 5,
     videoSizeLimit: convertMegabytesToBytes(10), // mb
     tableTopicOptions: {
       difficulty: false,
       theme: false,
+    },
+  },
+  pro: {
+    tableTopicLimit: 50,
+    videoSizeLimit: convertMegabytesToBytes(25), // mb
+    tableTopicOptions: {
+      difficulty: true,
+      theme: true,
     },
   },
 } as const;

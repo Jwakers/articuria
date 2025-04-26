@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Metadata } from "next";
 import type * as React from "react";
+import { Suspense } from "react";
 import { Header } from "./_components/header";
 import DashboardSidebar from "./_components/sidebar";
 
@@ -29,7 +30,9 @@ export default function DashboardShell({
         <main className="mx-auto w-full max-w-[1440px] px-4 pb-4">
           <Header />
           <div className="mb-4">
-            <SubscriptionBanner />
+            <Suspense>
+              <SubscriptionBanner />
+            </Suspense>
           </div>
           <div id="main-content">{children}</div>
         </main>

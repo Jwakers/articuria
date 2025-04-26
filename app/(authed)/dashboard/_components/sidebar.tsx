@@ -24,6 +24,7 @@ import {
 import UserMenu from "@/components/user-menu";
 import { ROUTES } from "@/lib/constants";
 import Link from "next/link";
+import { Suspense } from "react";
 
 export default async function DashboardSidebar() {
   return (
@@ -91,7 +92,9 @@ export default async function DashboardSidebar() {
             </SidebarGroupContent>
           </SidebarGroup>
           <SidebarGroup>
-            <SubscriptionSidebarCard />
+            <Suspense fallback={null}>
+              <SubscriptionSidebarCard />
+            </Suspense>
           </SidebarGroup>
         </div>
       </SidebarContent>

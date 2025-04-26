@@ -1,0 +1,51 @@
+"use client";
+
+import { Button } from "@/components/ui/button";
+import { AlertCircle } from "lucide-react";
+import Link from "next/link";
+import { useEffect } from "react";
+
+export default function Error({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
+  useEffect(() => {
+    // Log the error to an error reporting service
+    console.error(error);
+  }, [error]);
+
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-white to-purple-50 p-6">
+      <div className="mx-auto w-full max-w-md text-center">
+        <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
+          <AlertCircle className="h-8 w-8 text-red-600" />
+        </div>
+
+        <h1 className="mb-2 text-2xl font-bold text-gray-900">
+          Something went wrong
+        </h1>
+
+        <p className="mb-6 text-muted-foreground">
+          We encountered an issue while processing your subscription. Please try
+          again or contact support.
+        </p>
+
+        <div className="flex flex-col justify-center gap-4 sm:flex-row">
+          <Button onClick={reset} variant="outline">
+            Try again
+          </Button>
+
+          <Button
+            asChild
+            className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700"
+          >
+            <Link href="/help">Contact Support</Link>
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}

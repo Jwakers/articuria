@@ -1,3 +1,6 @@
+import { ClerkUserPublicMetadata } from "@/app/server/stripe/sync-stripe";
+import type { useUser } from "@clerk/nextjs";
+import { User } from "@clerk/nextjs/server";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { ACCOUNT_LIMITS, ERROR_CODES } from "./constants";
@@ -32,4 +35,36 @@ export function formatDuration(seconds: number | null | undefined): string {
 
 export function convertMegabytesToBytes(megabytes: number): number {
   return megabytes * 1024 * 1024;
+}
+
+type Success<T> = {
+  data: T;
+  error: null;
+};
+
+type Failure<E> = {
+  data: null;
+  error: E;
+};
+
+type Result<T, E = Error> = Success<T> | Failure<E>;
+
+export async function tryCatch<T, E = Error>(
+  promise: Promise<T>,
+): Promise<Result<T, E>> {
+  try {
+    const data = await promise;
+    return { data, error: null };
+  } catch (error) {
+    return { data: null, error: error as E };
+  }
+}
+
+type UserResource = ReturnType<typeof useUser>["user"];
+
+export function userWithMetadata(user: User | UserResource | null | undefined) {
+  if (!user) return null;
+  const metadata: ClerkUserPublicMetadata = user.publicMetadata;
+
+  return { ...user, publicMetadata: metadata };
 }

@@ -1,16 +1,21 @@
+import { userWithMetadata } from "@/lib/utils";
+import { currentUser } from "@clerk/nextjs/server";
 import { Check } from "lucide-react";
 import { SubscriptionTrigger } from "./subscription-trigger";
 import { SubscriptionWrapper } from "./subscription-wrapper";
 
-export function SubscriptionSidebarCard() {
+export async function SubscriptionSidebarCard() {
+  const user = userWithMetadata(await currentUser());
+  if (!user || user.publicMetadata.subscription === "pro") return null;
+
   return (
     <SubscriptionWrapper>
       <div className="p-3">
         <h3 className="flex items-center gap-1.5 text-sm font-medium">
-          <div className="bg-highlight/10 flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full">
-            <Check className="text-highlight-secondary h-2.5 w-2.5" />
+          <div className="flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full bg-highlight/10">
+            <Check className="h-2.5 w-2.5 text-highlight-secondary" />
           </div>
-          <span className="from-highlight to-highlight-secondary bg-gradient-to-r bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-highlight to-highlight-secondary bg-clip-text text-transparent">
             Upgrade to Pro
           </span>
         </h3>

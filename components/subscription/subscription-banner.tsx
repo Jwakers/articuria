@@ -1,8 +1,13 @@
+import { userWithMetadata } from "@/lib/utils";
+import { currentUser } from "@clerk/nextjs/server";
 import { Check } from "lucide-react";
 import { SubscriptionTrigger } from "./subscription-trigger";
 import { SubscriptionWrapper } from "./subscription-wrapper";
 
-export function SubscriptionBanner() {
+export async function SubscriptionBanner() {
+  const user = userWithMetadata(await currentUser());
+  if (!user || user.publicMetadata.subscription === "pro") return null;
+
   return (
     <SubscriptionWrapper>
       <div className="flex flex-wrap items-center justify-between gap-4 p-4">

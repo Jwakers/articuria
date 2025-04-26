@@ -37,19 +37,6 @@ export async function getTableTopic(
     const existingTopics = videos.map((item) => item.tableTopic.topic);
     const existingTopicIds = videos.map((item) => item.tableTopicId);
 
-    console.log({
-      take: 10,
-      where: {
-        difficulty,
-        themes: {
-          has: theme,
-        },
-        id: {
-          notIn: existingTopicIds,
-        },
-      },
-    });
-
     const [topic] = await db.tableTopic.findMany({
       take: 10,
       where: {
