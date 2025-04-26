@@ -1,4 +1,5 @@
-import { userWithMetadata } from "@/lib/utils";
+import { SUBSCRIPTION_TIERS } from "@/lib/constants";
+import { cn, price, userWithMetadata } from "@/lib/utils";
 import { currentUser } from "@clerk/nextjs/server";
 import { Check } from "lucide-react";
 import { SubscriptionTrigger } from "./subscription-trigger";
@@ -14,28 +15,21 @@ export default async function SubscriptionLanding() {
           <h2 className="bg-gradient-to-r from-highlight to-highlight-secondary bg-clip-text text-3xl font-bold tracking-tighter text-transparent sm:text-4xl md:text-5xl">
             Premium Features
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
+          <p className="mx-auto mt-4 max-w-2xl text-balance text-muted-foreground">
             Unlock all premium features with our subscription plan and take your
             experience to the next level.
           </p>
         </div>
 
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          <FeatureCard
-            title="Unlimited Access"
-            body="Get unlimited access to all premium content and features
-          without restrictions."
-          />
-          <FeatureCard
-            title="Priority Support"
-            body="Get priority customer support with guaranteed response within
-          24 hours."
-          />
-          <FeatureCard
-            title="Early Access"
-            body="Be the first to try new features before they're released to
-          the public."
-          />
+          {SUBSCRIPTION_TIERS.pro.features.map((feature) => (
+            <FeatureCard
+              key={feature.title}
+              title={feature.title}
+              body={feature.description}
+              comingSoon={feature.comingSoon ?? false}
+            />
+          ))}
         </div>
 
         <div className="mx-auto mt-12 max-w-3xl rounded-xl border bg-background p-8 shadow-md">
@@ -45,37 +39,16 @@ export default async function SubscriptionLanding() {
                 <div className="flex items-center justify-between">
                   <div className="text-lg font-medium">Pro Plan</div>
                   <div className="text-xl font-bold">
-                    [PRICE]
+                    {price(SUBSCRIPTION_TIERS.pro.price ?? 0)}
                     <span className="text-sm font-normal text-muted-foreground">
                       /month
                     </span>
                   </div>
                 </div>
-                <div className="mt-2 text-sm text-gray-500">
+                <div className="text-text-muted-foreground mt-2 text-sm">
                   Cancel anytime. No hidden fees.
                 </div>
               </div>
-
-              <ul className="mb-4 space-y-2">
-                <li className="flex items-center gap-2 text-sm">
-                  <div className="flex-shrink-0 rounded-full bg-highlight/10 p-1">
-                    <Check className="text-highlight-secondary-secondary h-3 w-3" />
-                  </div>
-                  <span>All premium features included</span>
-                </li>
-                <li className="flex items-center gap-2 text-sm">
-                  <div className="flex-shrink-0 rounded-full bg-highlight/10 p-1">
-                    <Check className="text-highlight-secondary-secondary h-3 w-3" />
-                  </div>
-                  <span>No ads or interruptions</span>
-                </li>
-                <li className="flex items-center gap-2 text-sm">
-                  <div className="flex-shrink-0 rounded-full bg-highlight/10 p-1">
-                    <Check className="text-highlight-secondary-secondary h-3 w-3" />
-                  </div>
-                  <span>Cloud sync across all devices</span>
-                </li>
-              </ul>
             </div>
 
             <div className="flex-shrink-0">
@@ -90,16 +63,37 @@ export default async function SubscriptionLanding() {
   );
 }
 
-function FeatureCard({ title, body }: { title: string; body: string }) {
+function FeatureCard({
+  title,
+  body,
+  comingSoon = false,
+}: {
+  title: string;
+  body: string;
+  comingSoon: boolean;
+}) {
   return (
-    <div className="overflow-hidden rounded-xl border bg-background shadow-sm transition-shadow hover:shadow-md">
+    <div className="relative overflow-hidden rounded-xl border bg-background shadow-sm transition-shadow hover:shadow-md">
       <div className="h-2 bg-gradient-to-r from-highlight to-highlight-secondary"></div>
       <div className="p-6">
-        <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-highlight/10 p-2">
-          <Check className="text-highlight-secondary-secondary h-5 w-5" />
+        <div
+          className={cn(
+            "mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-highlight/10 p-2",
+            {
+              "w-auto justify-self-start": comingSoon,
+            },
+          )}
+        >
+          {comingSoon ? (
+            <div className="rounded-sm p-1 px-2 text-xs font-bold text-highlight-secondary">
+              Coming soon
+            </div>
+          ) : (
+            <Check className="h-5 w-5 text-highlight-secondary" />
+          )}
         </div>
         <h3 className="mb-2 text-lg font-semibold">{title}</h3>
-        <p className="text-sm text-muted-foreground">{body}</p>
+        <p className="text-balance text-sm text-muted-foreground">{body}</p>
       </div>
     </div>
   );

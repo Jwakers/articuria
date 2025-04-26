@@ -12,10 +12,11 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer";
-import { userWithMetadata } from "@/lib/utils";
+import { SUBSCRIPTION_TIERS } from "@/lib/constants";
+import { price, userWithMetadata } from "@/lib/utils";
 import { useUser } from "@clerk/nextjs";
 import { loadStripe } from "@stripe/stripe-js";
-import { Check, CreditCard, X } from "lucide-react";
+import { Check, CreditCard, Sparkle, X } from "lucide-react";
 import { useTransition } from "react";
 import { toast } from "sonner";
 import Spinner from "../ui/spinner";
@@ -84,49 +85,38 @@ export function SubscriptionDrawer() {
           </DrawerHeader>
 
           <div className="mb-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {/* Free Plan - Less appealing */}
-            <div className="rounded-lg border bg-background p-6">
+            {/* Free Plan */}
+            <div className="flex flex-col rounded-lg border bg-background p-6">
               <div className="mb-4 flex items-start justify-between">
                 <div>
                   <h3 className="font-medium">Free Plan</h3>
                   <p className="text-sm text-muted-foreground">Basic access</p>
                 </div>
                 <div className="text-right">
-                  <div className="font-bold">$0</div>
+                  <div className="font-bold">Free</div>
                   <p className="text-xs text-muted-foreground">Forever</p>
                 </div>
               </div>
 
               <div className="mb-4 space-y-3">
-                <div className="flex items-center space-x-3">
-                  <div className="bg-muted-background rounded-full p-1">
-                    <Check className="h-3 w-3 text-muted-foreground" />
+                {SUBSCRIPTION_TIERS.free.features.map((feature) => (
+                  <div
+                    className="flex items-center space-x-3"
+                    key={feature.title}
+                  >
+                    <div className="bg-muted-background rounded-full p-1">
+                      <Check className="h-3 w-3 text-muted-foreground" />
+                    </div>
+                    <span className="text-sm text-muted-foreground">
+                      {feature.shortDescription}
+                    </span>
                   </div>
-                  <span className="text-sm text-muted-foreground">
-                    Limited feature access
-                  </span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <div className="bg-muted-background rounded-full p-1">
-                    <Check className="h-3 w-3 text-muted-foreground" />
-                  </div>
-                  <span className="text-sm text-muted-foreground">
-                    Standard support
-                  </span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <div className="bg-muted-background rounded-full p-1">
-                    <X className="h-3 w-3 text-muted-foreground" />
-                  </div>
-                  <span className="text-sm text-muted-foreground">
-                    No premium features
-                  </span>
-                </div>
+                ))}
               </div>
 
               <Button
                 variant="outline"
-                className="w-full"
+                className="mt-auto w-full"
                 onClick={() => setIsOpen(false)}
               >
                 Continue with Free
@@ -143,34 +133,36 @@ export function SubscriptionDrawer() {
                     <p className="text-sm text-muted-foreground">Full access</p>
                   </div>
                   <div className="text-right">
-                    <div className="text-lg font-bold">$9.99</div>
+                    <div className="text-lg font-bold">
+                      {price(SUBSCRIPTION_TIERS.pro.price ?? 0)}
+                    </div>
                     <p className="text-xs text-muted-foreground">per month</p>
                   </div>
                 </div>
 
                 <div className="mb-6 space-y-3">
-                  <div className="flex items-center space-x-3">
-                    <div className="rounded-full bg-highlight/10 p-1">
-                      <Check className="h-4 w-4 text-highlight-secondary" />
+                  {SUBSCRIPTION_TIERS.pro.features.map((feature) => (
+                    <div
+                      className="flex items-center space-x-3"
+                      key={feature.title}
+                    >
+                      <div className="rounded-full bg-highlight/10 p-1">
+                        {feature.comingSoon ? (
+                          <Sparkle className="h-4 w-4 text-highlight-secondary" />
+                        ) : (
+                          <Check className="h-4 w-4 text-highlight-secondary" />
+                        )}
+                      </div>
+                      <div className="space-y-1">
+                        <p className="text-sm">{feature.shortDescription}</p>
+                        {feature.comingSoon ? (
+                          <p className="text-sm text-muted-foreground">
+                            Coming soon
+                          </p>
+                        ) : null}
+                      </div>
                     </div>
-                    <span className="text-sm">
-                      Unlimited access to all features
-                    </span>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <div className="rounded-full bg-highlight/10 p-1">
-                      <Check className="h-4 w-4 text-highlight-secondary" />
-                    </div>
-                    <span className="text-sm">Priority customer support</span>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <div className="rounded-full bg-highlight/10 p-1">
-                      <Check className="h-4 w-4 text-highlight-secondary" />
-                    </div>
-                    <span className="text-sm">
-                      Early access to new features
-                    </span>
-                  </div>
+                  ))}
                 </div>
 
                 <Button

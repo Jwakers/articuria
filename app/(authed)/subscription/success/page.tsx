@@ -3,9 +3,11 @@
 import { syncStripeDataToClerk } from "@/app/server/stripe/sync-stripe";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { ROUTES, SUBSCRIPTION_TIERS } from "@/lib/constants";
+import { price, userWithMetadata } from "@/lib/utils";
+import { useSession, useUser } from "@clerk/nextjs";
 import {
   ArrowRight,
-  BookOpen,
   CheckCircle,
   ChevronRight,
   Download,
@@ -16,10 +18,15 @@ import { useEffect, useState } from "react";
 
 export default function SubscriptionSuccessPage() {
   const [userName, setUserName] = useState("User");
+  const user = userWithMetadata(useUser().user);
+  const { session } = useSession();
+
+  const nextBillingDate =
+    user?.publicMetadata.subscriptionData?.currentPeriodEnd;
 
   useEffect(() => {
-    syncStripeDataToClerk().then((res) => {
-      console.log(res);
+    syncStripeDataToClerk().then(() => {
+      session?.reload();
     });
   }, []);
 
@@ -67,21 +74,21 @@ export default function SubscriptionSuccessPage() {
       <main className="flex flex-1 items-center justify-center p-6">
         <div className="mx-auto w-full max-w-3xl">
           <div className="mb-8 text-center">
-            <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-r from-pink-500 to-purple-600">
+            <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-r from-highlight to-highlight-secondary">
               <CheckCircle className="h-8 w-8 text-white" />
             </div>
 
-            <h1 className="bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-3xl font-bold text-transparent md:text-4xl">
+            <h1 className="bg-gradient-to-r from-highlight to-highlight-secondary bg-clip-text text-3xl font-bold text-transparent md:text-4xl">
               Subscription Successful!
             </h1>
 
-            <p className="mt-4 text-lg text-gray-600">
-              Thank you for subscribing to our Pro plan, {userName}! Your
-              account has been upgraded.
+            <p className="mt-4 text-lg text-muted-foreground">
+              Thank you for subscribing to our Pro plan! Your account has been
+              upgraded.
             </p>
           </div>
 
-          <div className="mb-8 rounded-xl border bg-white p-6 shadow-md">
+          <div className="mb-8 rounded-xl border bg-background p-6 shadow-md">
             <div className="flex items-center justify-between border-b pb-4">
               <div>
                 <h2 className="text-lg font-semibold">Pro Plan</h2>
@@ -90,13 +97,15 @@ export default function SubscriptionSuccessPage() {
                 </p>
               </div>
               <div className="text-right">
-                <div className="text-lg font-bold">$9.99/month</div>
-                <p className="text-xs text-muted-foreground">
-                  Next billing date:{" "}
-                  {new Date(
-                    Date.now() + 30 * 24 * 60 * 60 * 1000,
-                  ).toLocaleDateString()}
-                </p>
+                <div className="text-lg font-bold">
+                  {price(SUBSCRIPTION_TIERS.pro.price ?? 0)}/month
+                </div>
+                {nextBillingDate ? (
+                  <p className="text-xs text-muted-foreground">
+                    Next billing date:{" "}
+                    {new Date(nextBillingDate * 1000).toLocaleDateString()}
+                  </p>
+                ) : null}
               </div>
             </div>
 
@@ -105,24 +114,31 @@ export default function SubscriptionSuccessPage() {
                 Your subscription includes:
               </h3>
               <ul className="space-y-2">
-                <li className="flex items-center gap-2 text-sm">
-                  <div className="flex-shrink-0 rounded-full bg-purple-100 p-1">
-                    <CheckCircle className="h-3 w-3 text-purple-600" />
-                  </div>
-                  <span>Unlimited access to all premium features</span>
-                </li>
-                <li className="flex items-center gap-2 text-sm">
-                  <div className="flex-shrink-0 rounded-full bg-purple-100 p-1">
-                    <CheckCircle className="h-3 w-3 text-purple-600" />
-                  </div>
-                  <span>Priority customer support</span>
-                </li>
-                <li className="flex items-center gap-2 text-sm">
-                  <div className="flex-shrink-0 rounded-full bg-purple-100 p-1">
-                    <CheckCircle className="h-3 w-3 text-purple-600" />
-                  </div>
-                  <span>Early access to new features</span>
-                </li>
+                {SUBSCRIPTION_TIERS.pro.features.map((feature) => (
+                  <li
+                    className="flex items-center gap-2 text-sm"
+                    key={feature.title}
+                  >
+                    <div className="flex-shrink-0 rounded-full bg-highlight/10 p-1">
+                      {feature.comingSoon ? (
+                        <Sparkles className="h-3 w-3 text-highlight-secondary" />
+                      ) : (
+                        <CheckCircle className="h-3 w-3 text-highlight-secondary" />
+                      )}
+                    </div>
+                    <div className="">
+                      <p className="font-bold">{feature.title}</p>
+
+                      {feature.comingSoon ? (
+                        <p className="text-muted-foreground">Coming soon</p>
+                      ) : (
+                        <p className="text-muted-foreground">
+                          {feature.description}
+                        </p>
+                      )}
+                    </div>
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
@@ -132,8 +148,8 @@ export default function SubscriptionSuccessPage() {
           <div className="mb-8 grid gap-4 md:grid-cols-2">
             <Card className="p-4 transition-shadow hover:shadow-md">
               <div className="flex items-start gap-3">
-                <div className="flex-shrink-0 rounded-full bg-pink-100 p-2">
-                  <Sparkles className="h-4 w-4 text-pink-600" />
+                <div className="flex-shrink-0 rounded-full bg-highlight/10 p-2">
+                  <Sparkles className="h-4 w-4 text-highlight" />
                 </div>
                 <div>
                   <h3 className="mb-1 font-medium">Explore Premium Features</h3>
@@ -141,42 +157,19 @@ export default function SubscriptionSuccessPage() {
                     Discover all the new features available with your Pro
                     subscription.
                   </p>
-                  <Link
-                    href="/dashboard"
-                    className="inline-flex items-center gap-1 text-sm font-medium text-pink-600 hover:text-pink-700"
-                  >
-                    Go to Dashboard <ChevronRight className="h-3 w-3" />
-                  </Link>
-                </div>
-              </div>
-            </Card>
-
-            <Card className="p-4 transition-shadow hover:shadow-md">
-              <div className="flex items-start gap-3">
-                <div className="flex-shrink-0 rounded-full bg-purple-100 p-2">
-                  <BookOpen className="h-4 w-4 text-purple-600" />
-                </div>
-                <div>
-                  <h3 className="mb-1 font-medium">Read Documentation</h3>
-                  <p className="mb-3 text-sm text-muted-foreground">
-                    Learn how to make the most of your new Pro subscription.
-                  </p>
-                  <Link
-                    href="/docs"
-                    className="inline-flex items-center gap-1 text-sm font-medium text-purple-600 hover:text-purple-700"
-                  >
-                    View Documentation <ChevronRight className="h-3 w-3" />
-                  </Link>
+                  <Button variant="subscribe" asChild>
+                    <Link href={ROUTES.dashboard.tableTopics.record}>
+                      Record your first topic{" "}
+                      <ChevronRight className="h-3 w-3" />
+                    </Link>
+                  </Button>
                 </div>
               </div>
             </Card>
           </div>
 
           <div className="flex flex-col justify-center gap-4 sm:flex-row">
-            <Button
-              asChild
-              className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700"
-            >
+            <Button asChild>
               <Link href="/dashboard">
                 Go to Dashboard <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
@@ -196,7 +189,7 @@ export default function SubscriptionSuccessPage() {
           <p className="text-sm text-muted-foreground">
             Need help with your subscription?{" "}
             <Link
-              href="/help"
+              href={ROUTES.dashboard.contact}
               className="font-medium underline underline-offset-4"
             >
               Contact Support

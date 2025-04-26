@@ -1,4 +1,5 @@
-import { userWithMetadata } from "@/lib/utils";
+import { SUBSCRIPTION_TIERS } from "@/lib/constants";
+import { price, userWithMetadata } from "@/lib/utils";
 import { currentUser } from "@clerk/nextjs/server";
 import { Check } from "lucide-react";
 import { SubscriptionTrigger } from "./subscription-trigger";
@@ -29,7 +30,10 @@ export async function SubscriptionBanner() {
 
         <div className="flex items-center gap-3">
           <div className="hidden text-xs font-medium sm:block">
-            <span className="text-sm font-bold">[PRICE]</span>/month
+            <span className="text-sm font-bold">
+              {price(SUBSCRIPTION_TIERS.pro.price ?? 0)}
+            </span>
+            /month
           </div>
           <SubscriptionTrigger>More info</SubscriptionTrigger>
         </div>

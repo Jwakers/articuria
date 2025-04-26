@@ -1,4 +1,5 @@
-import { userWithMetadata } from "@/lib/utils";
+import { SUBSCRIPTION_TIERS } from "@/lib/constants";
+import { price, userWithMetadata } from "@/lib/utils";
 import { currentUser } from "@clerk/nextjs/server";
 import { Check } from "lucide-react";
 import { SubscriptionTrigger } from "./subscription-trigger";
@@ -22,7 +23,10 @@ export async function SubscriptionSidebarCard() {
 
         <div className="mt-2 flex items-center justify-between">
           <div className="text-xs text-muted-foreground">
-            <span className="font-bold">$9.99</span>/mo
+            <span className="font-bold">
+              {price(SUBSCRIPTION_TIERS.pro.price ?? 0)}
+            </span>
+            /mo
           </div>
           <SubscriptionTrigger size="sm">Details</SubscriptionTrigger>
         </div>

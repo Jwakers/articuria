@@ -68,3 +68,11 @@ export function userWithMetadata(user: User | UserResource | null | undefined) {
 
   return { ...user, publicMetadata: metadata };
 }
+
+export function price(value: number) {
+  const GBPound = new Intl.NumberFormat("en-GB", {
+    style: "currency",
+    currency: "GBP",
+  });
+  return GBPound.format(value);
+}

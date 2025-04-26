@@ -11,6 +11,7 @@
 - Enhance video recording page:
 
 - [ ] Style active link/page in sidebar
+- [ ] Style warning banners with warning colors
 - [ ] Rate limiting api routes.
 - [ ] Move email templates to a separate file for better maintainability.
 - [ ] Create cloudflare webhook should run on every deployment.
@@ -24,17 +25,19 @@
 
 - Add Stripe
 
-  - [ ] Set up drawer UI for subscriptions
-    - [ ] Should not show for subscribed users
-    - [ ] Add a card for "free" users
+  - [x] Set up drawer UI for subscriptions
+    - [x] Should not show for subscribed users
+    - [x] Add a card for "free" users
     - [x] Dashboard banner
     - [x] Sidebar section
     - [x] Trigger from header
-  - [ ] Set up KV store (Redis, Upstash) / clerk public data to sync stripe customer data
-    - [ ] Syn should run on success page and webhook
-  - [ ] Create success page
-    - [ ] Handle checkout data sync (including tier data)
+  - [x] Set up Clerk public data to sync stripe customer data
+    - [x] Syn should run on success page and webhook
+  - [x] Create success page
+    - [x] Handle checkout data sync (including tier data)
+  - [ ] Handle existing account limit logic
   - [ ] Create an invoice page for subscribed users
+  - [ ] Cancel subscription
 
 - AI-Generated Table Topics:
 

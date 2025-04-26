@@ -23,19 +23,10 @@ export const ROUTES = {
 // - Use this data in the frontend components
 // - Update the drawer component to display the free tier
 
-export const SUBSCRIPTION_TIERS = {
-  free: {
-    price: "FREE",
-    features: [],
-  },
-  pro: {
-    price: 6.99,
-    features: [],
-  },
-} as const;
+type TierKeys = "free" | "pro";
 
 export const ACCOUNT_LIMITS: Record<
-  keyof typeof SUBSCRIPTION_TIERS,
+  TierKeys,
   {
     tableTopicLimit: number;
     videoSizeLimit: number;
@@ -61,7 +52,53 @@ export const ACCOUNT_LIMITS: Record<
       theme: true,
     },
   },
-} as const;
+};
+
+export const SUBSCRIPTION_TIERS: Record<
+  TierKeys,
+  {
+    price: number | undefined;
+    features: {
+      title: string;
+      description: string;
+      shortDescription: string;
+      comingSoon?: boolean;
+    }[];
+  }
+> = {
+  free: {
+    price: undefined,
+    features: [
+      {
+        title: "Save table topics",
+        description: `Save and rewatch up to ${ACCOUNT_LIMITS.free.tableTopicLimit} table topics`,
+        shortDescription: `Save and rewatch up to ${ACCOUNT_LIMITS.free.tableTopicLimit} table topics`,
+      },
+    ],
+  },
+  pro: {
+    price: 6.99,
+    features: [
+      {
+        title: "Save table topics",
+        description: `Save up to ${ACCOUNT_LIMITS.pro.tableTopicLimit} table topics to review later and see your progress over time`,
+        shortDescription: `Save and rewatch up to ${ACCOUNT_LIMITS.pro.tableTopicLimit} table topics`,
+      },
+      {
+        title: "AI generation",
+        description: `Generate new topics with AI, with additional options for difficulty and theme`,
+        shortDescription: `Generate AI table topics, with difficulty and theme options`,
+      },
+      {
+        title: "Speech feedback",
+        description:
+          "Generate feedback and stats on your recorded topics to guide your progress",
+        shortDescription: "Generate feedback and stats on your recorded topics",
+        comingSoon: true,
+      },
+    ],
+  },
+};
 
 export enum ERROR_CODES {
   reachedVideoLimit = "VL",
