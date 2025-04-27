@@ -9,11 +9,18 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function validateFile(file: File, isServer: boolean = false) {
-  // Check if the file size exceeds 10MB
-  if (file && file.size > ACCOUNT_LIMITS.free.videoSizeLimit) {
+export function validateFile({
+  file,
+  isServer = false,
+  user,
+}: {
+  file: File;
+  isServer?: boolean;
+  user: NonNullable<UserData>;
+}) {
+  if (file && file.size > user?.accountLimits.videoSizeLimit) {
     throw new Error(
-      "File size exceeds the maximum file size on the free account. Upgrade your account to increase this limit.",
+      "File size exceeds the maximum file size on your account. Upgrade your account to increase this limit.",
       {
         cause: ERROR_CODES.videoSizeLimitExceeded,
       },
@@ -60,13 +67,20 @@ export async function tryCatch<T, E = Error>(
   }
 }
 
+function getAccountLimits(data: ClerkUserPublicMetadata) {
+  if (data?.subscription === "pro") return ACCOUNT_LIMITS.pro;
+  return ACCOUNT_LIMITS.free;
+}
+
 type UserResource = ReturnType<typeof useUser>["user"];
+export type UserData = ReturnType<typeof userWithMetadata>;
 
 export function userWithMetadata(user: User | UserResource | null | undefined) {
   if (!user) return null;
   const metadata: ClerkUserPublicMetadata = user.publicMetadata;
+  const accountLimits = getAccountLimits(metadata);
 
-  return { ...user, publicMetadata: metadata };
+  return { ...user, publicMetadata: metadata, accountLimits };
 }
 
 export function price(value: number) {

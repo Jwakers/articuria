@@ -2,12 +2,19 @@
 
 import { getUserVideoCount } from "@/app/server/db/queries";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { ACCOUNT_LIMITS } from "@/lib/constants";
+import { userWithMetadata } from "@/lib/utils";
+import { currentUser } from "@clerk/nextjs/server";
 import { AlertCircle } from "lucide-react";
 
 export default async function VideoLimitAlert() {
-  const { videoCount } = await getUserVideoCount();
-  const showWarning = videoCount >= ACCOUNT_LIMITS.free.tableTopicLimit;
+  const [{ videoCount }, user] = await Promise.all([
+    getUserVideoCount(),
+    currentUser(),
+  ]);
+  const userData = userWithMetadata(user);
+
+  const showWarning =
+    userData && videoCount >= userData?.accountLimits.tableTopicLimit;
 
   if (!showWarning) return null;
 

@@ -18,10 +18,6 @@ export const ROUTES = {
   privacy: "/privacy",
   terms: "/terms",
 };
-// TODO
-// - Add all features
-// - Use this data in the frontend components
-// - Update the drawer component to display the free tier
 
 type TierKeys = "free" | "pro";
 

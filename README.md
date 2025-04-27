@@ -10,6 +10,7 @@
 
 - Enhance video recording page:
 
+- [ ] Add higher video quality as a pro feature
 - [ ] Style active link/page in sidebar
 - [ ] Style warning banners with warning colors
 - [ ] Rate limiting api routes.
@@ -35,9 +36,10 @@
     - [x] Syn should run on success page and webhook
   - [x] Create success page
     - [x] Handle checkout data sync (including tier data)
-  - [ ] Handle existing account limit logic
+  - [x] Handle existing account limit logic
   - [ ] Create an invoice page for subscribed users
   - [ ] Cancel subscription
+  - [ ] Add all preview and production keys to vercel
 
 - AI-Generated Table Topics:
 

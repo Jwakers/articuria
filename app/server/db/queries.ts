@@ -1,6 +1,7 @@
 import { db } from "@/app/server/db";
-import { ACCOUNT_LIMITS, ERROR_CODES } from "@/lib/constants";
-import { auth } from "@clerk/nextjs/server";
+import { ERROR_CODES } from "@/lib/constants";
+import { userWithMetadata } from "@/lib/utils";
+import { currentUser } from "@clerk/nextjs/server";
 import { Prisma, TableTopic, Video } from "@prisma/client";
 import { isSameMonth, subMonths } from "date-fns";
 import "server-only";
@@ -66,10 +67,10 @@ export async function createUserVideo({
   const video = await db.$transaction(
     async (prisma) => {
       const videoCount = await prisma.video.count({
-        where: { userId: user.userId },
+        where: { userId: user.id },
       });
 
-      if (videoCount >= ACCOUNT_LIMITS.free.tableTopicLimit) {
+      if (videoCount >= user.accountLimits.tableTopicLimit) {
         throw new Error(
           "You have reached your account limit for table topics. Upgrade your account or delete some videos to save more.",
           { cause: ERROR_CODES.reachedVideoLimit },
@@ -87,7 +88,7 @@ export async function createUserVideo({
         data: {
           cloudflareId: uid,
           tableTopicId,
-          userId: user.userId,
+          userId: user.id,
         },
       });
 
@@ -111,7 +112,7 @@ export async function getUserVideos(
 
   const videosPromise = db.video.findMany({
     where: {
-      userId: user.userId,
+      userId: user.id,
     },
     include: {
       tableTopic: true,
@@ -125,7 +126,7 @@ export async function getUserVideos(
 
   const totalItemsPromise = db.video.count({
     where: {
-      userId: user.userId,
+      userId: user.id,
     },
   });
 
@@ -147,7 +148,7 @@ export async function getUserVideoCount() {
       createdAt: true,
     },
     where: {
-      userId: user.userId,
+      userId: user.id,
     },
   });
 
@@ -210,7 +211,7 @@ export async function getUserVideoById(id: Video["id"]) {
   let video = await db.video.findFirst({
     where: {
       id,
-      userId: user.userId,
+      userId: user.id,
     },
     include: {
       tableTopic: true,
@@ -263,7 +264,7 @@ export async function deleteUserVideoById(id: Video["id"]) {
     const deletedVideo = await prisma.video.delete({
       where: {
         id,
-        userId: user.userId,
+        userId: user.id,
       },
     });
 
@@ -280,8 +281,10 @@ export type VideoWithTopic = Prisma.VideoGetPayload<{
 }>;
 
 async function isAuth() {
-  const user = await auth();
-  if (!user.userId) throw new Error("Unauthorized");
+  const user = await currentUser();
+  if (!user?.id) throw new Error("Unauthorized");
 
-  return user;
+  return userWithMetadata(user) as NonNullable<
+    ReturnType<typeof userWithMetadata>
+  >;
 }
