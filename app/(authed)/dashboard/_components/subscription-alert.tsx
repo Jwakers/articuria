@@ -6,7 +6,6 @@ import { AlertCircle } from "lucide-react";
 export async function SubscriptionAlert() {
   const { publicMetadata } = userWithMetadata(await currentUser());
 
-  console.log(publicMetadata);
   if (publicMetadata?.subscriptionData?.status !== "canceled") return null;
   const endDateUnix = publicMetadata.subscriptionData.currentPeriodEnd;
 
@@ -18,8 +17,8 @@ export async function SubscriptionAlert() {
       <AlertTitle>Subscription cancelled!</AlertTitle>
       <AlertDescription>
         Your subscription has been cancelled. After{" "}
-        {new Date(endDateUnix * 1000).toLocaleDateString()} you will loose
-        access to premium features.
+        {new Date(endDateUnix * 1000).toLocaleDateString()} you will lose access
+        to premium features.
       </AlertDescription>
     </Alert>
   );

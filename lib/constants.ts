@@ -17,7 +17,8 @@ export const ROUTES = {
   terms: "/terms",
 };
 
-type TierKeys = "free" | "pro";
+const TIER_KEYS = ["free", "pro"] as const;
+type TierKeys = (typeof TIER_KEYS)[number];
 
 export const ACCOUNT_LIMITS: Record<
   TierKeys,
@@ -71,7 +72,7 @@ export const SUBSCRIPTION_TIERS: Record<
     ],
   },
   pro: {
-    price: 7.99,
+    price: 799,
     features: [
       {
         title: "Save table topics",

@@ -64,12 +64,12 @@ export async function createUserVideo({
 }) {
   const { user, accountLimits } = await isAuth();
 
+  const videoCount = await db.video.count({
+    where: { userId: user.id },
+  });
+
   const video = await db.$transaction(
     async (prisma) => {
-      const videoCount = await prisma.video.count({
-        where: { userId: user.id },
-      });
-
       if (videoCount >= accountLimits.tableTopicLimit) {
         throw new Error(
           "You have reached your account limit for table topics. Upgrade your account or delete some videos to save more.",

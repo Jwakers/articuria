@@ -18,7 +18,8 @@ export function validateFile({
   isServer?: boolean;
   accountLimits: NonNullable<UserData["accountLimits"]>;
 }) {
-  if (file && file.size > accountLimits.videoSizeLimit) {
+  if (!file) return;
+  if (file.size > accountLimits.videoSizeLimit) {
     throw new Error(
       "File size exceeds the maximum file size on your account. Upgrade your account to increase this limit.",
       {

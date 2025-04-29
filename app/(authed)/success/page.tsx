@@ -3,6 +3,7 @@
 import { syncStripeDataToClerk } from "@/app/server/stripe/sync-stripe";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { useConfetti } from "@/hooks/use-confetti";
 import { ROUTES, SUBSCRIPTION_TIERS } from "@/lib/constants";
 import { price, userWithMetadata } from "@/lib/utils";
 import { useSession, useUser } from "@clerk/nextjs";
@@ -20,68 +21,30 @@ import Loading from "./loading";
 export default function SubscriptionSuccessPage() {
   const { publicMetadata } = userWithMetadata(useUser().user);
   const { session } = useSession();
-  const confettiFired = useRef(false);
   const sessionReloaded = useRef(false);
-
+  const isSubscriptionActive =
+    publicMetadata?.subscriptionData?.status === "active";
+  const startDateUnix = publicMetadata?.subscriptionData?.currentPeriodStart;
   const nextBillingUnix = publicMetadata?.subscriptionData?.currentPeriodEnd;
+
+  useConfetti(isSubscriptionActive && sessionReloaded.current);
 
   useEffect(() => {
     if (sessionReloaded.current) return;
 
-    syncStripeDataToClerk().then(() => {
-      session?.reload();
-      sessionReloaded.current = true;
-    });
+    syncStripeDataToClerk()
+      .then(() => {
+        session?.reload();
+        sessionReloaded.current = true;
+      })
+      .catch((error) => {
+        console.error("Failed to sync Stripe data:", error);
+      });
   }, [session]);
 
-  useEffect(() => {
-    if (
-      confettiFired.current ||
-      !publicMetadata?.subscriptionData?.status ||
-      publicMetadata?.subscriptionData?.status !== "active"
-    )
-      return;
-
-    const launchConfetti = () => {
-      const duration = 3000;
-      const end = Date.now() + duration;
-
-      const colors = ["#34e86e", "#5a34e8", "#47b4ea"];
-      (async function frame() {
-        const confetti = (await import("canvas-confetti")).default;
-
-        confetti({
-          particleCount: 2,
-          angle: 60,
-          spread: 55,
-          origin: { x: 0 },
-          colors: colors,
-        });
-
-        confetti({
-          particleCount: 2,
-          angle: 120,
-          spread: 55,
-          origin: { x: 1 },
-          colors: colors,
-        });
-
-        if (Date.now() < end) {
-          requestAnimationFrame(frame);
-        }
-        confettiFired.current = true;
-      })();
-    };
-
-    // Small delay to ensure the component is mounted
-    const timer = setTimeout(() => {
-      launchConfetti();
-    }, 300);
-
-    return () => clearTimeout(timer);
-  }, [session, publicMetadata?.subscriptionData?.status]);
-
-  if (publicMetadata?.subscriptionData?.status !== "active") return <Loading />;
+  if (!sessionReloaded.current || !isSubscriptionActive) {
+    return <Loading />;
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-background to-highlight-secondary/5">
@@ -106,14 +69,19 @@ export default function SubscriptionSuccessPage() {
             <div className="flex items-center justify-between border-b pb-4">
               <div>
                 <h2 className="text-lg font-semibold">Pro Plan</h2>
-                <p className="text-sm text-muted-foreground">
-                  Started on {new Date().toLocaleDateString()}
-                </p>
+                {startDateUnix ? (
+                  <p className="text-sm text-muted-foreground">
+                    Started on{" "}
+                    {new Date(startDateUnix * 1000).toLocaleDateString()}
+                  </p>
+                ) : null}
               </div>
               <div className="text-right">
-                <div className="text-lg font-bold">
-                  {price(SUBSCRIPTION_TIERS.pro.price ?? 0)}/month
-                </div>
+                {SUBSCRIPTION_TIERS.pro.price ? (
+                  <div className="text-lg font-bold">
+                    {price(SUBSCRIPTION_TIERS.pro.price / 100)}/month
+                  </div>
+                ) : null}
                 {nextBillingUnix ? (
                   <p className="text-xs text-muted-foreground">
                     Next billing date:{" "}

@@ -13,7 +13,12 @@ export function SubscriptionTrigger({
   const { setIsOpen } = useSubscriptionDrawer();
 
   return (
-    <Button onClick={() => setIsOpen(true)} variant="subscribe" {...rest}>
+    <Button
+      onClick={() => setIsOpen(true)}
+      variant="subscribe"
+      {...rest}
+      aria-label="View subscription details"
+    >
       {children}
     </Button>
   );

@@ -17,11 +17,7 @@ export function BillingTabs(props: BillingPageProps) {
   const [activeTab, setActiveTab] = useState("subscription");
 
   return (
-    <Tabs
-      defaultValue="subscription"
-      value={activeTab}
-      onValueChange={setActiveTab}
-    >
+    <Tabs value={activeTab} onValueChange={setActiveTab}>
       <TabsList className="grid w-full grid-cols-2">
         <TabsTrigger value="subscription">Subscription</TabsTrigger>
         <TabsTrigger value="history">Billing History</TabsTrigger>

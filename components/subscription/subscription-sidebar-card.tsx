@@ -23,12 +23,15 @@ export async function SubscriptionSidebarCard() {
         </h3>
 
         <div className="mt-2 flex items-center justify-between">
-          <div className="text-xs text-muted-foreground">
-            <span className="font-bold">
-              {price(SUBSCRIPTION_TIERS.pro.price ?? 0)}
-            </span>
-            /mo
-          </div>
+          {SUBSCRIPTION_TIERS.pro.price ? (
+            <div className="text-xs text-muted-foreground">
+              <span className="font-bold">
+                {price(SUBSCRIPTION_TIERS.pro.price / 100)}
+              </span>
+              /mo
+            </div>
+          ) : null}
+
           <SubscriptionTrigger size="sm">Details</SubscriptionTrigger>
         </div>
       </div>

@@ -16,6 +16,7 @@
 - [ ] Sign in should open in a modal not a new page
 - [ ] Unify all page headings to use the same styling (take from the subscription management page)
 - [ ] Add/update metadata for all pages
+- [ ] Add loading UI when changing pages on the video management route
 - [ ] Rate limiting api routes.
 - [ ] Move email templates to a separate file for better maintainability.
 - [ ] Create cloudflare webhook should run on every deployment.
@@ -43,6 +44,7 @@
   - [x] Create an manage subscription page for subscribed users
   - [x] Cancel subscription logic (make sure that cancelled accounts can still access premium features until the end date)
   - [x] Update stripe dashboard with all relevant feature information
+  - [ ] Submit for review and fix
   - [ ] Should videos be deleted on cancellation?
   - [ ] Set up production instance in stripe
   - [ ] Add all preview and production keys to vercel

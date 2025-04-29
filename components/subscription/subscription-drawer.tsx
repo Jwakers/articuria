@@ -38,7 +38,7 @@ export function SubscriptionDrawer() {
         return;
       }
       if (!data?.id) {
-        toast.error("Enable to get session ID");
+        toast.error("Unable to get session ID");
         return;
       }
 
@@ -133,12 +133,14 @@ export function SubscriptionDrawer() {
                     <h3 className="text-lg font-medium">Pro Plan</h3>
                     <p className="text-sm text-muted-foreground">Full access</p>
                   </div>
-                  <div className="text-right">
-                    <div className="text-lg font-bold">
-                      {price(SUBSCRIPTION_TIERS.pro.price ?? 0)}
+                  {SUBSCRIPTION_TIERS.pro.price ? (
+                    <div className="text-right">
+                      <div className="text-lg font-bold">
+                        {price(SUBSCRIPTION_TIERS.pro.price / 100)}
+                      </div>
+                      <p className="text-xs text-muted-foreground">per month</p>
                     </div>
-                    <p className="text-xs text-muted-foreground">per month</p>
-                  </div>
+                  ) : null}
                 </div>
 
                 <div className="mb-6 space-y-3">

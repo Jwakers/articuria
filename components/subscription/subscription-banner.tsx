@@ -32,7 +32,9 @@ export async function SubscriptionBanner() {
         <div className="flex items-center gap-3">
           <div className="hidden text-xs font-medium sm:block">
             <span className="text-sm font-bold">
-              {price(SUBSCRIPTION_TIERS.pro.price ?? 0)}
+              {SUBSCRIPTION_TIERS.pro.price
+                ? price(SUBSCRIPTION_TIERS.pro.price / 100)
+                : "N/A"}
             </span>
             /month
           </div>

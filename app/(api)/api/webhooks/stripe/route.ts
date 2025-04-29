@@ -5,7 +5,7 @@ import { headers } from "next/headers";
 import { after, NextResponse } from "next/server";
 import type Stripe from "stripe";
 
-export async function POST(req: Request) {
+export async function POST(req: Request): Promise<NextResponse> {
   const body = await req.text();
   const signature = (await headers()).get("Stripe-Signature");
 
@@ -22,7 +22,8 @@ export async function POST(req: Request) {
       process.env.STRIPE_WEBHOOK_SECRET!,
     );
 
-    after(processEvent(event));
+    // Return early, let the processing continue in the background
+    return after(() => processEvent(event));
   }
 
   const { error } = await tryCatch(doEventProcessing());
@@ -61,15 +62,24 @@ async function processEvent(event: Stripe.Event) {
       `[STRIPE HOOK] Event ${event.type} not flagged for processing`,
     );
 
-  const { customer: customerId } = event?.data?.object as {
+  const { customer: customerId } = (event?.data?.object || {}) as {
     customer: string;
   };
 
   if (typeof customerId !== "string") {
+    console.error(
+      `[STRIPE HOOK] Invalid or missing customer ID in event:`,
+      event.type,
+    );
     throw new Error(
       `[STRIPE HOOK] ID isn't string.\nEvent type: ${event.type}`,
     );
   }
 
-  return await syncStripeDataToClerk(customerId);
+  try {
+    return await syncStripeDataToClerk(customerId);
+  } catch (error) {
+    console.error(`[STRIPE HOOK] Error syncing customer ${customerId}:`, error);
+    throw error;
+  }
 }

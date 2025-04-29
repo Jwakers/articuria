@@ -6,7 +6,7 @@ import { AlertCircle } from "lucide-react";
 import Link from "next/link";
 import { useEffect } from "react";
 
-export default function Error({
+export default function ErrorPage({
   error,
   reset,
 }: {
@@ -30,8 +30,9 @@ export default function Error({
         </h1>
 
         <p className="mb-6 text-muted-foreground">
-          We encountered an issue while processing your subscription. Please try
-          again or contact support.
+          We encountered an issue while processing your subscription payment.
+          Please try again or contact our support team for assistance with your
+          payment.
         </p>
 
         <div className="flex flex-col justify-center gap-4 sm:flex-row">

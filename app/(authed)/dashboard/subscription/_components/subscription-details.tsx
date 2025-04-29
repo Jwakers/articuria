@@ -46,6 +46,7 @@ export function SubscriptionDetails({ videoCountPromise }: BillingPageProps) {
     toast.promise(promise, {
       loading: "Cancelling subscription...",
       success: () => {
+        setShowCancelDialog(false);
         router.push(ROUTES.dashboard.root);
         return "Subscription cancelled";
       },
@@ -59,7 +60,7 @@ export function SubscriptionDetails({ videoCountPromise }: BillingPageProps) {
         </p>
       ),
     });
-  }, []);
+  }, [router]);
 
   if (!subData) {
     toast.error(
@@ -103,12 +104,14 @@ export function SubscriptionDetails({ videoCountPromise }: BillingPageProps) {
                 </span>
               </div>
             ) : null}
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Amount</span>
-              <span className="font-medium">
-                {price(SUBSCRIPTION_TIERS.pro.price ?? 0)}
-              </span>
-            </div>
+            {SUBSCRIPTION_TIERS.pro.price ? (
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Amount</span>
+                <span className="font-medium">
+                  {price(SUBSCRIPTION_TIERS.pro.price / 100)}
+                </span>
+              </div>
+            ) : null}
           </div>
 
           <div>

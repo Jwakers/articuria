@@ -30,8 +30,7 @@ export async function syncStripeDataToClerk(customerId?: string) {
 
     const stripeCustomerId =
       customerId ??
-      (await (user.publicMetadata as ClerkUserPublicMetadata)
-        ?.stripeCustomerId);
+      (user.publicMetadata as ClerkUserPublicMetadata)?.stripeCustomerId;
 
     if (!stripeCustomerId)
       return { data: null, error: "User missing stripe customer ID" };
@@ -50,7 +49,7 @@ export async function syncStripeDataToClerk(customerId?: string) {
         subscriptionData: undefined,
       };
 
-      await updateUserPublicMetadata(subData);
+      await updateUserPublicMetadata(subData, user);
       return { data: subData, error: null };
     }
 
@@ -71,7 +70,7 @@ export async function syncStripeDataToClerk(customerId?: string) {
       },
     };
 
-    await updateUserPublicMetadata(subData);
+    await updateUserPublicMetadata(subData, user);
     return { data: subData, error: null };
   } catch (error) {
     console.error("Error syncing Stripe with Clerk:", error);
@@ -82,8 +81,11 @@ export async function syncStripeDataToClerk(customerId?: string) {
   }
 }
 
-async function updateUserPublicMetadata(data: ClerkUserPublicMetadata) {
-  const user = await currentUser();
+async function updateUserPublicMetadata(
+  data: ClerkUserPublicMetadata,
+  user?: Awaited<ReturnType<typeof currentUser>>,
+) {
+  user ??= await currentUser();
   if (!user) throw new Error("user is undefined");
 
   const client = await clerkClient();

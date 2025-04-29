@@ -39,12 +39,14 @@ export default async function SubscriptionLanding() {
               <div className="mb-4 rounded-lg bg-gradient-to-r from-highlight/10 to-highlight-secondary/10 p-4">
                 <div className="flex items-center justify-between">
                   <div className="text-lg font-medium">Pro Plan</div>
-                  <div className="text-xl font-bold">
-                    {price(SUBSCRIPTION_TIERS.pro.price ?? 0)}
-                    <span className="text-sm font-normal text-muted-foreground">
-                      /month
-                    </span>
-                  </div>
+                  {SUBSCRIPTION_TIERS.pro.price ? (
+                    <div className="text-xl font-bold">
+                      {price(SUBSCRIPTION_TIERS.pro.price / 100)}
+                      <span className="text-sm font-normal text-muted-foreground">
+                        /month
+                      </span>
+                    </div>
+                  ) : null}
                 </div>
                 <div className="text-text-muted-foreground mt-2 text-sm">
                   Cancel anytime. No hidden fees.
