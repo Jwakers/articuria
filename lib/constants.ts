@@ -17,8 +17,7 @@ export const ROUTES = {
   terms: "/terms",
 };
 
-const TIER_KEYS = ["free", "pro"] as const;
-type TierKeys = (typeof TIER_KEYS)[number];
+type TierKeys = "free" | "pro";
 
 export const ACCOUNT_LIMITS: Record<
   TierKeys,
