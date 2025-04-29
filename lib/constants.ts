@@ -9,12 +9,10 @@ export const ROUTES = {
       record: "/dashboard/table-topics/record",
       manage: "/dashboard/table-topics/manage",
     },
+    subscription: "/dashboard/subscription",
     contact: "/dashboard/contact",
   },
-  subscription: {
-    success: "/subscription/success",
-    invoice: "/subscription/invoice",
-  },
+  success: "/success",
   privacy: "/privacy",
   terms: "/terms",
 };
@@ -73,7 +71,7 @@ export const SUBSCRIPTION_TIERS: Record<
     ],
   },
   pro: {
-    price: 6.99,
+    price: 7.99,
     features: [
       {
         title: "Save table topics",

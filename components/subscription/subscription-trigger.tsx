@@ -8,7 +8,6 @@ type SubscriptionTriggerProps = React.ComponentProps<typeof Button>;
 
 export function SubscriptionTrigger({
   children,
-  className,
   ...rest
 }: SubscriptionTriggerProps) {
   const { setIsOpen } = useSubscriptionDrawer();

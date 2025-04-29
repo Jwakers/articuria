@@ -12,13 +12,13 @@ export function cn(...inputs: ClassValue[]) {
 export function validateFile({
   file,
   isServer = false,
-  user,
+  accountLimits,
 }: {
   file: File;
   isServer?: boolean;
-  user: NonNullable<UserData>;
+  accountLimits: NonNullable<UserData["accountLimits"]>;
 }) {
-  if (file && file.size > user?.accountLimits.videoSizeLimit) {
+  if (file && file.size > accountLimits.videoSizeLimit) {
     throw new Error(
       "File size exceeds the maximum file size on your account. Upgrade your account to increase this limit.",
       {
@@ -76,11 +76,16 @@ type UserResource = ReturnType<typeof useUser>["user"];
 export type UserData = ReturnType<typeof userWithMetadata>;
 
 export function userWithMetadata(user: User | UserResource | null | undefined) {
-  if (!user) return null;
+  if (!user)
+    return {
+      user: null,
+      publicMetadata: null,
+      accountLimits: null,
+    };
   const metadata: ClerkUserPublicMetadata = user.publicMetadata;
   const accountLimits = getAccountLimits(metadata);
 
-  return { ...user, publicMetadata: metadata, accountLimits };
+  return { user, publicMetadata: metadata, accountLimits };
 }
 
 export function price(value: number) {

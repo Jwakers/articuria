@@ -6,8 +6,9 @@ import { SubscriptionTrigger } from "./subscription-trigger";
 import { SubscriptionWrapper } from "./subscription-wrapper";
 
 export async function SubscriptionSidebarCard() {
-  const user = userWithMetadata(await currentUser());
-  if (!user || user.publicMetadata.subscription === "pro") return null;
+  const { user, publicMetadata } = userWithMetadata(await currentUser());
+  if (!user || publicMetadata.subscriptionData?.status === "active")
+    return null;
 
   return (
     <SubscriptionWrapper>

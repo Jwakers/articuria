@@ -19,7 +19,7 @@ export const useMediaRecorder = () => {
   const streamRef = useRef<MediaStream | null>(null);
   const videoElementRef = useRef<HTMLVideoElement | null>(null);
   const hasInitUserMedia = useRef(false);
-  const user = userWithMetadata(useUser().user);
+  const { user, accountLimits } = userWithMetadata(useUser().user);
 
   const setVideoToStream = async () => {
     if (streamRef.current || hasInitUserMedia.current) return;
@@ -121,7 +121,7 @@ export const useMediaRecorder = () => {
     });
 
     try {
-      validateFile({ file, user });
+      validateFile({ file, accountLimits });
     } catch (error) {
       toast.error(
         error instanceof Error

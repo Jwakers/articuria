@@ -1,5 +1,5 @@
 import {
-  getUserVideoCount,
+  getUserVideoDetails,
   getUserVideoDurationData,
 } from "@/app/server/db/queries";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,7 +10,7 @@ import { JSX } from "react";
 
 export async function TotalVideosCard() {
   try {
-    const { videoCount, countThisMonth } = await getUserVideoCount();
+    const { videoCount, countThisMonth } = await getUserVideoDetails();
 
     return (
       <StatCard

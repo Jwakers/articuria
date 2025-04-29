@@ -1,6 +1,6 @@
 "use server";
 
-import { getUserVideoCount } from "@/app/server/db/queries";
+import { getUserVideoDetails } from "@/app/server/db/queries";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { userWithMetadata } from "@/lib/utils";
 import { currentUser } from "@clerk/nextjs/server";
@@ -8,7 +8,7 @@ import { AlertCircle } from "lucide-react";
 
 export default async function VideoLimitAlert() {
   const [{ videoCount }, user] = await Promise.all([
-    getUserVideoCount(),
+    getUserVideoDetails(),
     currentUser(),
   ]);
   const userData = userWithMetadata(user);

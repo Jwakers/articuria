@@ -50,23 +50,25 @@ export async function uploadVideoToCloudflare(
   if (!res.ok) throw new Error(`Video upload failed: ${res.status}`);
 }
 
-const _getCachedVideo = unstable_cache(
-  async (id) => {
-    return cloudflareClient.stream.get(id, {
-      account_id: process.env.CLOUDFLARE_ACCOUNT_ID!,
-    });
-  },
-  undefined,
-  {
-    revalidate: 5,
-  },
-);
+const _getCachedVideo = (id: string) => {
+  return unstable_cache(
+    async () => {
+      return cloudflareClient.stream.get(id, {
+        account_id: process.env.CLOUDFLARE_ACCOUNT_ID!,
+      });
+    },
+    [id],
+    {
+      revalidate: 5,
+    },
+  );
+};
 
 export async function getVideoById(id: string) {
   const user = await currentUser();
   if (!user?.id) throw new Error("Unauthorized");
 
-  const video = await _getCachedVideo(id);
+  const video = await _getCachedVideo(id)();
 
   return video;
 }

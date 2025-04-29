@@ -25,7 +25,7 @@ import { useSubscriptionDrawer } from "./context";
 export function SubscriptionDrawer() {
   const { isOpen, setIsOpen } = useSubscriptionDrawer();
   const [isPending, startTransition] = useTransition();
-  const user = userWithMetadata(useUser().user);
+  const { user, publicMetadata } = userWithMetadata(useUser().user);
 
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,7 +57,8 @@ export function SubscriptionDrawer() {
     });
   };
 
-  if (!user || user.publicMetadata.subscription === "pro") return null;
+  if (!user || publicMetadata.subscriptionData?.status === "active")
+    return null;
 
   return (
     <Drawer open={isOpen} onOpenChange={setIsOpen}>

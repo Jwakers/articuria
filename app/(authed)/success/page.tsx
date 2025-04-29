@@ -14,23 +14,32 @@ import {
   Sparkles,
 } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 
 export default function SubscriptionSuccessPage() {
-  const [userName, setUserName] = useState("User");
-  const user = userWithMetadata(useUser().user);
+  const { publicMetadata } = userWithMetadata(useUser().user);
   const { session } = useSession();
+  const confettiFired = useRef(false);
+  const sessionReloaded = useRef(false);
 
-  const nextBillingDate =
-    user?.publicMetadata.subscriptionData?.currentPeriodEnd;
+  const nextBillingUnix = publicMetadata?.subscriptionData?.currentPeriodEnd;
 
   useEffect(() => {
+    if (sessionReloaded.current) return;
+
     syncStripeDataToClerk().then(() => {
       session?.reload();
+      sessionReloaded.current = true;
     });
-  }, []);
+  }, [session]);
 
   useEffect(() => {
+    if (
+      confettiFired.current ||
+      publicMetadata?.subscriptionData?.status !== "active"
+    )
+      return;
+
     const launchConfetti = () => {
       const duration = 3000;
       const end = Date.now() + duration;
@@ -58,6 +67,7 @@ export default function SubscriptionSuccessPage() {
         if (Date.now() < end) {
           requestAnimationFrame(frame);
         }
+        confettiFired.current = true;
       })();
     };
 
@@ -67,7 +77,9 @@ export default function SubscriptionSuccessPage() {
     }, 300);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [session, publicMetadata?.subscriptionData?.status]);
+
+  if (publicMetadata?.subscriptionData?.status !== "active") return null;
 
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-purple-50">
@@ -100,10 +112,10 @@ export default function SubscriptionSuccessPage() {
                 <div className="text-lg font-bold">
                   {price(SUBSCRIPTION_TIERS.pro.price ?? 0)}/month
                 </div>
-                {nextBillingDate ? (
+                {nextBillingUnix ? (
                   <p className="text-xs text-muted-foreground">
                     Next billing date:{" "}
-                    {new Date(nextBillingDate * 1000).toLocaleDateString()}
+                    {new Date(nextBillingUnix * 1000).toLocaleDateString()}
                   </p>
                 ) : null}
               </div>

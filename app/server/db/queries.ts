@@ -62,7 +62,7 @@ export async function createUserVideo({
   title: string;
   formData: FormData;
 }) {
-  const user = await isAuth();
+  const { user, accountLimits } = await isAuth();
 
   const video = await db.$transaction(
     async (prisma) => {
@@ -70,7 +70,7 @@ export async function createUserVideo({
         where: { userId: user.id },
       });
 
-      if (videoCount >= user.accountLimits.tableTopicLimit) {
+      if (videoCount >= accountLimits.tableTopicLimit) {
         throw new Error(
           "You have reached your account limit for table topics. Upgrade your account or delete some videos to save more.",
           { cause: ERROR_CODES.reachedVideoLimit },
@@ -106,7 +106,7 @@ export async function getUserVideos(
   page: string | number = 1,
   pageSize: number = 10,
 ) {
-  const user = await isAuth();
+  const { user } = await isAuth();
 
   const skip = (Number(page) - 1) * pageSize;
 
@@ -140,8 +140,8 @@ export async function getUserVideos(
   return { videos, totalPages, currentPage: Number(page) };
 }
 
-export async function getUserVideoCount() {
-  const user = await isAuth();
+export async function getUserVideoDetails() {
+  const { user } = await isAuth();
 
   const videos = await db.video.findMany({
     select: {
@@ -160,6 +160,18 @@ export async function getUserVideoCount() {
     videoCount: videos.length,
     countThisMonth,
   };
+}
+
+export async function getUserVideoCount() {
+  const { user } = await isAuth();
+
+  const count = await db.video.count({
+    where: {
+      userId: user.id,
+    },
+  });
+
+  return count;
 }
 
 export async function getUserVideoDurationData() {
@@ -206,7 +218,7 @@ export async function getUserVideoDurationData() {
 }
 
 export async function getUserVideoById(id: Video["id"]) {
-  const user = await isAuth();
+  const { user } = await isAuth();
 
   let video = await db.video.findFirst({
     where: {
@@ -258,7 +270,7 @@ async function _updateUserVideoReadyState(
 }
 
 export async function deleteUserVideoById(id: Video["id"]) {
-  const user = await isAuth();
+  const { user } = await isAuth();
 
   const deletedVideo = await db.$transaction(async (prisma) => {
     const deletedVideo = await prisma.video.delete({
@@ -281,10 +293,12 @@ export type VideoWithTopic = Prisma.VideoGetPayload<{
 }>;
 
 async function isAuth() {
-  const user = await currentUser();
-  if (!user?.id) throw new Error("Unauthorized");
+  const current = await currentUser();
+  if (!current?.id) throw new Error("Unauthorized");
 
-  return userWithMetadata(user) as NonNullable<
-    ReturnType<typeof userWithMetadata>
-  >;
+  const { user, accountLimits, publicMetadata } = userWithMetadata(current);
+
+  if (!user || !accountLimits) throw new Error("Missing user data");
+
+  return { user, accountLimits, publicMetadata };
 }

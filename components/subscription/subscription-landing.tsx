@@ -5,8 +5,9 @@ import { Check } from "lucide-react";
 import { SubscriptionTrigger } from "./subscription-trigger";
 
 export default async function SubscriptionLanding() {
-  const user = userWithMetadata(await currentUser());
-  if (!user || user.publicMetadata.subscription === "pro") return null;
+  const { user, publicMetadata } = userWithMetadata(await currentUser());
+  if (!user || publicMetadata.subscriptionData?.status === "active")
+    return null;
 
   return (
     <section className="bg-gradient-to-b from-background to-highlight/10 py-12 md:py-24 lg:py-32">

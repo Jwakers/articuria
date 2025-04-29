@@ -1,6 +1,6 @@
 "use client";
 
-import { LogOut } from "lucide-react";
+import { CreditCard, LogOut } from "lucide-react";
 
 import { useClerk, useUser } from "@clerk/nextjs";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
@@ -15,12 +15,16 @@ import {
 } from "./ui/dropdown-menu";
 
 import { useIsMobile } from "@/hooks/use-mobile";
+import { ROUTES } from "@/lib/constants";
+import { userWithMetadata } from "@/lib/utils";
 import { BadgeCheck, ChevronsUpDown } from "lucide-react";
+import Link from "next/link";
 import { Button } from "./ui/button";
 
 export default function UserMenu() {
-  const { user } = useUser();
+  const { user, publicMetadata } = userWithMetadata(useUser().user);
   const { openUserProfile } = useClerk();
+  const subActive = publicMetadata?.subscriptionData?.status === "active";
 
   const isMobile = useIsMobile();
 
@@ -76,10 +80,14 @@ export default function UserMenu() {
             <BadgeCheck />
             Manage account
           </DropdownMenuItem>
-          {/* <DropdownMenuItem>
-            <CreditCard />
-            Billing
-          </DropdownMenuItem> */}
+          {subActive ? (
+            <DropdownMenuItem asChild>
+              <Link href={ROUTES.dashboard.subscription}>
+                <CreditCard />
+                Manage subscription
+              </Link>
+            </DropdownMenuItem>
+          ) : null}
           {/* <DropdownMenuItem>
             <Bell />
             Notifications
