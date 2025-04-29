@@ -4,11 +4,19 @@
 
 - [ ] Error uploading large videos > 1:30. Prisma transaction is timing out.
 - [ ] Generating a second topic causes the video stream to fail.
+- [ ] contact page needs a loading.tsx
 
 ## 1. Updates
 
 - Enhance video recording page:
 
+- [ ] Add higher video quality as a pro feature
+- [ ] Style active link/page in sidebar
+- [ ] Style warning banners with warning colors
+- [ ] Sign in should open in a modal not a new page
+- [ ] Unify all page headings to use the same styling (take from the subscription management page)
+- [ ] Add/update metadata for all pages
+- [ ] Add loading UI when changing pages on the video management route
 - [ ] Rate limiting api routes.
 - [ ] Move email templates to a separate file for better maintainability.
 - [ ] Create cloudflare webhook should run on every deployment.
@@ -20,8 +28,31 @@
 
 ## 2. New Features
 
+- Add Stripe
+
+  - [x] Set up drawer UI for subscriptions
+    - [x] Should not show for subscribed users
+    - [x] Add a card for "free" users
+    - [x] Dashboard banner
+    - [x] Sidebar section
+    - [x] Trigger from header
+  - [x] Set up Clerk public data to sync stripe customer data
+    - [x] Syn should run on success page and webhook
+  - [x] Create success page
+    - [x] Handle checkout data sync (including tier data)
+  - [x] Handle existing account limit logic
+  - [x] Create an manage subscription page for subscribed users
+  - [x] Cancel subscription logic (make sure that cancelled accounts can still access premium features until the end date)
+  - [x] Update stripe dashboard with all relevant feature information
+  - [ ] Submit for review and fix
+  - [ ] Should videos be deleted on cancellation?
+  - [ ] Set up production instance in stripe
+  - [ ] Add all preview and production keys to vercel
+  - [ ] Launch
+
 - AI-Generated Table Topics:
 
+  - [x] Generate topic
   - [ ] UI for difficulty and theme options (premium users only).
   - [ ] Performance review (premium users only. Tools: Speechmatics, AssemblyAI).=
     - [ ] UI.

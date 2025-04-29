@@ -9,13 +9,27 @@ export const ROUTES = {
       record: "/dashboard/table-topics/record",
       manage: "/dashboard/table-topics/manage",
     },
+    subscription: "/dashboard/subscription",
     contact: "/dashboard/contact",
   },
+  success: "/success",
   privacy: "/privacy",
   terms: "/terms",
 };
 
-export const ACCOUNT_LIMITS = {
+type TierKeys = "free" | "pro";
+
+export const ACCOUNT_LIMITS: Record<
+  TierKeys,
+  {
+    tableTopicLimit: number;
+    videoSizeLimit: number;
+    tableTopicOptions: {
+      difficulty: boolean;
+      theme: boolean;
+    };
+  }
+> = {
   free: {
     tableTopicLimit: 5,
     videoSizeLimit: convertMegabytesToBytes(10), // mb
@@ -24,7 +38,61 @@ export const ACCOUNT_LIMITS = {
       theme: false,
     },
   },
-} as const;
+  pro: {
+    tableTopicLimit: 50,
+    videoSizeLimit: convertMegabytesToBytes(25), // mb
+    tableTopicOptions: {
+      difficulty: true,
+      theme: true,
+    },
+  },
+};
+
+export const SUBSCRIPTION_TIERS: Record<
+  TierKeys,
+  {
+    price: number | undefined;
+    features: {
+      title: string;
+      description: string;
+      shortDescription: string;
+      comingSoon?: boolean;
+    }[];
+  }
+> = {
+  free: {
+    price: undefined,
+    features: [
+      {
+        title: "Save table topics",
+        description: `Save and rewatch up to ${ACCOUNT_LIMITS.free.tableTopicLimit} table topics`,
+        shortDescription: `Save and rewatch up to ${ACCOUNT_LIMITS.free.tableTopicLimit} table topics`,
+      },
+    ],
+  },
+  pro: {
+    price: 799,
+    features: [
+      {
+        title: "Save table topics",
+        description: `Save up to ${ACCOUNT_LIMITS.pro.tableTopicLimit} table topics to review later and see your progress over time`,
+        shortDescription: `Save and rewatch up to ${ACCOUNT_LIMITS.pro.tableTopicLimit} table topics`,
+      },
+      {
+        title: "AI generation",
+        description: `Generate new topics with AI, with additional options for difficulty and theme`,
+        shortDescription: `Generate AI table topics, with difficulty and theme options`,
+      },
+      {
+        title: "Speech feedback",
+        description:
+          "Generate feedback and stats on your recorded topics to guide your progress",
+        shortDescription: "Generate feedback and stats on your recorded topics",
+        comingSoon: true,
+      },
+    ],
+  },
+};
 
 export enum ERROR_CODES {
   reachedVideoLimit = "VL",

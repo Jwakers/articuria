@@ -1,5 +1,6 @@
 import { Home, Mic, Send } from "lucide-react";
 
+import { SubscriptionSidebarCard } from "@/components/subscription/subscription-sidebar-card";
 import {
   Collapsible,
   CollapsibleContent,
@@ -23,6 +24,7 @@ import {
 import UserMenu from "@/components/user-menu";
 import { ROUTES } from "@/lib/constants";
 import Link from "next/link";
+import { Suspense } from "react";
 
 export default async function DashboardSidebar() {
   return (
@@ -73,21 +75,28 @@ export default async function DashboardSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-        <SidebarGroup className="mt-auto">
-          <SidebarGroupLabel>Support</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild closeMobile>
-                  <Link href={ROUTES.dashboard.contact}>
-                    <Send />
-                    Contact us
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        <div className="mt-auto">
+          <SidebarGroup>
+            <SidebarGroupLabel>Support</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild closeMobile>
+                    <Link href={ROUTES.dashboard.contact}>
+                      <Send />
+                      Contact us
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+          <SidebarGroup>
+            <Suspense fallback={null}>
+              <SubscriptionSidebarCard />
+            </Suspense>
+          </SidebarGroup>
+        </div>
       </SidebarContent>
       <Separator />
       <SidebarFooter>

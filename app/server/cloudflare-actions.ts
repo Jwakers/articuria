@@ -1,7 +1,7 @@
 "use server";
 
 import { currentUser } from "@clerk/nextjs/server";
-import { unstable_cache } from "next/cache";
+import { cache } from "react";
 import { cloudflareClient } from "./cloudflare-client";
 
 export async function getVideoUploadUrl({ title }: { title: string }) {
@@ -50,17 +50,11 @@ export async function uploadVideoToCloudflare(
   if (!res.ok) throw new Error(`Video upload failed: ${res.status}`);
 }
 
-const _getCachedVideo = unstable_cache(
-  async (id) => {
-    return cloudflareClient.stream.get(id, {
-      account_id: process.env.CLOUDFLARE_ACCOUNT_ID!,
-    });
-  },
-  undefined,
-  {
-    revalidate: 5,
-  },
-);
+const _getCachedVideo = cache(async (id: string) => {
+  return cloudflareClient.stream.get(id, {
+    account_id: process.env.CLOUDFLARE_ACCOUNT_ID!,
+  });
+});
 
 export async function getVideoById(id: string) {
   const user = await currentUser();

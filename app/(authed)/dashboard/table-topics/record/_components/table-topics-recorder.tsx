@@ -82,7 +82,7 @@ export default function TableTopicsRecorder() {
       setCountdown(null);
     }
     return () => clearTimeout(timer);
-  }, [countdown]);
+  }, [countdown, startRecording]);
 
   const handleSaveRecording = async () => {
     if (!topicId.current)

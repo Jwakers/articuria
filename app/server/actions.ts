@@ -1,7 +1,7 @@
 "use server";
 
-import { ACCOUNT_LIMITS } from "@/lib/constants";
-import { validateFile } from "@/lib/utils";
+import { userWithMetadata, validateFile } from "@/lib/utils";
+import { currentUser } from "@clerk/nextjs/server";
 import { Difficulty, Theme, Video } from "@prisma/client";
 import { db } from "./db";
 import {
@@ -23,12 +23,16 @@ export async function getTableTopic(
   },
 ) {
   try {
+    const { user, accountLimits } = userWithMetadata(await currentUser());
+
+    if (!user) throw new Error("Not signed in");
+
     let difficulty: Difficulty = "BEGINNER",
       theme: Theme = "GENERAL";
 
-    if (ACCOUNT_LIMITS.free.tableTopicOptions.difficulty && options.difficulty)
+    if (accountLimits.tableTopicOptions.difficulty && options.difficulty)
       difficulty = options.difficulty;
-    if (ACCOUNT_LIMITS.free.tableTopicOptions.theme && options.theme)
+    if (accountLimits.tableTopicOptions.theme && options.theme)
       theme = options.theme;
 
     const videos = await db.video.findMany({
@@ -36,19 +40,6 @@ export async function getTableTopic(
     });
     const existingTopics = videos.map((item) => item.tableTopic.topic);
     const existingTopicIds = videos.map((item) => item.tableTopicId);
-
-    console.log({
-      take: 10,
-      where: {
-        difficulty,
-        themes: {
-          has: theme,
-        },
-        id: {
-          notIn: existingTopicIds,
-        },
-      },
-    });
 
     const [topic] = await db.tableTopic.findMany({
       take: 10,
@@ -94,10 +85,12 @@ export async function createVideo({
   formData: FormData;
 }) {
   const file = formData.get("file") as File | null;
+  const { user, accountLimits } = userWithMetadata(await currentUser());
 
   if (!file) throw new Error("No file found");
+  if (!user) throw new Error("Not signed in");
 
-  validateFile(file, true);
+  validateFile({ file, isServer: true, accountLimits });
 
   const video = await createUserVideo({
     tableTopicId,

@@ -1,6 +1,8 @@
+import SubscriptionLanding from "@/components/subscription/subscription-landing";
 import { Button } from "@/components/ui/button";
 import { SignUpButton } from "@clerk/nextjs";
 import { Camera, ChartArea, Zap } from "lucide-react";
+import { Suspense } from "react";
 
 export default function LandingPage() {
   return (
@@ -74,6 +76,9 @@ export default function LandingPage() {
           </SignUpButton>
         </div>
       </section>
+      <Suspense fallback={null}>
+        <SubscriptionLanding />
+      </Suspense>
     </div>
   );
 }

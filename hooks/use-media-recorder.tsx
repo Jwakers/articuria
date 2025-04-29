@@ -1,5 +1,5 @@
 import { createVideo } from "@/app/server/actions";
-import { validateFile } from "@/lib/utils";
+import { userWithMetadata, validateFile } from "@/lib/utils";
 import { useUser } from "@clerk/nextjs";
 import { Video } from "@prisma/client";
 import { useEffect, useRef, useState } from "react";
@@ -19,8 +19,7 @@ export const useMediaRecorder = () => {
   const streamRef = useRef<MediaStream | null>(null);
   const videoElementRef = useRef<HTMLVideoElement | null>(null);
   const hasInitUserMedia = useRef(false);
-
-  const user = useUser();
+  const { user, accountLimits } = userWithMetadata(useUser().user);
 
   const setVideoToStream = async () => {
     if (streamRef.current || hasInitUserMedia.current) return;
@@ -122,7 +121,7 @@ export const useMediaRecorder = () => {
     });
 
     try {
-      validateFile(file);
+      validateFile({ file, accountLimits });
     } catch (error) {
       toast.error(
         error instanceof Error

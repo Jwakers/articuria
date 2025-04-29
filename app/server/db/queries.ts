@@ -1,6 +1,7 @@
 import { db } from "@/app/server/db";
-import { ACCOUNT_LIMITS, ERROR_CODES } from "@/lib/constants";
-import { auth } from "@clerk/nextjs/server";
+import { ERROR_CODES } from "@/lib/constants";
+import { userWithMetadata } from "@/lib/utils";
+import { currentUser } from "@clerk/nextjs/server";
 import { Prisma, TableTopic, Video } from "@prisma/client";
 import { isSameMonth, subMonths } from "date-fns";
 import "server-only";
@@ -61,15 +62,15 @@ export async function createUserVideo({
   title: string;
   formData: FormData;
 }) {
-  const user = await isAuth();
+  const { user, accountLimits } = await isAuth();
+
+  const videoCount = await db.video.count({
+    where: { userId: user.id },
+  });
 
   const video = await db.$transaction(
     async (prisma) => {
-      const videoCount = await prisma.video.count({
-        where: { userId: user.userId },
-      });
-
-      if (videoCount >= ACCOUNT_LIMITS.free.tableTopicLimit) {
+      if (videoCount >= accountLimits.tableTopicLimit) {
         throw new Error(
           "You have reached your account limit for table topics. Upgrade your account or delete some videos to save more.",
           { cause: ERROR_CODES.reachedVideoLimit },
@@ -87,7 +88,7 @@ export async function createUserVideo({
         data: {
           cloudflareId: uid,
           tableTopicId,
-          userId: user.userId,
+          userId: user.id,
         },
       });
 
@@ -105,13 +106,13 @@ export async function getUserVideos(
   page: string | number = 1,
   pageSize: number = 10,
 ) {
-  const user = await isAuth();
+  const { user } = await isAuth();
 
   const skip = (Number(page) - 1) * pageSize;
 
   const videosPromise = db.video.findMany({
     where: {
-      userId: user.userId,
+      userId: user.id,
     },
     include: {
       tableTopic: true,
@@ -125,7 +126,7 @@ export async function getUserVideos(
 
   const totalItemsPromise = db.video.count({
     where: {
-      userId: user.userId,
+      userId: user.id,
     },
   });
 
@@ -139,15 +140,15 @@ export async function getUserVideos(
   return { videos, totalPages, currentPage: Number(page) };
 }
 
-export async function getUserVideoCount() {
-  const user = await isAuth();
+export async function getUserVideoDetails() {
+  const { user } = await isAuth();
 
   const videos = await db.video.findMany({
     select: {
       createdAt: true,
     },
     where: {
-      userId: user.userId,
+      userId: user.id,
     },
   });
 
@@ -159,6 +160,18 @@ export async function getUserVideoCount() {
     videoCount: videos.length,
     countThisMonth,
   };
+}
+
+export async function getUserVideoCount() {
+  const { user } = await isAuth();
+
+  const count = await db.video.count({
+    where: {
+      userId: user.id,
+    },
+  });
+
+  return count;
 }
 
 export async function getUserVideoDurationData() {
@@ -205,12 +218,12 @@ export async function getUserVideoDurationData() {
 }
 
 export async function getUserVideoById(id: Video["id"]) {
-  const user = await isAuth();
+  const { user } = await isAuth();
 
   let video = await db.video.findFirst({
     where: {
       id,
-      userId: user.userId,
+      userId: user.id,
     },
     include: {
       tableTopic: true,
@@ -257,13 +270,13 @@ async function _updateUserVideoReadyState(
 }
 
 export async function deleteUserVideoById(id: Video["id"]) {
-  const user = await isAuth();
+  const { user } = await isAuth();
 
   const deletedVideo = await db.$transaction(async (prisma) => {
     const deletedVideo = await prisma.video.delete({
       where: {
         id,
-        userId: user.userId,
+        userId: user.id,
       },
     });
 
@@ -280,8 +293,12 @@ export type VideoWithTopic = Prisma.VideoGetPayload<{
 }>;
 
 async function isAuth() {
-  const user = await auth();
-  if (!user.userId) throw new Error("Unauthorized");
+  const current = await currentUser();
+  if (!current?.id) throw new Error("Unauthorized");
 
-  return user;
+  const { user, accountLimits, publicMetadata } = userWithMetadata(current);
+
+  if (!user || !accountLimits) throw new Error("Missing user data");
+
+  return { user, accountLimits, publicMetadata };
 }

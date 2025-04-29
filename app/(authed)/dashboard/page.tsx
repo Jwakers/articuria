@@ -1,4 +1,4 @@
-import { getUserVideoCount } from "@/app/server/db/queries";
+import { getUserVideoDetails } from "@/app/server/db/queries";
 import FeedbackSection from "@/components/feedback-cta";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
 };
 
 export default async function DashboardPage() {
-  const { videoCount } = await getUserVideoCount();
+  const { videoCount } = await getUserVideoDetails();
 
   if (!videoCount) return <NoVideos />;
 
