@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { ROUTES } from "@/lib/constants";
 import { AlertCircle } from "lucide-react";
 import Link from "next/link";
 import { useEffect } from "react";
@@ -18,13 +19,13 @@ export default function Error({
   }, [error]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-white to-purple-50 p-6">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-background to-highlight-secondary/5 p-6">
       <div className="mx-auto w-full max-w-md text-center">
         <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
           <AlertCircle className="h-8 w-8 text-red-600" />
         </div>
 
-        <h1 className="mb-2 text-2xl font-bold text-gray-900">
+        <h1 className="mb-2 text-2xl font-bold text-muted-foreground">
           Something went wrong
         </h1>
 
@@ -38,11 +39,8 @@ export default function Error({
             Try again
           </Button>
 
-          <Button
-            asChild
-            className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700"
-          >
-            <Link href="/help">Contact Support</Link>
+          <Button asChild>
+            <Link href={ROUTES.dashboard.contact}>Contact Support</Link>
           </Button>
         </div>
       </div>

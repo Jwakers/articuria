@@ -22,7 +22,7 @@ import { Download, FileText } from "lucide-react";
 import { use, useEffect, useTransition } from "react";
 import { toast } from "sonner";
 import type Stripe from "stripe";
-import { BillingPageProps } from "./billing-page";
+import { BillingPageProps } from "./billing-tabs";
 
 export function BillingHistory({ billingDataPromise }: BillingPageProps) {
   const { data, error } = use(billingDataPromise);

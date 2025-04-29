@@ -10,11 +10,12 @@ import {
   ArrowRight,
   CheckCircle,
   ChevronRight,
-  Download,
+  Settings,
   Sparkles,
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
+import Loading from "./loading";
 
 export default function SubscriptionSuccessPage() {
   const { publicMetadata } = userWithMetadata(useUser().user);
@@ -36,6 +37,7 @@ export default function SubscriptionSuccessPage() {
   useEffect(() => {
     if (
       confettiFired.current ||
+      !publicMetadata?.subscriptionData?.status ||
       publicMetadata?.subscriptionData?.status !== "active"
     )
       return;
@@ -44,7 +46,7 @@ export default function SubscriptionSuccessPage() {
       const duration = 3000;
       const end = Date.now() + duration;
 
-      const colors = ["#FF4D8F", "#A855F7", "#8B5CF6"];
+      const colors = ["#34e86e", "#5a34e8", "#47b4ea"];
       (async function frame() {
         const confetti = (await import("canvas-confetti")).default;
 
@@ -79,10 +81,10 @@ export default function SubscriptionSuccessPage() {
     return () => clearTimeout(timer);
   }, [session, publicMetadata?.subscriptionData?.status]);
 
-  if (publicMetadata?.subscriptionData?.status !== "active") return null;
+  if (publicMetadata?.subscriptionData?.status !== "active") return <Loading />;
 
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-purple-50">
+    <div className="flex min-h-screen flex-col bg-gradient-to-b from-background to-highlight-secondary/5">
       <main className="flex flex-1 items-center justify-center p-6">
         <div className="mx-auto w-full max-w-3xl">
           <div className="mb-8 text-center">
@@ -188,8 +190,8 @@ export default function SubscriptionSuccessPage() {
             </Button>
 
             <Button asChild variant="outline">
-              <Link href="/subscription/invoice">
-                <Download className="mr-2 h-4 w-4" /> Download Invoice
+              <Link href={ROUTES.dashboard.subscription}>
+                <Settings className="mr-2 h-4 w-4" /> Manage Subscription
               </Link>
             </Button>
           </div>
@@ -197,13 +199,10 @@ export default function SubscriptionSuccessPage() {
       </main>
 
       <footer className="border-t py-6">
-        <div className="container flex flex-col items-center justify-center gap-2 text-center">
+        <div className="container mx-auto text-center">
           <p className="text-sm text-muted-foreground">
             Need help with your subscription?{" "}
-            <Link
-              href={ROUTES.dashboard.contact}
-              className="font-medium underline underline-offset-4"
-            >
+            <Link href={ROUTES.dashboard.contact} className="underline">
               Contact Support
             </Link>
           </p>

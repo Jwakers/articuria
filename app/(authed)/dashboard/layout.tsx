@@ -6,6 +6,7 @@ import type * as React from "react";
 import { Suspense } from "react";
 import { Header } from "./_components/header";
 import DashboardSidebar from "./_components/sidebar";
+import { SubscriptionAlert } from "./_components/subscription-alert";
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -29,7 +30,10 @@ export default function DashboardShell({
         <DashboardSidebar />
         <main className="mx-auto w-full max-w-[1440px] px-4 pb-4">
           <Header />
-          <div className="mb-4">
+          <div className="mb-4 space-y-4">
+            <Suspense fallback={null}>
+              <SubscriptionAlert />
+            </Suspense>
             <Suspense>
               <SubscriptionBanner />
             </Suspense>

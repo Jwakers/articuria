@@ -7,14 +7,13 @@ import { currentUser } from "@clerk/nextjs/server";
 import { AlertCircle } from "lucide-react";
 
 export default async function VideoLimitAlert() {
-  const [{ videoCount }, user] = await Promise.all([
+  const [{ videoCount }, current] = await Promise.all([
     getUserVideoDetails(),
     currentUser(),
   ]);
-  const userData = userWithMetadata(user);
+  const { user, accountLimits } = userWithMetadata(current);
 
-  const showWarning =
-    userData && videoCount >= userData?.accountLimits.tableTopicLimit;
+  const showWarning = user && videoCount >= accountLimits.tableTopicLimit;
 
   if (!showWarning) return null;
 

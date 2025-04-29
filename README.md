@@ -41,10 +41,12 @@
     - [x] Handle checkout data sync (including tier data)
   - [x] Handle existing account limit logic
   - [x] Create an manage subscription page for subscribed users
-  - [ ] Cancel subscription logic (make sure that cancelled accounts can still access premium features until the end date)
-  - [ ] Update stripe dashboard with all relevant feature information
-  - [ ] Should videos be deleted on cancellation
+  - [x] Cancel subscription logic (make sure that cancelled accounts can still access premium features until the end date)
+  - [x] Update stripe dashboard with all relevant feature information
+  - [ ] Should videos be deleted on cancellation?
+  - [ ] Set up production instance in stripe
   - [ ] Add all preview and production keys to vercel
+  - [ ] Launch
 
 - AI-Generated Table Topics:
 

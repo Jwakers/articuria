@@ -23,16 +23,16 @@ export async function getTableTopic(
   },
 ) {
   try {
-    const user = userWithMetadata(await currentUser());
+    const { user, accountLimits } = userWithMetadata(await currentUser());
 
     if (!user) throw new Error("Not signed in");
 
     let difficulty: Difficulty = "BEGINNER",
       theme: Theme = "GENERAL";
 
-    if (user.accountLimits.tableTopicOptions.difficulty && options.difficulty)
+    if (accountLimits.tableTopicOptions.difficulty && options.difficulty)
       difficulty = options.difficulty;
-    if (user.accountLimits.tableTopicOptions.theme && options.theme)
+    if (accountLimits.tableTopicOptions.theme && options.theme)
       theme = options.theme;
 
     const videos = await db.video.findMany({
@@ -85,12 +85,12 @@ export async function createVideo({
   formData: FormData;
 }) {
   const file = formData.get("file") as File | null;
-  const user = userWithMetadata(await currentUser());
+  const { user, accountLimits } = userWithMetadata(await currentUser());
 
   if (!file) throw new Error("No file found");
   if (!user) throw new Error("Not signed in");
 
-  validateFile({ file, isServer: true, user });
+  validateFile({ file, isServer: true, accountLimits });
 
   const video = await createUserVideo({
     tableTopicId,

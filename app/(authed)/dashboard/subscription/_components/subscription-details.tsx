@@ -29,11 +29,12 @@ import { useUser } from "@clerk/nextjs";
 import { Check, Sparkle } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCallback, useState } from "react";
+import { use, useCallback, useState } from "react";
 import { toast } from "sonner";
-import { BillingPageProps } from "./billing-page";
+import { BillingPageProps } from "./billing-tabs";
 
-export function SubscriptionDetails({ videoCount }: BillingPageProps) {
+export function SubscriptionDetails({ videoCountPromise }: BillingPageProps) {
+  const videoCount = use(videoCountPromise);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const { publicMetadata } = userWithMetadata(useUser().user);
   const router = useRouter();
