@@ -30,12 +30,15 @@ export async function getTableTopic(
     let difficulty: Difficulty = "BEGINNER",
       theme: Theme = "GENERAL";
 
-    // Should throw an error here to prevent undesirable access to the API
     if (!accountLimits.tableTopicOptions.difficulty && options.difficulty) {
-    } // Here
+      throw new Error("Your current plan does not allow setting a difficulty");
+    }
+
+    if (!accountLimits.tableTopicOptions.theme && options.theme) {
+      throw new Error("Your current plan does not allow setting a theme");
+    }
     if (accountLimits.tableTopicOptions.difficulty && options.difficulty)
       difficulty = options.difficulty;
-    // Should throw an error here to prevent undesirable access to the API
     if (accountLimits.tableTopicOptions.theme && options.theme)
       theme = options.theme;
 

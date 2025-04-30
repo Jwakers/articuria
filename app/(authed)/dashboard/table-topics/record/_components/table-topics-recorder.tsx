@@ -52,20 +52,17 @@ import { z } from "zod";
 import TopicAndCountdown from "./topic-and-countdown";
 
 const COUNTDOWN_TIME = 5;
-const difficultyKeys = Object.keys(DIFFICULTY_MAP);
 const difficultyValues = Object.values(DIFFICULTY_MAP);
-
-const themeKeys = Object.keys(THEME_MAP);
 const themeValues = Object.values(THEME_MAP);
 
 const formSchema = z.object({
   difficulty: z
-    .enum(difficultyKeys as [string, ...string[]], {
+    .nativeEnum(Difficulty, {
       message: `Invalid selection, should be one of ${difficultyValues.join(", ")}`,
     })
     .optional(),
   theme: z
-    .enum(themeKeys as [string, ...string[]], {
+    .nativeEnum(Theme, {
       message: `Invalid selection, should be one of ${themeValues.join(", ")}`,
     })
     .optional(),
@@ -98,47 +95,9 @@ export default function TableTopicsRecorder() {
     uploadVideo,
   } = useMediaRecorder();
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    const guard = () => {
-      if (
-        (values.difficulty && !canSetDifficulty) ||
-        (values.theme && !canSetTheme)
-      ) {
-        return {
-          difficulty: undefined,
-          theme: undefined,
-          error: `Upgrade your account to use table topic options`,
-        };
-      }
-      if (
-        values.difficulty &&
-        !Object.values(Difficulty).includes(values.difficulty as any)
-      ) {
-        return {
-          difficulty: undefined,
-          theme: undefined,
-          error: `Invalid difficulty: ${values.difficulty}`,
-        };
-      }
-      if (values.theme && !Object.values(Theme).includes(values.theme as any)) {
-        return {
-          difficulty: undefined,
-          theme: undefined,
-          error: `Invalid theme: ${values.theme}`,
-        };
-      }
-
-      return {
-        difficulty: values.difficulty as Difficulty | undefined,
-        theme: values.theme as Theme | undefined,
-        error: null,
-      };
-    };
-
-    const { difficulty, theme, error } = guard();
-
-    if (error) {
-      toast.error(error);
+  const onSubmit = ({ difficulty, theme }: z.infer<typeof formSchema>) => {
+    if ((difficulty && !canSetDifficulty) || (theme && !canSetTheme)) {
+      toast.error("Upgrade your account to use table topic options");
       return;
     }
 
