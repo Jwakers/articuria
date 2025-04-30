@@ -165,7 +165,9 @@ export default function TableTopicsRecorder() {
       startRecording();
       setCountdown(null);
     }
-    return () => clearTimeout(timer);
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
   }, [countdown, startRecording]);
 
   return (
