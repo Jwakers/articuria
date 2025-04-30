@@ -3,10 +3,10 @@
 ## 0. Bugs and Refactor
 
 - [x] Log out button in user menu does not work
+- [x] Traffic light system in accordions looks rough
 - [ ] Error uploading large videos > 1:30. Prisma transaction is timing out.
 - [ ] Generating a second topic causes the video stream to fail.
 - [ ] contact page needs a loading.tsx
-- [ ] Traffic light system in accordions looks rough
 
 ## 1. Updates
 
