@@ -99,9 +99,9 @@ export function SubscriptionDrawer() {
                 </div>
               </div>
 
-              <div className="mb-4 space-y-3">
+              <ul className="mb-4 space-y-3">
                 {SUBSCRIPTION_TIERS.free.features.map((feature) => (
-                  <div
+                  <li
                     className="flex items-center space-x-3"
                     key={feature.title}
                   >
@@ -111,9 +111,9 @@ export function SubscriptionDrawer() {
                     <span className="text-sm text-muted-foreground">
                       {feature.shortDescription}
                     </span>
-                  </div>
+                  </li>
                 ))}
-              </div>
+              </ul>
 
               <Button
                 variant="outline"
@@ -143,9 +143,9 @@ export function SubscriptionDrawer() {
                   ) : null}
                 </div>
 
-                <div className="mb-6 space-y-3">
+                <ul className="mb-6 space-y-3">
                   {SUBSCRIPTION_TIERS.pro.features.map((feature) => (
-                    <div
+                    <li
                       className="flex items-center space-x-3"
                       key={feature.title}
                     >
@@ -164,9 +164,13 @@ export function SubscriptionDrawer() {
                           </p>
                         ) : null}
                       </div>
-                    </div>
+                    </li>
                   ))}
-                </div>
+                </ul>
+
+                <p className="mb-4 text-center text-sm text-muted-foreground">
+                  No contract. Cancel anytime
+                </p>
 
                 <Button
                   type="submit"

@@ -307,7 +307,7 @@ function TimingCard({
   description: string;
 }) {
   return (
-    <Card>
+    <Card className="pt-3 md:pt-6">
       <CardContent>
         <div className="mb-2 flex items-center gap-3">
           <div className={cn("h-6 w-6 rounded-full", colorClass)}></div>
