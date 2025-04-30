@@ -20,25 +20,69 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import Spinner from "@/components/ui/spinner";
 import { useMediaRecorder } from "@/hooks/use-media-recorder";
-import { ROUTES } from "@/lib/constants";
-import { cn } from "@/lib/utils";
-import { Video } from "@prisma/client";
+import { DIFFICULTY_MAP, ROUTES, THEME_MAP } from "@/lib/constants";
+import { cn, userWithMetadata } from "@/lib/utils";
+import { useUser } from "@clerk/nextjs";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Difficulty, Theme, Video } from "@prisma/client";
 import { Download, HelpCircle, Save, Trash2 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import { useEffect, useRef, useState, useTransition } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { z } from "zod";
 import TopicAndCountdown from "./topic-and-countdown";
 
 const COUNTDOWN_TIME = 5;
+const difficultyKeys = Object.keys(DIFFICULTY_MAP);
+const difficultyValues = Object.values(DIFFICULTY_MAP);
+
+const themeKeys = Object.keys(THEME_MAP);
+const themeValues = Object.values(THEME_MAP);
+
+const formSchema = z.object({
+  difficulty: z
+    .enum(difficultyKeys as [string, ...string[]], {
+      message: `Invalid selection, should be one of ${difficultyValues.join(", ")}`,
+    })
+    .optional(),
+  theme: z
+    .enum(themeKeys as [string, ...string[]], {
+      message: `Invalid selection, should be one of ${themeValues.join(", ")}`,
+    })
+    .optional(),
+});
 
 export default function TableTopicsRecorder() {
   const [currentTopic, setCurrentTopic] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const topicId = useRef<Video["tableTopicId"] | null>(null);
   const [countdown, setCountdown] = useState<number | null>(null);
+  const { accountLimits } = userWithMetadata(useUser().user);
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+  });
+
+  const canSetDifficulty = accountLimits?.tableTopicOptions.difficulty;
+  const canSetTheme = accountLimits?.tableTopicOptions.theme;
 
   const {
     isRecording,
@@ -54,13 +98,56 @@ export default function TableTopicsRecorder() {
     uploadVideo,
   } = useMediaRecorder();
 
-  const handleGenerateTopic = () => {
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
+    const guard = () => {
+      if (
+        (values.difficulty && !canSetDifficulty) ||
+        (values.theme && !canSetTheme)
+      ) {
+        return {
+          difficulty: undefined,
+          theme: undefined,
+          error: `Upgrade your account to use table topic options`,
+        };
+      }
+      if (
+        values.difficulty &&
+        !Object.values(Difficulty).includes(values.difficulty as any)
+      ) {
+        return {
+          difficulty: undefined,
+          theme: undefined,
+          error: `Invalid difficulty: ${values.difficulty}`,
+        };
+      }
+      if (values.theme && !Object.values(Theme).includes(values.theme as any)) {
+        return {
+          difficulty: undefined,
+          theme: undefined,
+          error: `Invalid theme: ${values.theme}`,
+        };
+      }
+
+      return {
+        difficulty: values.difficulty as Difficulty | undefined,
+        theme: values.theme as Theme | undefined,
+        error: null,
+      };
+    };
+
+    const { difficulty, theme, error } = guard();
+
+    if (error) {
+      toast.error(error);
+      return;
+    }
+
     startTransition(async () => {
       try {
         if (currentTopic) handleDiscardRecording(); // Note: awaiting here causes some strange behaviour where the stream is not properly reset
         const { topic, id } = await getTableTopic({
-          difficulty: "BEGINNER",
-          theme: "GENERAL",
+          difficulty,
+          theme,
         });
         setCurrentTopic(topic);
         topicId.current = id;
@@ -72,17 +159,6 @@ export default function TableTopicsRecorder() {
       }
     });
   };
-
-  useEffect(() => {
-    let timer: NodeJS.Timeout;
-    if (countdown !== null && countdown > 0) {
-      timer = setTimeout(() => setCountdown(countdown - 1), 1000);
-    } else if (countdown === 0) {
-      startRecording();
-      setCountdown(null);
-    }
-    return () => clearTimeout(timer);
-  }, [countdown, startRecording]);
 
   const handleSaveRecording = async () => {
     if (!topicId.current)
@@ -122,6 +198,17 @@ export default function TableTopicsRecorder() {
 
   const timingColor = getTimingColor();
 
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (countdown !== null && countdown > 0) {
+      timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+    } else if (countdown === 0) {
+      startRecording();
+      setCountdown(null);
+    }
+    return () => clearTimeout(timer);
+  }, [countdown, startRecording]);
+
   return (
     <Card>
       <CardHeader>
@@ -137,15 +224,98 @@ export default function TableTopicsRecorder() {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <Button
-          onClick={handleGenerateTopic}
-          disabled={
-            isRecording || isPending || (countdown !== null && countdown > 0)
-          }
-        >
-          {isPending ? <Spinner /> : null}
-          {!recordedVideoURL ? "Generate topic" : "Generate new topic"}
-        </Button>
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="grid gap-2 md:grid-cols-2"
+          >
+            <FormField
+              control={form.control}
+              name="difficulty"
+              disabled={!canSetDifficulty}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel
+                    className={cn(!canSetDifficulty && "text-muted-foreground")}
+                  >
+                    Difficulty
+                  </FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    {...field}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a difficulty" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {Object.entries(DIFFICULTY_MAP).map(([key, val]) => (
+                        <SelectItem value={key} key={key}>
+                          {val}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="theme"
+              disabled={!canSetTheme}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel
+                    className={cn(!canSetTheme && "text-muted-foreground")}
+                  >
+                    Theme
+                  </FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    {...field}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a theme" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {Object.entries(THEME_MAP).map(([key, val]) => (
+                        <SelectItem value={key} key={key}>
+                          {val}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {!canSetDifficulty && !canSetTheme ? (
+              <p className="text-sm text-muted-foreground md:col-span-2">
+                Setting options for table topics are only available for paid
+                users.
+              </p>
+            ) : null}
+            <Button
+              disabled={
+                isRecording ||
+                isPending ||
+                (countdown !== null && countdown > 0)
+              }
+              className="md:col-span-2"
+              type="submit"
+              size="lg"
+            >
+              {isPending ? <Spinner /> : null}
+              {!recordedVideoURL ? "Generate topic" : "Generate new topic"}
+            </Button>
+          </form>
+        </Form>
         <div className="relative aspect-video overflow-hidden rounded-md bg-accent">
           <video
             ref={videoElementRef}

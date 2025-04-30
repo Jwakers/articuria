@@ -1,4 +1,4 @@
-import { Theme } from "@prisma/client";
+import { Difficulty, Theme } from "@prisma/client";
 import { convertMegabytesToBytes } from "./utils";
 
 export const ROUTES = {
@@ -116,4 +116,11 @@ export const THEME_MAP: Record<Theme, string> = {
   NATURE_AND_ENVIRONMENT: "Nature and Environment",
   PERSONAL_EXPERIENCES: "Personal Experiences",
   PROFESSIONAL_DEVELOPMENT: "Professional Development",
-};
+} as const;
+
+export const DIFFICULTY_MAP: Record<Difficulty, string> = {
+  BEGINNER: "Beginner",
+  INTERMEDIATE: "Intermediate",
+  ADVANCED: "Advanced",
+  EXPERT: "Expert",
+} as const;

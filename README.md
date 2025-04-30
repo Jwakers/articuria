@@ -2,14 +2,17 @@
 
 ## 0. Bugs and Refactor
 
+- [ ] Log out button in user menu does not work
 - [ ] Error uploading large videos > 1:30. Prisma transaction is timing out.
 - [ ] Generating a second topic causes the video stream to fail.
 - [ ] contact page needs a loading.tsx
+- [ ] Traffic light system in accordions looks rough
 
 ## 1. Updates
 
 - Enhance video recording page:
 
+- [ ] Add "Cancel anytime" to the subscription drawer pro plan card
 - [ ] Add higher video quality as a pro feature
 - [ ] Style active link/page in sidebar
 - [ ] Style warning banners with warning colors
@@ -22,6 +25,8 @@
 - [ ] Create cloudflare webhook should run on every deployment.
 - [ ] Should isolate development and production webhooks on cloudflare to prevent interruption of production webhook.
 - [ ] Update favicon.
+- [ ] add (create) logo to Stripe branding section
+- [ ] Improve the home page
 - [ ] Move save logic out of server actions and into an API route. There is an adjustable limit on server actions. See next.config but to be safe we should pass this data to a dedicated endpoint. This should also allow us to properly validate the file type on the server.
   - [ ] Test this by uploading a longer video.
   - [ ] Show progress indicator in toast.promise.
@@ -44,16 +49,16 @@
   - [x] Create an manage subscription page for subscribed users
   - [x] Cancel subscription logic (make sure that cancelled accounts can still access premium features until the end date)
   - [x] Update stripe dashboard with all relevant feature information
-  - [ ] Submit for review and fix
+  - [x] Submit for review and fix
   - [ ] Should videos be deleted on cancellation?
-  - [ ] Set up production instance in stripe
-  - [ ] Add all preview and production keys to vercel
-  - [ ] Launch
+  - [x] Set up production instance in stripe
+  - [x] Add all preview and production keys to vercel
+  - [x] Launch
 
 - AI-Generated Table Topics:
 
   - [x] Generate topic
-  - [ ] UI for difficulty and theme options (premium users only).
+  - [x] UI for difficulty and theme options (premium users only).
   - [ ] Performance review (premium users only. Tools: Speechmatics, AssemblyAI).=
     - [ ] UI.
     - [ ] API
