@@ -1,4 +1,5 @@
 import { getUserVideos } from "@/app/server/db/queries";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -16,7 +17,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ROUTES } from "@/lib/constants";
+import { DIFFICULTY_MAP, ROUTES, THEME_MAP } from "@/lib/constants";
 import { cn, formatDuration } from "@/lib/utils";
 import { ChevronLeft, ChevronRight, Play } from "lucide-react";
 import Link from "next/link";
@@ -45,6 +46,8 @@ export function VideoList({ videoListPromise }: VideoListProps) {
           <TableHeader>
             <TableRow>
               <TableHead className="md:w-[400px]">Topic</TableHead>
+              <TableHead className="hidden md:table-cell">Difficulty</TableHead>
+              <TableHead className="hidden md:table-cell">Theme</TableHead>
               <TableHead className="hidden md:table-cell">Date</TableHead>
               <TableHead className="hidden md:table-cell">Duration</TableHead>
               <TableHead className="text-right">Actions</TableHead>
@@ -56,9 +59,32 @@ export function VideoList({ videoListPromise }: VideoListProps) {
                 <TableCell className="space-y-1 font-medium">
                   <span>{video.tableTopic.topic}</span>
                   <div className="flex justify-between text-xs text-muted-foreground md:hidden">
-                    <div>{new Date(video.createdAt).toLocaleDateString()}</div>
+                    <div className="flex items-center gap-2">
+                      {video.tableTopic.difficulty ? (
+                        <Badge>
+                          {DIFFICULTY_MAP[video.tableTopic.difficulty]}
+                        </Badge>
+                      ) : null}
+                      <div>
+                        {new Date(video.createdAt).toLocaleDateString()}
+                      </div>
+                    </div>
                     <div>{formatDuration(video.duration)}</div>
                   </div>
+                </TableCell>
+                <TableCell className="hidden md:table-cell">
+                  {video.tableTopic.difficulty ? (
+                    <Badge>{DIFFICULTY_MAP[video.tableTopic.difficulty]}</Badge>
+                  ) : (
+                    "N/A"
+                  )}
+                </TableCell>
+                <TableCell className="hidden md:table-cell">
+                  {video.tableTopic.themes.length
+                    ? video.tableTopic.themes
+                        .map((t) => THEME_MAP[t])
+                        .join(", ")
+                    : "N/A"}
                 </TableCell>
                 <TableCell className="hidden md:table-cell">
                   {new Date(video.createdAt).toLocaleDateString()}
@@ -156,15 +182,23 @@ export function VideoListSkeleton() {
           </TableCaption>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[400px]">Topic</TableHead>
-              <TableHead>Date</TableHead>
-              <TableHead>Duration</TableHead>
+              <TableHead className="md:w-[400px]">Topic</TableHead>
+              <TableHead className="hidden md:table-cell">Difficulty</TableHead>
+              <TableHead className="hidden md:table-cell">Theme</TableHead>
+              <TableHead className="hidden md:table-cell">Date</TableHead>
+              <TableHead className="hidden md:table-cell">Duration</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {Array.from({ length: 5 }).map((_, index) => (
               <TableRow key={index}>
+                <TableCell>
+                  <Skeleton className="h-[20px]" />
+                </TableCell>
+                <TableCell>
+                  <Skeleton className="h-[20px]" />
+                </TableCell>
                 <TableCell>
                   <Skeleton className="h-[20px]" />
                 </TableCell>
