@@ -4,6 +4,7 @@
 
 - [x] Log out button in user menu does not work
 - [x] Traffic light system in accordions looks rough
+- [ ] Video still processing dialog is a bit shit
 - [ ] Error uploading large videos > 1:30. Prisma transaction is timing out.
 - [ ] Generating a second topic causes the video stream to fail.
 - [ ] contact page needs a loading.tsx
@@ -55,6 +56,8 @@
   - [x] Add all preview and production keys to vercel
   - [x] Launch
 
+- Refactor video provider to use MUX over Cloudflare stream
+
 - AI-Generated Table Topics:
 
   - [x] Generate topic
@@ -65,6 +68,20 @@
       - [ ] Speech pace analysis
       - [ ] Filler word detection ("um", "uh", "like")
       - [ ] Speaking time measurement
+
+- Progress visualisation/chart/graph based on table topic feedback and transcript data on the user
+  - [ ] dashboard
+  - [ ] Individual table topic page
+
+| Chart                                | Data Fields Used                                                      | Notes                              |
+| ------------------------------------ | --------------------------------------------------------------------- | ---------------------------------- |
+| Line Chart – WPM                     | transcript.date, transcript.wordsPerMinute                            | Shows speaking pace over time      |
+| Bar Chart – Filler Use               | transcript.date, transcript.fillerWordCount                           | Visualize reduction in filler use  |
+| Sentiment Over Time                  | transcript.date, sentimentSummary scored numerically (e.g. +1, 0, -1) | Optionally stack positive/negative |
+| Radar Chart – AI Score Breakdown     | AI review scores (clarity, tone, engagement)                          | For detailed per-speech feedback   |
+| Stacked Area Chart – Time Allocation | e.g., sentiment over time per transcript                              | Great for showing tone shifts      |
+
+- Enhance AI text feedback by passing the audio directly a suitable tool
 
 - Speech helper:
 

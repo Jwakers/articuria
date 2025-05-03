@@ -227,6 +227,11 @@ export async function getUserVideoById(id: Video["id"]) {
     },
     include: {
       tableTopic: true,
+      transcript: {
+        include: {
+          report: true,
+        },
+      },
     },
   });
 

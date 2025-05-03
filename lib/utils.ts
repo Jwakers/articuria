@@ -3,7 +3,7 @@ import type { useUser } from "@clerk/nextjs";
 import { User } from "@clerk/nextjs/server";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { ACCOUNT_LIMITS, ERROR_CODES } from "./constants";
+import { ACCOUNT_LIMITS, DISFLUENCIES, ERROR_CODES } from "./constants";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -95,4 +95,24 @@ export function price(value: number) {
     currency: "GBP",
   });
   return GBPound.format(value);
+}
+
+export function disfluencyData(words: string[]) {
+  // Refactor to find these values in full sentances
+  const data = words.reduce(
+    (acc, word) => {
+      const cleanedWord = word
+        .toLowerCase()
+        .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "");
+      const key = DISFLUENCIES.find((disfluency) => {
+        return disfluency === cleanedWord;
+      });
+      if (!key) return acc;
+
+      acc[key] = (acc[key] ?? 0) + 1;
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
+  return data;
 }

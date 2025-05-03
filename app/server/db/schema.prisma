@@ -37,12 +37,49 @@ model TableTopic {
 }
 
 model Video {
-    id            String     @id @default(cuid())
-    createdAt     DateTime   @default(now())
-    cloudflareId  String     @unique
+    id            String      @id @default(cuid())
+    createdAt     DateTime    @default(now())
+    cloudflareId  String      @unique
     userId        String
-    tableTopic    TableTopic @relation(fields: [tableTopicId], references: [id])
+    tableTopic    TableTopic  @relation(fields: [tableTopicId], references: [id])
     tableTopicId  Int
     duration      Int? // Duration in seconds
-    readyToStream Boolean    @default(false)
+    readyToStream Boolean     @default(false)
+    transcript    Transcript?
+}
+
+model Transcript {
+    id               String   @id @default(cuid())
+    createdAt        DateTime @default(now())
+    data             Json
+    video            Video    @relation(fields: [videoId], references: [id])
+    videoId          String   @unique
+    speakingDuration Float    @default(0)
+    wordsPerMinute   Int      @default(0)
+    fillerWordCount  Int      @default(0)
+    report           Report?
+}
+
+model Report {
+    id              String     @id @default(cuid())
+    createdAt       DateTime   @default(now())
+    creativity      String?
+    creativityScore Int?
+    clarity         String?
+    clarityScore    Int?
+    engagement      String?
+    engagementScore Int?
+    tone            String?
+    toneScore       Int?
+    pacing          String?
+    pacingScore     Int?
+    language        String?
+    languageScore   Int?
+    averageScore    Int?
+    recommendations String[]
+    commendations   String[]
+    shortSummary    String?
+    summary         String?
+    transcript      Transcript @relation(fields: [transcriptId], references: [id])
+    transcriptId    String     @unique
 }

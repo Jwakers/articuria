@@ -12,14 +12,12 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useRouter } from "next/navigation";
-import { use } from "react";
 
 export default function VideoNotProcessed({
-  videoPromise,
+  video,
 }: {
-  videoPromise: ReturnType<typeof getUserVideoById>;
+  video: Awaited<ReturnType<typeof getUserVideoById>>;
 }) {
-  const video = use(videoPromise);
   const router = useRouter();
 
   if (video?.readyToStream) return null;

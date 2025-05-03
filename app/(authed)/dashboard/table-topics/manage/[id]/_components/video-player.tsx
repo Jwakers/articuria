@@ -20,15 +20,13 @@ import useManageVideo from "@/hooks/use-manage-video";
 import { ROUTES } from "@/lib/constants";
 import { Download, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { use } from "react";
 import { toast } from "sonner";
 
 type VideoPlayerProps = {
-  videoPromise: ReturnType<typeof getUserVideoById>;
+  video: Awaited<ReturnType<typeof getUserVideoById>>;
 };
 
-export default function VideoPlayer({ videoPromise }: VideoPlayerProps) {
-  const video = use(videoPromise);
+export default function VideoPlayer({ video }: VideoPlayerProps) {
   const router = useRouter();
   const {
     isDeleting,
@@ -82,7 +80,9 @@ export default function VideoPlayer({ videoPromise }: VideoPlayerProps) {
           allowFullScreen
           sandbox="allow-scripts allow-same-origin allow-presentation"
           loading="lazy"
+          id={video?.cloudflareId}
         ></iframe>
+        {/* <Stream controls src={video?.cloudflareId} id={video?.cloudflareId}  />  */}
         <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
           <AlertDialog
             open={downloadDialogOpen}

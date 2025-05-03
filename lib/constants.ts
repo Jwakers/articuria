@@ -124,3 +124,15 @@ export const DIFFICULTY_MAP: Record<Difficulty, string> = {
   ADVANCED: "Advanced",
   EXPERT: "Expert",
 } as const;
+
+export const DISFLUENCIES = [
+  "um",
+  "uh",
+  "hmm",
+  "mhm",
+  "uh-huh",
+  "ah",
+  "huh",
+  "hm",
+  "m",
+] as const;
