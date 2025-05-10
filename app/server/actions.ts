@@ -1,14 +1,10 @@
 "use server";
 
-import { userWithMetadata, validateFile } from "@/lib/utils";
+import { userWithMetadata } from "@/lib/utils";
 import { currentUser } from "@clerk/nextjs/server";
-import { Difficulty, Theme, Video } from "@prisma/client";
+import { Difficulty, Theme } from "@prisma/client";
 import { db } from "./db";
-import {
-  createAiTableTopic,
-  createUserVideo,
-  deleteUserVideoById,
-} from "./db/queries";
+import { createAiTableTopic } from "./db/queries";
 import { generateTableTopic } from "./google-ai";
 
 export type GenerateTopicOptions = {
@@ -42,9 +38,10 @@ export async function getTableTopic(
     if (accountLimits.tableTopicOptions.theme && options.theme)
       theme = options.theme;
 
-    const videos = await db.video.findMany({
+    const videos = await db.muxVideo.findMany({
       select: { tableTopicId: true, tableTopic: { select: { topic: true } } },
     });
+
     const existingTopics = videos.map((item) => item.tableTopic.topic);
     const existingTopicIds = videos.map((item) => item.tableTopicId);
 
@@ -80,36 +77,4 @@ export async function getTableTopic(
     console.error("Error in getTableTopic:", error);
     throw new Error("Failed to get table topic");
   }
-}
-
-export async function createVideo({
-  tableTopicId,
-  title,
-  formData,
-}: {
-  tableTopicId: Video["tableTopicId"];
-  title: string;
-  formData: FormData;
-}) {
-  const file = formData.get("file") as File | null;
-  const { user, accountLimits } = userWithMetadata(await currentUser());
-
-  if (!file) throw new Error("No file found");
-  if (!user) throw new Error("Not signed in");
-
-  validateFile({ file, isServer: true, accountLimits });
-
-  const video = await createUserVideo({
-    tableTopicId,
-    title,
-    formData,
-  });
-
-  return video;
-}
-
-export async function deleteVideo(id: Video["id"]) {
-  const video = await deleteUserVideoById(id);
-
-  return video;
 }

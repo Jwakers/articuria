@@ -1,10 +1,10 @@
 "use server";
 
 import { disfluencyData } from "@/lib/utils";
-import { getDownloadDataById } from "../cloudflare-actions";
 import { db } from "../db";
 import { getUserVideoById } from "../db/queries";
-import { assemblyAi } from "./asembly-ai-client";
+import mux from "../mux/mux-client";
+import { assemblyAi } from "./assembly-ai-client";
 
 export async function getTranscriptionData(
   video: NonNullable<Awaited<ReturnType<typeof getUserVideoById>>>,
@@ -12,25 +12,29 @@ export async function getTranscriptionData(
   if (video?.transcript)
     return { data: null, error: "Transcript data already exists" };
 
-  const cloudflareVideo = await getDownloadDataById(video.cloudflareId);
-
-  if (!cloudflareVideo?.default?.url)
-    return { data: null, error: "Unable to get video download URL" };
-
-  const res = await fetch(cloudflareVideo.default.url, {
-    redirect: "manual", // Don't follow redirects automatically
+  const asset = await mux.video.assets.retrieve(video.assetId ?? "");
+  const playbackId = await mux.video.assets.createPlaybackId(asset.id ?? "", {
+    policy: "public",
   });
 
-  const signedUrl = res.headers.get("location");
-  if (!signedUrl)
-    return { data: null, error: "Unable to resolve signed redirect URL" };
+  if (!playbackId.id) return { data: null, error: "No playback ID" };
+
+  const audioRendition = asset?.static_renditions?.files?.find(
+    (file) => file.resolution === "audio-only",
+  );
+
+  // TODO: update DB and webhook to handle static renditions
+  // Save audio rendition ready state to the DB
+  if (!audioRendition)
+    return { data: null, error: "Audio rendition not found" };
+  const audioRenditionUrl = `https://stream.mux.com/${playbackId.id}/${audioRendition?.name}`;
 
   // Submit audio for transcription with AssemblyAI SDK
   try {
     console.log("[ASSEMBLY] starting transcription");
     console.time();
     const transcript = await assemblyAi.transcripts.transcribe({
-      audio_url: signedUrl,
+      audio_url: audioRenditionUrl,
       speakers_expected: 1,
       speaker_labels: true,
       summarization: true,

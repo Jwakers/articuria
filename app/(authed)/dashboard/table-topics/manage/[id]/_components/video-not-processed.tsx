@@ -1,6 +1,5 @@
 "use client";
 
-import { getUserVideoById } from "@/app/server/db/queries";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -13,14 +12,8 @@ import {
 } from "@/components/ui/dialog";
 import { useRouter } from "next/navigation";
 
-export default function VideoNotProcessed({
-  video,
-}: {
-  video: Awaited<ReturnType<typeof getUserVideoById>>;
-}) {
+export default function VideoNotProcessed() {
   const router = useRouter();
-
-  if (video?.readyToStream) return null;
 
   return (
     <Dialog defaultOpen>

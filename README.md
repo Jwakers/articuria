@@ -8,13 +8,14 @@
 - [ ] Error uploading large videos > 1:30. Prisma transaction is timing out.
 - [ ] Generating a second topic causes the video stream to fail.
 - [ ] contact page needs a loading.tsx
+- [ ] If the user does not save a video for a topic they will see the same one again
 
 ## 1. Updates
 
 - Enhance video recording page:
 
-- [ ] Add "Cancel anytime" to the subscription drawer pro plan card
-- [ ] Add higher video quality as a pro feature
+- [x] Add "Cancel anytime" to the subscription drawer pro plan card
+- [ ] Add higher video quality as a pro feature (both in the features list and in the APIs)
 - [ ] Style active link/page in sidebar
 - [ ] Style warning banners with warning colors
 - [ ] Sign in should open in a modal not a new page
@@ -23,8 +24,6 @@
 - [ ] Add loading UI when changing pages on the video management route
 - [ ] Rate limiting api routes.
 - [ ] Move email templates to a separate file for better maintainability.
-- [ ] Create cloudflare webhook should run on every deployment.
-- [ ] Should isolate development and production webhooks on cloudflare to prevent interruption of production webhook.
 - [ ] Update favicon.
 - [ ] add (create) logo to Stripe branding section
 - [ ] Improve the home page
@@ -94,7 +93,6 @@
   - [ ] Memorization tests.
 
 - [ ] Table topics rating (like/dislike).
-- [ ] Save large videos with TUS (note need to use a TUS client to accomplish this, check out the TUS website as well as the Cloudflare docs).
 
 - Custom account management page:
 

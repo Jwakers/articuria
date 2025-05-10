@@ -31,38 +31,41 @@ model TableTopic {
     id         Int         @id @default(autoincrement())
     createdAt  DateTime    @default(now())
     topic      String      @unique
-    videos     Video[]
+    videos     MuxVideo[]
     difficulty Difficulty?
     themes     Theme[]
 }
 
-model Video {
-    id            String      @id @default(cuid())
-    createdAt     DateTime    @default(now())
-    cloudflareId  String      @unique
-    userId        String
-    tableTopic    TableTopic  @relation(fields: [tableTopicId], references: [id])
-    tableTopicId  Int
-    duration      Int? // Duration in seconds
-    readyToStream Boolean     @default(false)
-    transcript    Transcript?
+model MuxVideo {
+    id                   String      @id @default(cuid())
+    createdAt            DateTime    @default(now())
+    userId               String
+    uploadId             String?
+    assetId              String?
+    status               String?
+    publicPlaybackId     String?
+    audioRenditionStatus String?
+    duration             Int?
+    tableTopic           TableTopic  @relation(fields: [tableTopicId], references: [id])
+    tableTopicId         Int
+    transcript           Transcript?
+    report               Report?
 }
 
 model Transcript {
     id               String   @id @default(cuid())
     createdAt        DateTime @default(now())
     data             Json
-    video            Video    @relation(fields: [videoId], references: [id])
-    videoId          String   @unique
     speakingDuration Float    @default(0)
     wordsPerMinute   Int      @default(0)
     fillerWordCount  Int      @default(0)
-    report           Report?
+    video            MuxVideo @relation(fields: [videoId], references: [id], onDelete: Cascade)
+    videoId          String   @unique
 }
 
 model Report {
-    id              String     @id @default(cuid())
-    createdAt       DateTime   @default(now())
+    id              String   @id @default(cuid())
+    createdAt       DateTime @default(now())
     creativity      String?
     creativityScore Int?
     clarity         String?
@@ -80,6 +83,6 @@ model Report {
     commendations   String[]
     shortSummary    String?
     summary         String?
-    transcript      Transcript @relation(fields: [transcriptId], references: [id])
-    transcriptId    String     @unique
+    video           MuxVideo @relation(fields: [videoId], references: [id], onDelete: Cascade)
+    videoId         String   @unique
 }

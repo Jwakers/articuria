@@ -189,27 +189,6 @@ export async function generateTopicReport(videoId: Video["id"]) {
       return { data: null, error: "Server error. No feedback was generated" };
 
     const data = JSON.parse(response.text) as TableTopicReportResponseData;
-    console.log(data);
-    console.log({
-      averageScore: data.averageScore,
-      clarity: data.clarity?.feedback,
-      clarityScore: data.clarity?.score,
-      commendations: data.commendations,
-      creativity: data.creativity?.feedback,
-      creativityScore: data.creativity?.score,
-      engagement: data.engagement?.feedback,
-      engagementScore: data.engagement?.score,
-      language: data.language?.feedback,
-      languageScore: data.language?.score,
-      pacing: data.pacing?.feedback,
-      pacingScore: data.pacing?.score,
-      recommendations: data.recommendations,
-      shortSummary: data.shortSummary,
-      summary: data.summary,
-      tone: data.tone?.feedback,
-      toneScore: data.tone?.score,
-      transcriptId: video.transcript.id,
-    });
 
     const report = await db.report.create({
       data: {
@@ -230,7 +209,7 @@ export async function generateTopicReport(videoId: Video["id"]) {
         summary: data.summary,
         tone: data.tone?.feedback,
         toneScore: data.tone?.score,
-        transcriptId: video.transcript.id,
+        videoId: video.id,
       },
     });
 

@@ -1,5 +1,8 @@
 import { getUserVideoById } from "@/app/server/db/queries";
+import { getUpdatedVideo } from "@/app/server/mux/mux-actions";
+import { StaticRenditionStatus } from "@/app/server/mux/types";
 import { currentUser } from "@clerk/nextjs/server";
+import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import Transcript from "./_components/transcript";
 import VideoNotProcessed from "./_components/video-not-processed";
@@ -14,14 +17,30 @@ export default async function VideoPage({
 
   if (!user) throw new Error("You must be signed in to view this page");
 
-  const video = await getUserVideoById(id);
+  let muxVideo = await getUserVideoById(id);
+  if (!muxVideo) return notFound();
+
+  const audioReady =
+    muxVideo.audioRenditionStatus === ("ready" satisfies StaticRenditionStatus);
+
+  if (
+    !muxVideo.publicPlaybackId ||
+    !muxVideo.audioRenditionStatus ||
+    !audioReady
+  ) {
+    muxVideo = await getUpdatedVideo(muxVideo);
+  }
 
   return (
     <Suspense fallback={<VideoPlayerSkeleton />}>
       <div className="space-y-2">
-        <VideoNotProcessed video={video} />
-        <VideoPlayer video={video} />
-        <Transcript video={video} />
+        {!muxVideo?.publicPlaybackId || !audioReady ? (
+          <VideoNotProcessed />
+        ) : null}
+        <VideoPlayer video={muxVideo} />
+        {muxVideo?.transcript || audioReady ? (
+          <Transcript video={muxVideo} />
+        ) : null}
       </div>
     </Suspense>
   );

@@ -24,9 +24,7 @@ AI-Generated Review:
 - Send transcript to Google AI (or similar) with:
 - The intended topic
 - The full transcript text
-- Filler word count
 - Words per minute (pacing)
-- Sentiment data
 
 AI returns a topic-specific review focused on:
 - Clarity
@@ -37,6 +35,12 @@ AI returns a topic-specific review focused on:
 - Grammar
 - Score all of these from one to 10 and return an average
 */
+
+// TODO
+// Refactor to MUX, once this is set up getting audio only should be easier to send to gemini
+// Should then be able to remove assembly AI
+// Move all blocks into separate components
+// Upload audio to gemini
 
 import { getTranscriptionData } from "@/app/server/assembly-ai/assembly-ai-actions";
 import { getUserVideoById } from "@/app/server/db/queries";
@@ -54,11 +58,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ROUTES } from "@/lib/constants";
 import { disfluencyData } from "@/lib/utils";
 import type { Transcript as TransciptData } from "assemblyai";
 import { ArrowRight, Play } from "lucide-react";
-import Link from "next/link";
 import { useEffect, useMemo, useState, useTransition } from "react";
 import { toast } from "sonner";
 
@@ -75,22 +77,22 @@ export default function Transcript({ video }: TranscriptProps) {
   const [reportPending, startReportTransition] = useTransition();
 
   const [transcript, setTranscript] = useState(video?.transcript);
-  const [report, setReport] = useState(video?.transcript?.report);
+  const [report, setReport] = useState(video?.report);
   const transcriptData = transcript?.data as TransciptData | undefined;
 
   const handleGenerateTranscript = async () => {
-    if (!video?.cloudflareId) {
-      toast.error(() => (
-        <p>
-          Video ID unavailable. Please{" "}
-          <Link href={ROUTES.dashboard.contact}>contact support</Link>
-        </p>
-      ));
-      return;
-    }
+    // if (!video?.cloudflareId) {
+    //   toast.error(() => (
+    //     <p>
+    //       Video ID unavailable. Please{" "}
+    //       <Link href={ROUTES.dashboard.contact}>contact support</Link>
+    //     </p>
+    //   ));
+    //   return;
+    // }
 
     startTranscriptTransition(async () => {
-      if (transcript) return;
+      if (transcript || !video) return;
       const { data, error } = await getTranscriptionData(video);
 
       if (error) {
@@ -108,14 +110,18 @@ export default function Transcript({ video }: TranscriptProps) {
     }
 
     const { data, error } = await generateTopicReport(video.id);
+    if (error) {
+      toast.error(error);
+      return;
+    }
     setReport(data);
   };
 
   useEffect(() => {
     if (report || reportPending) return;
-    startReportTransition(async () => {
-      await generateReport();
-    });
+    // startReportTransition(async () => {
+    //   await generateReport();
+    // });
   }, [report, transcript]);
 
   return (
@@ -146,6 +152,12 @@ export default function Transcript({ video }: TranscriptProps) {
 
         {transcript ? (
           <div className="space-y-4">
+            {transcript && !report ? (
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <span>Generating report...</span>
+                <Spinner />
+              </div>
+            ) : null}
             <div className="rounded border bg-muted shadow-inner">
               <Table className="border-b">
                 <TableHeader>
@@ -239,12 +251,6 @@ export default function Transcript({ video }: TranscriptProps) {
                   <p className="text-xl font-medium">Full summary</p>
                   <p>{report.summary}</p>
                 </div>
-              </div>
-            ) : null}
-            {transcript && !report ? (
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <span>Generating report...</span>
-                <Spinner />
               </div>
             ) : null}
           </div>

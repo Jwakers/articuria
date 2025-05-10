@@ -20,7 +20,7 @@ import { startTransition, useActionState, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 import { submitContactForm } from "../actions";
-import { contactFormSchema } from "../schema";
+import { contactFormSchema } from "../contact-form-schema";
 
 export default function ContactForm() {
   const [state, formAction, isPending] = useActionState(

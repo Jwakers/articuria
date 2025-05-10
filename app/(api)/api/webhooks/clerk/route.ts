@@ -1,5 +1,5 @@
-import { deleteVideoById } from "@/app/server/cloudflare-actions";
 import { db } from "@/app/server/db";
+import { deleteAsset } from "@/app/server/mux/mux-actions";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import { headers } from "next/headers";
 import { Webhook } from "svix";
@@ -72,24 +72,20 @@ async function userDeleted(userId: string | undefined) {
   if (!userId) throw new Error("User ID is undefined");
 
   await db.$transaction(async (prisma) => {
-    const videos = await prisma.video.findMany({
+    const videos = await prisma.muxVideo.findMany({
       where: {
         userId,
       },
     });
 
-    // Delete videos from DB
     console.log("deleting from DB...");
-    await prisma.video.deleteMany({
+    await prisma.muxVideo.deleteMany({
       where: {
         userId,
       },
     });
 
-    // Delete videos from cloudflare
-    console.log("deleting from cloudflare...");
-    await Promise.all(
-      videos.map((video) => deleteVideoById(video.cloudflareId, userId)),
-    );
+    console.log("deleting from Mux...");
+    await Promise.all(videos.map((video) => deleteAsset(video)));
   });
 }

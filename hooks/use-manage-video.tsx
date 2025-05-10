@@ -1,43 +1,11 @@
-import { deleteVideo as deleteVideoAction } from "@/app/server/actions";
-import { getDownloadDataById } from "@/app/server/cloudflare-actions";
-import { Video } from "@prisma/client";
+import { deleteAsset } from "@/app/server/mux/mux-actions";
+import { MuxVideo } from "@prisma/client";
 import { useState } from "react";
 import { toast } from "sonner";
 
-export default function useManageVideo({ video }: { video: Video | null }) {
+export default function useManageVideo({ video }: { video: MuxVideo | null }) {
   const [isDeleting, setIsDeleting] = useState(false);
-  const [isDownloading, setIsDownloading] = useState(false);
-  const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const [downloadDialogOpen, setDownloadDialogOpen] = useState(false);
-
-  const downloadVideo = async () => {
-    setIsDownloading(true);
-    if (!video) return toast.error("No video is set");
-
-    try {
-      toast.promise(getDownloadDataById(video.cloudflareId), {
-        loading: "Getting download...",
-        success: (data) => {
-          if (!data) throw new Error("Download link not found");
-
-          setDownloadUrl(data.default.url);
-          setIsDownloading(false);
-          setDownloadDialogOpen(true);
-
-          return "Download available";
-        },
-        error: (err) => {
-          console.log(err);
-          setIsDownloading(false);
-          setDownloadUrl(null);
-          setDownloadDialogOpen(false);
-          return `Failed to get download: ${err.message || "Unknown error"}`;
-        },
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   const deleteVideo = async ({
     successCallback,
@@ -48,7 +16,7 @@ export default function useManageVideo({ video }: { video: Video | null }) {
     setIsDeleting(true);
 
     try {
-      toast.promise(deleteVideoAction(video.id), {
+      toast.promise(deleteAsset(video), {
         loading: "Deleting video...",
         success: () => {
           successCallback?.();
@@ -69,9 +37,6 @@ export default function useManageVideo({ video }: { video: Video | null }) {
   return {
     isDeleting,
     deleteVideo,
-    isDownloading,
-    downloadVideo,
-    downloadUrl,
     downloadDialogOpen,
     setDownloadDialogOpen,
   };
