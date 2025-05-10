@@ -170,6 +170,7 @@ export async function getUserVideoById(id: MuxVideo["id"]) {
     include: {
       transcript: true,
       report: true,
+      tableTopic: true,
     },
   });
 

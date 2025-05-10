@@ -1,6 +1,7 @@
 import { getUserVideoById } from "@/app/server/db/queries";
 import { getUpdatedVideo } from "@/app/server/mux/mux-actions";
 import { StaticRenditionStatus } from "@/app/server/mux/types";
+import Spinner from "@/components/ui/spinner";
 import { currentUser } from "@clerk/nextjs/server";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
@@ -31,16 +32,25 @@ export default async function VideoPage({
     muxVideo = await getUpdatedVideo(muxVideo);
   }
 
+  // TODO: Return audio still processing message
+  // TODO: If video is still processing do not render the video player
+  // TODO: go to video should watch for data base changes and only link when the video is ready
+  // TODO: Format feedback more effectively and place above the transcript
+  // TODO: Add playhead feature to the transcript
+
   return (
     <Suspense fallback={<VideoPlayerSkeleton />}>
       <div className="space-y-2">
-        {!muxVideo?.publicPlaybackId || !audioReady ? (
-          <VideoNotProcessed />
-        ) : null}
+        {!muxVideo?.publicPlaybackId ? <VideoNotProcessed /> : null}
         <VideoPlayer video={muxVideo} />
         {muxVideo?.transcript || audioReady ? (
           <Transcript video={muxVideo} />
-        ) : null}
+        ) : (
+          <div className="flex items-center gap-2">
+            <p>Processing audio...</p>
+            <Spinner />
+          </div>
+        )}
       </div>
     </Suspense>
   );

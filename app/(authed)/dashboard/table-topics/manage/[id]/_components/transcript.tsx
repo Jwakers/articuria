@@ -81,16 +81,6 @@ export default function Transcript({ video }: TranscriptProps) {
   const transcriptData = transcript?.data as TransciptData | undefined;
 
   const handleGenerateTranscript = async () => {
-    // if (!video?.cloudflareId) {
-    //   toast.error(() => (
-    //     <p>
-    //       Video ID unavailable. Please{" "}
-    //       <Link href={ROUTES.dashboard.contact}>contact support</Link>
-    //     </p>
-    //   ));
-    //   return;
-    // }
-
     startTranscriptTransition(async () => {
       if (transcript || !video) return;
       const { data, error } = await getTranscriptionData(video);
@@ -118,10 +108,12 @@ export default function Transcript({ video }: TranscriptProps) {
   };
 
   useEffect(() => {
-    if (report || reportPending) return;
-    // startReportTransition(async () => {
-    //   await generateReport();
-    // });
+    if (!transcript || report || reportPending) return;
+
+    // TODO research watch events for database changes
+    startReportTransition(async () => {
+      await generateReport();
+    });
   }, [report, transcript]);
 
   return (
@@ -152,7 +144,7 @@ export default function Transcript({ video }: TranscriptProps) {
 
         {transcript ? (
           <div className="space-y-4">
-            {transcript && !report ? (
+            {transcript && !report && reportPending ? (
               <div className="flex items-center gap-2 text-muted-foreground">
                 <span>Generating report...</span>
                 <Spinner />

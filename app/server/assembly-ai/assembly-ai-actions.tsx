@@ -3,7 +3,8 @@
 import { disfluencyData } from "@/lib/utils";
 import { db } from "../db";
 import { getUserVideoById } from "../db/queries";
-import mux from "../mux/mux-client";
+import { getAudioRendition } from "../mux/mux-actions";
+import { StaticRenditionStatus } from "../mux/types";
 import { assemblyAi } from "./assembly-ai-client";
 
 export async function getTranscriptionData(
@@ -11,28 +12,23 @@ export async function getTranscriptionData(
 ) {
   if (video?.transcript)
     return { data: null, error: "Transcript data already exists" };
+  if (video?.audioRenditionStatus !== ("ready" satisfies StaticRenditionStatus))
+    return { data: null, error: "Video data not finished processing" };
+  if (!video.assetId) return { data: null, error: "Video missing asset ID" };
 
-  const asset = await mux.video.assets.retrieve(video.assetId ?? "");
-  const playbackId = await mux.video.assets.createPlaybackId(asset.id ?? "", {
-    policy: "public",
-  });
-
-  if (!playbackId.id) return { data: null, error: "No playback ID" };
-
-  const audioRendition = asset?.static_renditions?.files?.find(
-    (file) => file.resolution === "audio-only",
+  const { audioRendition, playbackId, error } = await getAudioRendition(
+    video.assetId,
   );
 
-  // TODO: update DB and webhook to handle static renditions
-  // Save audio rendition ready state to the DB
+  if (error) return { data: null, error };
   if (!audioRendition)
-    return { data: null, error: "Audio rendition not found" };
+    return { data: null, error: "Unable to fetch audio rendition" };
+
   const audioRenditionUrl = `https://stream.mux.com/${playbackId.id}/${audioRendition?.name}`;
 
-  // Submit audio for transcription with AssemblyAI SDK
   try {
     console.log("[ASSEMBLY] starting transcription");
-    console.time();
+    console.time("[ASSEMBLY]");
     const transcript = await assemblyAi.transcripts.transcribe({
       audio_url: audioRenditionUrl,
       speakers_expected: 1,
@@ -45,7 +41,7 @@ export async function getTranscriptionData(
       auto_highlights: true,
     });
     console.log("[ASSEMBLY] transcription complete");
-    console.timeEnd();
+    console.timeEnd("[ASSEMBLY]");
 
     const { words } = transcript;
     const firstWord = words?.[0];

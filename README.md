@@ -22,6 +22,7 @@
 - [ ] Unify all page headings to use the same styling (take from the subscription management page)
 - [ ] Add/update metadata for all pages
 - [ ] Add loading UI when changing pages on the video management route
+- [ ] Video length should be limited based on tier before saving
 - [ ] Rate limiting api routes.
 - [ ] Move email templates to a separate file for better maintainability.
 - [ ] Update favicon.

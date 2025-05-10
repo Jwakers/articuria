@@ -1,12 +1,17 @@
 "use server";
 
 import { THEME_MAP } from "@/lib/constants";
-import { GoogleGenAI, Schema, Type } from "@google/genai";
-import { TableTopic, Video } from "@prisma/client";
+import { createPartFromUri, GoogleGenAI, Schema, Type } from "@google/genai";
+import { TableTopic } from "@prisma/client";
 import { Transcript } from "assemblyai";
+import * as fs from "fs";
+import ky from "ky";
+import os from "os";
+import path from "path";
 import { GenerateTopicOptions } from "./actions";
 import { db } from "./db";
 import { getUserVideoById } from "./db/queries";
+import { getAudioRendition } from "./mux/mux-actions";
 
 const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_GEMINI_API_KEY });
 
@@ -108,9 +113,9 @@ const SCORE_SCHEMA = SCORE_PARAMETERS.reduce<Record<string, Schema>>(
   {},
 );
 
-export async function generateTopicReport(videoId: Video["id"]) {
+export async function generateTopicReport(videoId: string) {
   const video = await getUserVideoById(videoId);
-  console.log(video);
+
   if (!video?.transcript?.data)
     return { data: null, error: "No video/transcript data provided" };
   const transcriptData = video.transcript.data as Transcript;
@@ -128,17 +133,50 @@ export async function generateTopicReport(videoId: Video["id"]) {
     ];
 
     // TODO logic to check user permissions or if they have used their one free report yet
-
     const systemInstruction = rules.join(" ");
 
-    console.log(systemInstruction);
+    if (!video.assetId) return { data: null, error: "Missing asset ID" };
+    const { audioRendition, playbackId, error } = await getAudioRendition(
+      video.assetId,
+    );
 
-    // Run this by an ai model to ask for improvements
-    // Save to DB and perform checks
-    // Create partial type from JSON schema
+    if (error) return { data: null, error };
+    if (!audioRendition || !playbackId)
+      return { data: null, error: "Missing audio data" };
+
+    const res = await ky(
+      `https://stream.mux.com/${playbackId.id}/${audioRendition.name}`,
+    );
+
+    const tempDir = os.tmpdir();
+    const buffer = await res.arrayBuffer();
+    const fileName = `${playbackId.id}-${audioRendition.name}`;
+    const filePath = path.join(tempDir, fileName);
+    await fs.promises.writeFile(filePath, Buffer.from(buffer));
+
+    const audioUpload = await ai.files.upload({
+      file: filePath,
+      config: { mimeType: `audio/${audioRendition.ext}` },
+    });
+
+    if (!audioUpload.uri || !audioUpload.mimeType)
+      return { data: null, error: "Unable to upload audio" };
+
+    const promptText = `Please generate a comprehensive feedback report for the following table topic transcript, taking into account all the instructions provided. Audio has also been provided so please consider this in your review: ${JSON.stringify(transcriptData.text)}. Ensure that the response is a JSON object conforming to the specified schema, and all values are present.`;
+
     const response = await ai.models.generateContent({
       model: "gemini-2.0-flash",
-      contents: `Please generate a comprehensive feedback report for the following table topic transcript, taking into account all the instructions provided: "${transcriptData.text}"`,
+      contents: [
+        {
+          parts: [
+            {
+              text: promptText,
+            },
+            createPartFromUri(audioUpload.uri, audioUpload.mimeType),
+            { text: "Audio of the table topic performance" },
+          ],
+        },
+      ],
       config: {
         systemInstruction,
         responseMimeType: "application/json",
@@ -188,69 +226,64 @@ export async function generateTopicReport(videoId: Video["id"]) {
     if (!response.text)
       return { data: null, error: "Server error. No feedback was generated" };
 
-    const data = JSON.parse(response.text) as TableTopicReportResponseData;
+    console.log("Raw Gemini API Response:", response.text); // Log the raw response
 
-    const report = await db.report.create({
-      data: {
-        averageScore: data.averageScore,
-        clarity: data.clarity?.feedback,
-        clarityScore: data.clarity?.score,
-        commendations: data.commendations,
-        creativity: data.creativity?.feedback,
-        creativityScore: data.creativity?.score,
-        engagement: data.engagement?.feedback,
-        engagementScore: data.engagement?.score,
-        language: data.language?.feedback,
-        languageScore: data.language?.score,
-        pacing: data.pacing?.feedback,
-        pacingScore: data.pacing?.score,
-        recommendations: data.recommendations,
-        shortSummary: data.shortSummary,
-        summary: data.summary,
-        tone: data.tone?.feedback,
-        toneScore: data.tone?.score,
-        videoId: video.id,
-      },
-    });
+    try {
+      const data = JSON.parse(response.text) as TableTopicReportResponseData;
 
-    return {
-      data: report,
-      error: null,
-    };
+      const report = await db.report.create({
+        data: {
+          averageScore: data.averageScore,
+          clarity: data.clarity?.feedback,
+          clarityScore: data.clarity?.score,
+          commendations: data.commendations,
+          creativity: data.creativity?.feedback,
+          creativityScore: data.creativity?.score,
+          engagement: data.engagement?.feedback,
+          engagementScore: data.engagement?.score,
+          language: data.language?.feedback,
+          languageScore: data.language?.score,
+          pacing: data.pacing?.feedback,
+          pacingScore: data.pacing?.score,
+          recommendations: data.recommendations,
+          shortSummary: data.shortSummary,
+          summary: data.summary,
+          tone: data.tone?.feedback,
+          toneScore: data.tone?.score,
+          videoId: video.id,
+        },
+      });
+
+      return {
+        data: report,
+        error: null,
+      };
+    } catch (parseError) {
+      console.error("Error parsing Gemini API response:", parseError);
+      console.error("Problematic Response Text:", response.text);
+      return { data: null, error: "Error parsing the feedback response" };
+    }
   } catch (error) {
-    console.error(error);
+    console.error("Error generating feedback:", error);
     return { data: null, error: "Error generating feedback" };
   }
 }
 
+type Score = Partial<{
+  feedback: string;
+  score: number;
+}>;
+
 export type TableTopicReportResponseData = Partial<{
   averageScore: number;
-  clarity: {
-    feedback: string;
-    score: number;
-  };
+  clarity: Score;
   commendations: string[];
-  creativity: {
-    feedback: string;
-    score: number;
-  };
-  engagement: {
-    feedback: string;
-    score: number;
-  };
-  language: {
-    feedback: string;
-    score: number;
-  };
-  pacing: {
-    feedback: string;
-    score: number;
-  };
+  creativity: Score;
+  engagement: Score;
+  language: Score;
+  pacing: Score;
+  tone: Score;
   recommendations: string[];
   shortSummary: string;
   summary: string;
-  tone: {
-    feedback: string;
-    score: 7;
-  };
 }>;

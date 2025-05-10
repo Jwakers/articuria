@@ -126,6 +126,7 @@ export async function getUpdatedVideo(
       include: {
         transcript: true,
         report: true,
+        tableTopic: true,
       },
     });
 
@@ -153,6 +154,7 @@ export async function getUpdatedVideo(
     include: {
       transcript: true,
       report: true,
+      tableTopic: true,
     },
   });
 
@@ -179,6 +181,34 @@ export async function deleteAsset(video: MuxVideo) {
     console.error(error);
     throw new Error("Unable to delete video");
   }
+}
+
+// TODO: Cache this response
+export async function getAudioRendition(assetId: string) {
+  const asset = await mux.video.assets.retrieve(assetId);
+  const playbackId = await mux.video.assets.createPlaybackId(assetId ?? "", {
+    policy: "public",
+  });
+
+  if (!playbackId.id)
+    return { audioRendition: null, playbackId: null, error: "No playback ID" };
+
+  const audioRendition = asset?.static_renditions?.files?.find(
+    (file) => file.resolution === "audio-only",
+  );
+
+  if (!audioRendition)
+    return {
+      audioRendition: null,
+      playbackId: null,
+      error: "Audio rendition not found",
+    };
+
+  return {
+    audioRendition,
+    playbackId,
+    error: null,
+  };
 }
 
 async function getVideoToken() {

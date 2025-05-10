@@ -8,6 +8,7 @@ import { UnwrapWebhookEvent } from "@mux/mux-node/resources/webhooks.mjs";
 
 const webhookSecret = process.env.MUX_WEBHOOK_SIGNING_SECRET;
 
+// Note must send a 2** status code or Mux will retry for 24hrs
 export async function POST(request: Request) {
   const rawBody = await request.clone().text();
   const { data, type } = (await request.json()) as UnwrapWebhookEvent;
@@ -19,14 +20,14 @@ export async function POST(request: Request) {
     console.error("[MUX WEBHOOK] Invalid signature");
 
     return new Response("Invalid signature", {
-      status: 401,
+      status: 200,
     });
   }
 
   console.log(`[MUX WEBHOOK] ${type} webhook event received`);
 
   if (!data) {
-    return new Response("Payload was empty", { status: 400 });
+    return new Response("Payload was empty", { status: 200 });
   }
 
   if (type === "video.asset.created") {
@@ -71,9 +72,14 @@ export async function POST(request: Request) {
     try {
       // Static renditions use a different payload
       const renditionData = data as unknown as StaticRenditionWebhookPayload;
-      const asset = await mux.video.assets.retrieve(
-        renditionData.asset_id as string,
-      );
+      if (!renditionData.asset_id) {
+        console.error(
+          `[MUX WEBHOOK] Missing asset_id for event ${type}.`,
+          renditionData,
+        );
+        return new Response("Webhook received");
+      }
+      const asset = await mux.video.assets.retrieve(renditionData.asset_id);
 
       if (renditionData.resolution !== "audio-only" || !asset?.passthrough)
         return new Response("Webhook received");
@@ -92,16 +98,21 @@ export async function POST(request: Request) {
       });
     } catch (error) {
       console.error(error);
-      return new Response("Webhook error", { status: 500 });
+      return new Response("Webhook error", { status: 200 });
     }
   }
 
   if (type === "video.asset.static_rendition.ready") {
     try {
       const renditionData = data as unknown as StaticRenditionWebhookPayload;
-      const asset = await mux.video.assets.retrieve(
-        renditionData.asset_id as string,
-      );
+      if (!renditionData.asset_id) {
+        console.error(
+          `[MUX WEBHOOK] Missing asset_id for event ${type}.`,
+          renditionData,
+        );
+        return new Response("Webhook received");
+      }
+      const asset = await mux.video.assets.retrieve(renditionData.asset_id);
 
       if (renditionData.resolution !== "audio-only" || !asset?.passthrough)
         return new Response("Webhook received");
@@ -117,7 +128,7 @@ export async function POST(request: Request) {
       });
     } catch (error) {
       console.error(error);
-      return new Response("Webhook error", { status: 500 });
+      return new Response("Webhook error", { status: 200 });
     }
   }
 
