@@ -2,7 +2,7 @@
 
 import { clerkClient, currentUser } from "@clerk/nextjs/server";
 import type Stripe from "stripe";
-import { stripe } from "./stripe-client";
+import { stripe } from "./client";
 
 export type ClerkUserPublicMetadata =
   | {

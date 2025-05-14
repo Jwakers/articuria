@@ -1,7 +1,8 @@
-import { createVideo } from "@/app/server/actions";
+import { getUploadUrl } from "@/app/server/mux/mux-actions";
 import { userWithMetadata, validateFile } from "@/lib/utils";
 import { useUser } from "@clerk/nextjs";
-import { Video } from "@prisma/client";
+import { MuxVideo } from "@prisma/client";
+import ky from "ky";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
@@ -9,7 +10,7 @@ export const useMediaRecorder = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
-  const [savedVideoId, setSavedVideoId] = useState<Video["id"] | null>(null);
+  const [savedVideoId, setSavedVideoId] = useState<MuxVideo["id"] | null>(null);
 
   const [recordedBlob, setRecordedBlob] = useState<Blob | null>(null);
   const [recordedVideoURL, setRecordedVideoURL] = useState<string | null>(null);
@@ -109,7 +110,7 @@ export const useMediaRecorder = () => {
     tableTopicId,
   }: {
     title: string;
-    tableTopicId: Video["tableTopicId"];
+    tableTopicId: MuxVideo["tableTopicId"];
   }) => {
     if (!title?.trim()) throw new Error("Title is required");
     if (!tableTopicId) throw new Error("Table topic ID is required");
@@ -130,18 +131,22 @@ export const useMediaRecorder = () => {
       );
     }
 
-    const formData = new FormData();
-    formData.append("file", file);
-
     setIsSaving(true);
 
-    const promise = createVideo({
-      tableTopicId,
-      title,
-      formData,
-    });
+    const promise = async () => {
+      const { upload, video } = await getUploadUrl({
+        title,
+        tableTopicId,
+      });
 
-    toast.promise(promise, {
+      await ky.put(upload.url, {
+        body: recordedBlob,
+      });
+
+      return video;
+    };
+
+    toast.promise(promise(), {
       loading: "Saving...",
       success: (data) => {
         setIsSaved(true);

@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Transcript" ADD COLUMN     "fillerWordCount" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "speakingDuration" DOUBLE PRECISION NOT NULL DEFAULT 0,
+ADD COLUMN     "wordsPerMinute" INTEGER NOT NULL DEFAULT 0;

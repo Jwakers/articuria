@@ -31,18 +31,66 @@ model TableTopic {
     id         Int         @id @default(autoincrement())
     createdAt  DateTime    @default(now())
     topic      String      @unique
-    videos     Video[]
+    videos     MuxVideo[]
     difficulty Difficulty?
     themes     Theme[]
 }
 
-model Video {
-    id            String     @id @default(cuid())
-    createdAt     DateTime   @default(now())
-    cloudflareId  String     @unique
-    userId        String
-    tableTopic    TableTopic @relation(fields: [tableTopicId], references: [id])
-    tableTopicId  Int
-    duration      Int? // Duration in seconds
-    readyToStream Boolean    @default(false)
+enum MuxProcessingStatus {
+    WAITING
+    READY
+    ERRORED
+}
+
+model MuxVideo {
+    id                   String               @id @default(cuid())
+    createdAt            DateTime             @default(now())
+    userId               String
+    uploadId             String?
+    assetId              String?
+    status               MuxProcessingStatus?
+    publicPlaybackId     String?
+    audioRenditionStatus MuxProcessingStatus?
+    duration             Int?
+    tableTopic           TableTopic           @relation(fields: [tableTopicId], references: [id])
+    tableTopicId         Int
+    transcript           Transcript?
+    report               Report?
+
+    @@index([userId])
+}
+
+model Transcript {
+    id               String   @id @default(cuid())
+    createdAt        DateTime @default(now())
+    data             Json
+    speakingDuration Float    @default(0)
+    wordsPerMinute   Int      @default(0)
+    fillerWordCount  Int      @default(0)
+    video            MuxVideo @relation(fields: [videoId], references: [id], onDelete: Cascade)
+    videoId          String   @unique
+}
+
+model Report {
+    id              String   @id @default(cuid())
+    createdAt       DateTime @default(now())
+    creativity      String?
+    creativityScore Int?
+    clarity         String?
+    clarityScore    Int?
+    engagement      String?
+    engagementScore Int?
+    tone            String?
+    toneScore       Int?
+    pacing          String?
+    pacingScore     Int?
+    language        String?
+    languageScore   Int?
+    averageScore    Int?
+    recommendations String[]
+    commendations   String[]
+    shortSummary    String?
+    summary         String?
+    video           MuxVideo @relation(fields: [videoId], references: [id], onDelete: Cascade)
+    videoId         String   @unique
 }

@@ -3,7 +3,7 @@
 import { currentUser } from "@clerk/nextjs/server";
 import DOMPurify from "isomorphic-dompurify";
 import nodemailer from "nodemailer";
-import { contactFormSchema } from "./schema";
+import { contactFormSchema } from "./contact-form-schema";
 
 export async function submitContactForm(_: unknown, formData: FormData) {
   const user = await currentUser();

@@ -1,19 +1,10 @@
 import { db } from "@/app/server/db";
-import { ERROR_CODES } from "@/lib/constants";
 import { userWithMetadata } from "@/lib/utils";
 import { currentUser } from "@clerk/nextjs/server";
-import { Prisma, TableTopic, Video } from "@prisma/client";
+import { MuxVideo, TableTopic } from "@prisma/client";
 import { isSameMonth, subMonths } from "date-fns";
 import "server-only";
 import { GenerateTopicOptions } from "../actions";
-import {
-  deleteVideoById,
-  getVideoById,
-  getVideoUploadUrl,
-  uploadVideoToCloudflare,
-} from "../cloudflare-actions";
-
-const TRANSACTION_TIMEOUT_MS = 10000;
 
 type CreateAiTableTopicOptions = GenerateTopicOptions & {
   topic: TableTopic["topic"];
@@ -53,55 +44,6 @@ export async function createAiTableTopic({
   return newTopic;
 }
 
-export async function createUserVideo({
-  tableTopicId,
-  title,
-  formData,
-}: {
-  tableTopicId: Video["tableTopicId"];
-  title: string;
-  formData: FormData;
-}) {
-  const { user, accountLimits } = await isAuth();
-
-  const videoCount = await db.video.count({
-    where: { userId: user.id },
-  });
-
-  const video = await db.$transaction(
-    async (prisma) => {
-      if (videoCount >= accountLimits.tableTopicLimit) {
-        throw new Error(
-          "You have reached your account limit for table topics. Upgrade your account or delete some videos to save more.",
-          { cause: ERROR_CODES.reachedVideoLimit },
-        );
-      }
-
-      const { uploadURL, uid } = await getVideoUploadUrl({ title });
-
-      if (!uploadURL) throw new Error("Unable to get upload URL");
-      if (!uid) throw new Error("Could not get video ID");
-
-      await uploadVideoToCloudflare(uploadURL, formData);
-
-      const videoData = await prisma.video.create({
-        data: {
-          cloudflareId: uid,
-          tableTopicId,
-          userId: user.id,
-        },
-      });
-
-      return videoData;
-    },
-    {
-      timeout: TRANSACTION_TIMEOUT_MS,
-    },
-  );
-
-  return video;
-}
-
 export async function getUserVideos(
   page: string | number = 1,
   pageSize: number = 10,
@@ -110,7 +52,7 @@ export async function getUserVideos(
 
   const skip = (Number(page) - 1) * pageSize;
 
-  const videosPromise = db.video.findMany({
+  const videosPromise = db.muxVideo.findMany({
     where: {
       userId: user.id,
     },
@@ -124,7 +66,7 @@ export async function getUserVideos(
     },
   });
 
-  const totalItemsPromise = db.video.count({
+  const totalItemsPromise = db.muxVideo.count({
     where: {
       userId: user.id,
     },
@@ -143,7 +85,7 @@ export async function getUserVideos(
 export async function getUserVideoDetails() {
   const { user } = await isAuth();
 
-  const videos = await db.video.findMany({
+  const videos = await db.muxVideo.findMany({
     select: {
       createdAt: true,
     },
@@ -165,7 +107,7 @@ export async function getUserVideoDetails() {
 export async function getUserVideoCount() {
   const { user } = await isAuth();
 
-  const count = await db.video.count({
+  const count = await db.muxVideo.count({
     where: {
       userId: user.id,
     },
@@ -177,7 +119,7 @@ export async function getUserVideoCount() {
 export async function getUserVideoDurationData() {
   await isAuth();
 
-  const videos = await db.video.findMany({
+  const videos = await db.muxVideo.findMany({
     where: {
       duration: {
         not: null,
@@ -217,80 +159,23 @@ export async function getUserVideoDurationData() {
   };
 }
 
-export async function getUserVideoById(id: Video["id"]) {
+export async function getUserVideoById(id: MuxVideo["id"]) {
   const { user } = await isAuth();
 
-  let video = await db.video.findFirst({
+  const muxVideo = await db.muxVideo.findFirst({
     where: {
       id,
       userId: user.id,
     },
     include: {
+      transcript: true,
+      report: true,
       tableTopic: true,
     },
   });
 
-  if (
-    video &&
-    (!video?.readyToStream ||
-      video?.duration === null ||
-      video?.duration === undefined)
-  ) {
-    const cloudflareVideo = await getVideoById(video.cloudflareId);
-
-    if (!cloudflareVideo.readyToStream) return video;
-    video = await _updateUserVideoReadyState(
-      video.id,
-      cloudflareVideo.readyToStream,
-      cloudflareVideo.duration,
-    );
-  }
-
-  return video;
+  return muxVideo;
 }
-
-async function _updateUserVideoReadyState(
-  id: Video["id"],
-  readyToStream: boolean | undefined,
-  duration: number | undefined,
-) {
-  const video = await db.video.update({
-    where: {
-      id,
-    },
-    data: {
-      readyToStream,
-      duration,
-    },
-    include: {
-      tableTopic: true,
-    },
-  });
-  return video;
-}
-
-export async function deleteUserVideoById(id: Video["id"]) {
-  const { user } = await isAuth();
-
-  const deletedVideo = await db.$transaction(async (prisma) => {
-    const deletedVideo = await prisma.video.delete({
-      where: {
-        id,
-        userId: user.id,
-      },
-    });
-
-    await deleteVideoById(deletedVideo.cloudflareId);
-
-    return deletedVideo;
-  });
-
-  return deletedVideo;
-}
-
-export type VideoWithTopic = Prisma.VideoGetPayload<{
-  include: { tableTopic: true };
-}>;
 
 async function isAuth() {
   const current = await currentUser();

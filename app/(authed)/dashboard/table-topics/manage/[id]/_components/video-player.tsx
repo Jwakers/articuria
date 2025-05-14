@@ -15,55 +15,25 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import Spinner from "@/components/ui/spinner";
 import useManageVideo from "@/hooks/use-manage-video";
 import { ROUTES } from "@/lib/constants";
-import { Download, Trash2 } from "lucide-react";
+
+import MuxPlayer from "@mux/mux-player-react";
+import { Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { use } from "react";
-import { toast } from "sonner";
 
 type VideoPlayerProps = {
-  videoPromise: ReturnType<typeof getUserVideoById>;
+  video: Awaited<ReturnType<typeof getUserVideoById>>;
 };
 
-export default function VideoPlayer({ videoPromise }: VideoPlayerProps) {
-  const video = use(videoPromise);
+export default function VideoPlayer({ video }: VideoPlayerProps) {
   const router = useRouter();
-  const {
-    isDeleting,
-    deleteVideo,
-    isDownloading,
-    downloadVideo,
-    downloadUrl,
-    downloadDialogOpen,
-    setDownloadDialogOpen,
-  } = useManageVideo({ video });
+  const { isDeleting, deleteVideo } = useManageVideo({ video });
 
   const handleDelete = async () => {
     await deleteVideo({
       successCallback: () => router.push(ROUTES.dashboard.tableTopics.manage),
     });
-  };
-
-  const handleDownload = async () => {
-    if (downloadUrl) return setDownloadDialogOpen(true);
-    await downloadVideo();
-  };
-
-  const handleDownloadClick = () => {
-    if (!downloadUrl) return;
-
-    const isIOS =
-      /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-      (navigator.userAgent.includes("Mac") && "ontouchend" in document);
-
-    if (isIOS) {
-      window.open(downloadUrl, "_blank");
-    }
-
-    setDownloadDialogOpen(false);
-    toast.success("Download started");
   };
 
   return (
@@ -74,57 +44,13 @@ export default function VideoPlayer({ videoPromise }: VideoPlayerProps) {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4 p-6">
-        <iframe
-          title={`Video for topic: ${video?.tableTopic.topic}`}
-          src={`https://iframe.videodelivery.net/${video?.cloudflareId}`}
-          className="aspect-video w-full"
-          allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
-          allowFullScreen
-          sandbox="allow-scripts allow-same-origin allow-presentation"
-          loading="lazy"
-        ></iframe>
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
-          <AlertDialog
-            open={downloadDialogOpen}
-            onOpenChange={setDownloadDialogOpen}
-          >
-            <Button
-              variant="secondary"
-              onClick={handleDownload}
-              disabled={isDownloading}
-              aria-busy={isDownloading}
-              aria-live="polite"
-            >
-              {isDownloading ? <Spinner /> : <Download />}
-              <span>{isDownloading ? "Downloading..." : "Download"}</span>
-            </Button>
+        {video?.publicPlaybackId ? (
+          <MuxPlayer playbackId={video?.publicPlaybackId} />
+        ) : (
+          <Skeleton className="aspect-video w-full rounded" />
+        )}
 
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>
-                  Click Download to start downloading your video
-                </AlertDialogTitle>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel onClick={() => setDownloadDialogOpen(false)}>
-                  Cancel
-                </AlertDialogCancel>
-                <AlertDialogAction
-                  onClick={handleDownloadClick}
-                  disabled={!downloadUrl}
-                >
-                  <a
-                    href={downloadUrl ?? "/"}
-                    download
-                    rel="noopener noreferrer"
-                    target="_blank"
-                  >
-                    Download
-                  </a>
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button variant="destructive" disabled={isDeleting}>
@@ -163,7 +89,6 @@ export function VideoPlayerSkeleton() {
       <CardContent className="space-y-4 p-6">
         <Skeleton className="aspect-video w-full" />
         <div className="mt-4 flex items-center justify-between">
-          <Skeleton className="h-9 w-28" />
           <Skeleton className="h-9 w-28" />
         </div>
       </CardContent>
