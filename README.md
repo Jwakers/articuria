@@ -36,6 +36,9 @@
 - [ ] Provide open ai with table topic audio for a better review
 - [ ] Generate transcript with open ai removing assembly ai from the project
 
+- [ ] Table topic report is quite generous, event for a totally shit video. Perhaps have it review duration in conjunction with what a normal table topic should be
+  - [ ] Feedback should only be given on topics longer than one minute?
+
 ## 2. New Features
 
 - Add Stripe

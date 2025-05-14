@@ -1,6 +1,5 @@
 import { getUserVideoById } from "@/app/server/db/queries";
 import { getUpdatedVideo } from "@/app/server/mux/mux-actions";
-import { StaticRenditionStatus } from "@/app/server/mux/types";
 import { currentUser } from "@clerk/nextjs/server";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
@@ -20,8 +19,7 @@ export default async function VideoPage({
   let muxVideo = await getUserVideoById(id);
   if (!muxVideo) return notFound();
 
-  const audioReady =
-    muxVideo.audioRenditionStatus === ("ready" satisfies StaticRenditionStatus);
+  const audioReady = muxVideo.audioRenditionStatus === "READY";
 
   if (
     !muxVideo.publicPlaybackId ||

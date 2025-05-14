@@ -1,17 +1,19 @@
 import { db } from "@/app/server/db";
 import mux from "@/app/server/mux/mux-client";
-import {
-  StaticRenditionStatus,
-  StaticRenditionWebhookPayload,
-} from "@/app/server/mux/types";
+import { StaticRenditionWebhookPayload } from "@/app/server/mux/types";
+import { parseStatus } from "@/app/server/mux/utils";
 import { UnwrapWebhookEvent } from "@mux/mux-node/resources/webhooks.mjs";
 
-const webhookSecret = process.env.MUX_WEBHOOK_SIGNING_SECRET;
+const webhookSecret = process.env.MUX_WEBHOOK_SIGNING_SECRET!;
+
+if (!webhookSecret) {
+  console.error("[MUX WEBHOOK] Missing signing secret");
+  throw new Error("MUX webhook signing secret not configured");
+}
 
 // Note must send a 2** status code or Mux will retry for 24hrs
 export async function POST(request: Request) {
   const rawBody = await request.clone().text();
-  const { data, type } = (await request.json()) as UnwrapWebhookEvent;
 
   try {
     mux.webhooks.verifySignature(rawBody, request.headers, webhookSecret);
@@ -23,6 +25,8 @@ export async function POST(request: Request) {
       status: 200,
     });
   }
+
+  const { data, type } = (await request.json()) as UnwrapWebhookEvent;
 
   console.log(`[MUX WEBHOOK] ${type} webhook event received`);
 
@@ -38,12 +42,12 @@ export async function POST(request: Request) {
       where: {
         id: data.passthrough,
         status: {
-          not: "ready",
+          not: "READY",
         },
       },
       data: {
         assetId: data.id,
-        status: data.status,
+        status: parseStatus(data.status),
         duration: data.duration,
         publicPlaybackId: data.playback_ids?.find(
           (item) => item.policy === "public",
@@ -59,7 +63,7 @@ export async function POST(request: Request) {
       },
       data: {
         assetId: data.id,
-        status: data.status,
+        status: parseStatus(data.status),
         duration: data.duration,
         publicPlaybackId: data.playback_ids?.find(
           (item) => item.policy === "public",
@@ -89,11 +93,11 @@ export async function POST(request: Request) {
         where: {
           id: asset?.passthrough,
           audioRenditionStatus: {
-            not: "ready" satisfies StaticRenditionStatus,
+            not: "READY",
           },
         },
         data: {
-          audioRenditionStatus: renditionData.status,
+          audioRenditionStatus: parseStatus(renditionData.status),
         },
       });
     } catch (error) {
@@ -123,7 +127,7 @@ export async function POST(request: Request) {
           id: asset?.passthrough,
         },
         data: {
-          audioRenditionStatus: renditionData.status,
+          audioRenditionStatus: parseStatus(renditionData.status),
         },
       });
     } catch (error) {

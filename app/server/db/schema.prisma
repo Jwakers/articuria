@@ -36,20 +36,28 @@ model TableTopic {
     themes     Theme[]
 }
 
+enum MuxProcessingStatus {
+    WAITING
+    READY
+    ERRORED
+}
+
 model MuxVideo {
-    id                   String      @id @default(cuid())
-    createdAt            DateTime    @default(now())
+    id                   String               @id @default(cuid())
+    createdAt            DateTime             @default(now())
     userId               String
     uploadId             String?
     assetId              String?
-    status               String?
+    status               MuxProcessingStatus?
     publicPlaybackId     String?
-    audioRenditionStatus String?
+    audioRenditionStatus MuxProcessingStatus?
     duration             Int?
-    tableTopic           TableTopic  @relation(fields: [tableTopicId], references: [id])
+    tableTopic           TableTopic           @relation(fields: [tableTopicId], references: [id])
     tableTopicId         Int
     transcript           Transcript?
     report               Report?
+
+    @@index([userId])
 }
 
 model Transcript {

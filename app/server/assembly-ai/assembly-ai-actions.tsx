@@ -2,10 +2,10 @@
 
 import { disfluencyData, userWithMetadata } from "@/lib/utils";
 import { currentUser } from "@clerk/nextjs/server";
+import { Prisma } from "@prisma/client";
 import { db } from "../db";
 import { getUserVideoById } from "../db/queries";
 import { getAudioRendition } from "../mux/mux-actions";
-import { StaticRenditionStatus } from "../mux/types";
 import { assemblyAi } from "./client";
 
 export async function getTranscriptionData(
@@ -13,11 +13,13 @@ export async function getTranscriptionData(
 ) {
   if (video?.transcript)
     return { data: null, error: "Transcript data already exists" };
-  if (video?.audioRenditionStatus !== ("ready" satisfies StaticRenditionStatus))
+  if (video?.audioRenditionStatus !== "READY")
     return { data: null, error: "Video data not finished processing" };
   if (!video.assetId) return { data: null, error: "Video missing asset ID" };
 
-  const { accountLimits } = userWithMetadata(await currentUser());
+  const { user, accountLimits } = userWithMetadata(await currentUser());
+
+  if (!user) return { data: null, error: "Unauthenticated" };
 
   if (!accountLimits?.tableTopicTranscription)
     return {
@@ -78,20 +80,26 @@ export async function getTranscriptionData(
           fillerWordCount,
         },
       });
-
       return { data, error: null };
-    } catch (error) {
-      console.error(error);
-      return {
-        data: null,
-        error: "There was an issue adding the transcript to the database",
-      };
+    } catch (err) {
+      if (
+        err instanceof Prisma.PrismaClientKnownRequestError &&
+        err.code === "P2002"
+      ) {
+        // P2002 is the error code for unique constraint violations
+        return {
+          data: null,
+          error: "A transcript for this video already exists",
+        };
+      }
+
+      throw err;
     }
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.error("[ASSEMBLY] Error generating transcript:", err);
     return {
       data: null,
-      error: "Unable to generate transcript. Please contact support",
+      error: "Failed to generate transcript. Please try again later.",
     };
   }
 }

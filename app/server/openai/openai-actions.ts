@@ -5,13 +5,11 @@ import { userWithMetadata } from "@/lib/utils";
 import { currentUser } from "@clerk/nextjs/server";
 import { TableTopic } from "@prisma/client";
 import { Transcript } from "assemblyai";
-import ky from "ky";
 import { zodTextFormat } from "openai/helpers/zod";
 import { z } from "zod";
 import { GenerateTopicOptions } from "../actions";
 import { db } from "../db";
 import { getUserVideoById } from "../db/queries";
-import { getAudioRendition } from "../mux/mux-actions";
 import client from "./client";
 
 const scoreSchema = z.object({
@@ -63,20 +61,21 @@ export async function generateTableTopicReport(videoId: string) {
 
     const systemInstruction = rules.join(" ");
 
-    if (!video.assetId) return { data: null, error: "Missing asset ID" };
-    const { audioRendition, playbackId, error } = await getAudioRendition(
-      video.assetId,
-    );
-
-    if (error) return { data: null, error };
-    if (!audioRendition || !playbackId)
-      return { data: null, error: "Missing audio data" };
-
-    const res = await ky(
-      `https://stream.mux.com/${playbackId.id}/${audioRendition.name}`,
-    );
-
     // Save audio rendition locally - could come in handy later
+
+    // if (!video.assetId) return { data: null, error: "Missing asset ID" };
+    // const { audioRendition, playbackId, error } = await getAudioRendition(
+    //   video.assetId,
+    // );
+
+    // if (error) return { data: null, error };
+    // if (!audioRendition || !playbackId)
+    //   return { data: null, error: "Missing audio data" };
+
+    // const res = await ky(
+    //   `https://stream.mux.com/${playbackId.id}/${audioRendition.name}`,
+    // );
+
     // const tempDir = os.tmpdir();
     // const buffer = await res.arrayBuffer();
     // const fileName = `${playbackId.id}-${audioRendition.name}`;

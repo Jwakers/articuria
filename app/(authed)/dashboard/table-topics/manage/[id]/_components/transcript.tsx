@@ -41,7 +41,7 @@ export default function Transcript({ video }: TranscriptProps) {
   const [transcript, setTranscript] = useState(video?.transcript);
   const [report, setReport] = useState(video?.report);
   const transcriptData = transcript?.data as TranscriptData | undefined;
-  const audioReady = video?.audioRenditionStatus === "ready";
+  const audioReady = video?.audioRenditionStatus === "READY";
 
   const handleGenerateTranscript = async () => {
     startTranscriptTransition(async () => {
@@ -355,7 +355,10 @@ function FillerWordReport({ transcript }: { transcript: Transcript }) {
   if (!transcript || !transcriptData) return null;
   if (!transcriptData?.text?.length) return null;
 
-  const data = useMemo(() => disfluencyData(transcriptData.text ?? ""), []);
+  const data = useMemo(
+    () => disfluencyData(transcriptData.text ?? ""),
+    [transcript],
+  );
   const fillerWords = Object.entries(data).map(([word, count]) => ({
     word,
     count,

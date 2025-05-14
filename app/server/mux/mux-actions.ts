@@ -8,6 +8,7 @@ import jwt from "jsonwebtoken";
 import { db } from "../db";
 import { getUserVideoById, getUserVideoCount } from "../db/queries";
 import mux from "./mux-client";
+import { parseStatus } from "./utils";
 
 const origin = `${process.env.NODE_ENV === "production" ? "https" : "http"}://${process.env.NEXT_PUBLIC_APP_URL}`;
 
@@ -29,7 +30,7 @@ export async function getUploadUrl({
 
   const id = randomUUID();
 
-  const data = db.$transaction(
+  const data = await db.$transaction(
     async (prisma) => {
       const upload = await mux.video.uploads.create({
         cors_origin: origin,
@@ -56,7 +57,7 @@ export async function getUploadUrl({
           userId: user.id,
           assetId: upload.asset_id,
           uploadId: upload.id,
-          status: upload.status,
+          status: parseStatus(upload.status),
           tableTopicId,
         },
       });
@@ -93,9 +94,9 @@ export async function getUploadData(uploadId: string) {
   }
 }
 
-export async function getUpdatedVideo(
-  muxVideo: Awaited<ReturnType<typeof getUserVideoById>>,
-): Promise<ReturnType<typeof getUserVideoById>> {
+type UserVideo = Awaited<ReturnType<typeof getUserVideoById>>;
+
+export async function getUpdatedVideo(muxVideo: UserVideo): Promise<UserVideo> {
   const user = await currentUser();
 
   if (!user?.id) throw new Error("User is not signed in");
@@ -118,14 +119,16 @@ export async function getUpdatedVideo(
         userId: user.id,
       },
       data: {
-        status: asset.status,
+        status: parseStatus(asset.status),
         assetId: asset.id,
         publicPlaybackId: asset?.playback_ids?.find(
           (item) => item.policy === "public",
         )?.id,
-        audioRenditionStatus: asset?.static_renditions?.files?.find(
-          (file) => file.resolution === "audio-only",
-        )?.status,
+        audioRenditionStatus: parseStatus(
+          asset?.static_renditions?.files?.find(
+            (file) => file.resolution === "audio-only",
+          )?.status,
+        ),
       },
       include: {
         transcript: true,
@@ -140,20 +143,22 @@ export async function getUpdatedVideo(
   const { asset, error } = await getVideoData(muxVideo.assetId);
   if (error) throw new Error(error);
 
-  const video = db.muxVideo.update({
+  const video = await db.muxVideo.update({
     where: {
       id: muxVideo.id,
     },
     data: {
       assetId: asset?.id,
-      status: asset?.status,
+      status: parseStatus(asset?.status),
       duration: asset?.duration,
       publicPlaybackId: asset?.playback_ids?.find(
         (item) => item.policy === "public",
       )?.id,
-      audioRenditionStatus: asset?.static_renditions?.files?.find(
-        (file) => file.resolution === "audio-only",
-      )?.status,
+      audioRenditionStatus: parseStatus(
+        asset?.static_renditions?.files?.find(
+          (file) => file.resolution === "audio-only",
+        )?.status,
+      ),
     },
     include: {
       transcript: true,
@@ -170,7 +175,7 @@ export async function deleteAsset(video: MuxVideo) {
     const user = await currentUser();
     if (!user?.id) throw new Error("User is not signed in");
 
-    db.$transaction(async (prisma) => {
+    await db.$transaction(async (prisma) => {
       if (!video?.assetId) throw new Error("Asset ID is not set");
 
       await prisma.muxVideo.delete({
