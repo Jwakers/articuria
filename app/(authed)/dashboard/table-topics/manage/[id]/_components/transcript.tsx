@@ -26,7 +26,7 @@ import { disfluencyData, userWithMetadata } from "@/lib/utils";
 import { useUser } from "@clerk/nextjs";
 import type { Transcript as TranscriptData } from "assemblyai";
 import { ArrowRight, Play } from "lucide-react";
-import { useEffect, useMemo, useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
 
 type Transcript = NonNullable<TranscriptProps["video"]>["transcript"] | null;
@@ -357,10 +357,7 @@ function FillerWordReport({ transcript }: { transcript: Transcript }) {
   if (!transcript || !transcriptData) return null;
   if (!transcriptData?.text?.length) return null;
 
-  const data = useMemo(
-    () => disfluencyData(transcriptData.text ?? ""),
-    [transcript],
-  );
+  const data = disfluencyData(transcriptData.text ?? "");
   const fillerWords = Object.entries(data).map(([word, count]) => ({
     word,
     count,

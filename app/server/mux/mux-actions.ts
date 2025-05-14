@@ -219,7 +219,7 @@ export async function getAudioRendition(assetId: string) {
   };
 }
 
-async function getVideoToken() {
+export async function getVideoToken() {
   const signingKeyId = process.env.MUX_SIGNING_KEY_ID;
   const signingSecret = process.env.MUX_SIGNING_KEY_SECRET;
 
