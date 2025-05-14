@@ -16,6 +16,7 @@ export async function getTranscriptionData(
   if (video?.audioRenditionStatus !== ("ready" satisfies StaticRenditionStatus))
     return { data: null, error: "Video data not finished processing" };
   if (!video.assetId) return { data: null, error: "Video missing asset ID" };
+
   const { accountLimits } = userWithMetadata(await currentUser());
 
   if (!accountLimits?.tableTopicTranscription)
@@ -60,7 +61,7 @@ export async function getTranscriptionData(
         ? Math.round((words.length / speakingDuration) * 60000) // Convert ms to minutes
         : 0;
 
-    const data = disfluencyData(words?.map((item) => item.text) ?? []);
+    const data = disfluencyData(transcript.text ?? "");
     const fillerWords = Object.entries(data).map(([word, count]) => ({
       word,
       count,

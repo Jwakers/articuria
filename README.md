@@ -32,7 +32,9 @@
   - [ ] Test this by uploading a longer video.
   - [ ] Show progress indicator in toast.promise.
 - [ ] Watch data base for changes on the manage video page [id]. This should prevent the need for refreshing. Another example is the go to video link on the recorder page, this should watch for changes and update accordingly
-- [ ] Calculate average score by summing individual scores and remove it from teh gemini api request
+- [x] Calculate average score by summing individual scores and remove it from teh gemini api request
+- [ ] Provide open ai with table topic audio for a better review
+- [ ] Generate transcript with open ai removing assembly ai from the project
 
 ## 2. New Features
 
@@ -58,18 +60,16 @@
   - [x] Add all preview and production keys to vercel
   - [x] Launch
 
-- Refactor video provider to use MUX over Cloudflare stream
+- [ ] Free users should be able to generate 1 feedback report and transcription for free
+- [ ] When a video is saved a notification should show them they can go to the video and generate feedback for it if their account allows
 
 - AI-Generated Table Topics:
 
   - [x] Generate topic
   - [x] UI for difficulty and theme options (premium users only).
-  - [ ] Performance review (premium users only. Tools: Speechmatics, AssemblyAI).=
-    - [ ] UI.
-    - [ ] API
-      - [ ] Speech pace analysis
-      - [ ] Filler word detection ("um", "uh", "like")
-      - [ ] Speaking time measurement
+  - [x] Performance review (premium users only. Tools: Speechmatics, AssemblyAI).=
+    - [x] UI.
+    - [x] API
 
 - Progress visualisation/chart/graph based on table topic feedback and transcript data on the user
   - [ ] dashboard

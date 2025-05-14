@@ -1,7 +1,5 @@
 "use client";
 
-//  Move all blocks into separate components
-
 import { getTranscriptionData } from "@/app/server/assembly-ai/assembly-ai-actions";
 import { getUserVideoById } from "@/app/server/db/queries";
 import { generateTableTopicReport } from "@/app/server/openai/openai-actions";
@@ -31,9 +29,6 @@ import { ArrowRight, Play } from "lucide-react";
 import { useEffect, useMemo, useState, useTransition } from "react";
 import { toast } from "sonner";
 
-// NOTES
-// Users can generate 1 feedback report for free
-// When a video is saved a notification should show them they can go to the video and generate feedback for it if their account allows
 type Transcript = NonNullable<TranscriptProps["video"]>["transcript"] | null;
 type TranscriptProps = {
   video: Awaited<ReturnType<typeof getUserVideoById>>;
@@ -93,7 +88,6 @@ export default function Transcript({ video }: TranscriptProps) {
     player.scrollIntoView({
       behavior: "smooth",
     });
-    console.log(player, timestamp);
   };
 
   useEffect(() => {
@@ -359,13 +353,9 @@ function ReportTable({
 function FillerWordReport({ transcript }: { transcript: Transcript }) {
   const transcriptData = transcript?.data as TranscriptData | undefined;
   if (!transcript || !transcriptData) return null;
-  const words = transcriptData?.words;
-  if (!words?.length) return null;
+  if (!transcriptData?.text?.length) return null;
 
-  const data = useMemo(
-    () => disfluencyData(words.map((item) => item.text)),
-    [],
-  );
+  const data = useMemo(() => disfluencyData(transcriptData.text ?? ""), []);
   const fillerWords = Object.entries(data).map(([word, count]) => ({
     word,
     count,

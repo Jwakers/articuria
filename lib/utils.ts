@@ -97,8 +97,8 @@ export function price(value: number) {
   return GBPound.format(value);
 }
 
-export function disfluencyData(words: string[]) {
-  // Refactor to find these values in full sentances
+export function disfluencyData(text: string) {
+  const words = text.split(" ");
   const data = words.reduce(
     (acc, word) => {
       const cleanedWord = word

@@ -5,11 +5,8 @@ import { userWithMetadata } from "@/lib/utils";
 import { currentUser } from "@clerk/nextjs/server";
 import { TableTopic } from "@prisma/client";
 import { Transcript } from "assemblyai";
-import * as fs from "fs";
 import ky from "ky";
 import { zodTextFormat } from "openai/helpers/zod";
-import os from "os";
-import path from "path";
 import { z } from "zod";
 import { GenerateTopicOptions } from "../actions";
 import { db } from "../db";
@@ -79,19 +76,15 @@ export async function generateTableTopicReport(videoId: string) {
       `https://stream.mux.com/${playbackId.id}/${audioRendition.name}`,
     );
 
-    const tempDir = os.tmpdir();
-    const buffer = await res.arrayBuffer();
-    const fileName = `${playbackId.id}-${audioRendition.name}`;
-    const filePath = path.join(tempDir, fileName);
-    await fs.promises.writeFile(filePath, Buffer.from(buffer));
+    // Save audio rendition locally - could come in handy later
+    // const tempDir = os.tmpdir();
+    // const buffer = await res.arrayBuffer();
+    // const fileName = `${playbackId.id}-${audioRendition.name}`;
+    // const filePath = path.join(tempDir, fileName);
+    // await fs.promises.writeFile(filePath, Buffer.from(buffer));
 
     const promptText = `
     Please generate a comprehensive feedback report for the following table topic transcript, taking into account all the instructions provided: ${JSON.stringify(transcriptData.text)}.`;
-
-    // const file = await client.files.create({
-    //   file: fs.createReadStream(filePath),
-    //   purpose: "user_data",
-    // });
 
     const response = await client.responses.parse({
       model: "o4-mini",
@@ -103,10 +96,6 @@ export async function generateTableTopicReport(videoId: string) {
               type: "input_text",
               text: systemInstruction,
             },
-            // {
-            //   type: "input_file",
-            //   file_id: file.id,
-            // },
           ],
         },
         {
@@ -121,8 +110,6 @@ export async function generateTableTopicReport(videoId: string) {
 
     try {
       const data = reportSchema.parse(JSON.parse(response.output_text));
-
-      // Define which keys to look for scores in
       const scoreCategories: (keyof ReportSchema)[] = [
         "clarity",
         "creativity",
@@ -135,8 +122,6 @@ export async function generateTableTopicReport(videoId: string) {
       const scores = scoreCategories.map(
         (category) => (data[category] as ReportSchema["clarity"]).score,
       );
-
-      // Calculate the average
       const total = scores.reduce((sum, score) => sum + score, 0);
       const average = total / scores.length;
       const averageScore = parseFloat(average.toFixed(1));
@@ -169,7 +154,7 @@ export async function generateTableTopicReport(videoId: string) {
         error: null,
       };
     } catch (parseError) {
-      console.error("Error parsing Gemini API response:", parseError);
+      console.error("Error parsing OpenAI response:", parseError);
       console.error("Problematic Response Text:", response.text);
       return { data: null, error: "Error parsing the feedback response" };
     }

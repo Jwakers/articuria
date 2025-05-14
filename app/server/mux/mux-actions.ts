@@ -6,7 +6,7 @@ import { MuxVideo, TableTopic } from "@prisma/client";
 import { randomUUID } from "crypto";
 import jwt from "jsonwebtoken";
 import { db } from "../db";
-import { getUserVideoById } from "../db/queries";
+import { getUserVideoById, getUserVideoCount } from "../db/queries";
 import mux from "./mux-client";
 
 const origin = `${process.env.NODE_ENV === "production" ? "https" : "http"}://${process.env.NEXT_PUBLIC_APP_URL}`;
@@ -18,9 +18,14 @@ export async function getUploadUrl({
   title: string;
   tableTopicId: TableTopic["id"];
 }) {
-  const { user } = userWithMetadata(await currentUser());
+  const { user, accountLimits } = userWithMetadata(await currentUser());
   if (!user) throw new Error("Not signed in");
   if (!origin) throw new Error("Origin is not defined");
+
+  const videoCount = await getUserVideoCount();
+
+  if (videoCount >= accountLimits.tableTopicLimit)
+    throw new Error("Video upload limit reached for this account");
 
   const id = randomUUID();
 
@@ -63,7 +68,6 @@ export async function getUploadUrl({
     },
   );
 
-  // The server will need additional protections like account limits
   return data;
 }
 
@@ -183,7 +187,6 @@ export async function deleteAsset(video: MuxVideo) {
   }
 }
 
-// TODO: Cache this response
 export async function getAudioRendition(assetId: string) {
   const asset = await mux.video.assets.retrieve(assetId);
   const playbackId = await mux.video.assets.createPlaybackId(assetId ?? "", {
