@@ -96,7 +96,7 @@ export default function Transcript({ video }: TranscriptProps) {
     startReportTransition(async () => {
       await generateReport();
     });
-  }, [report, transcript]);
+  }, [report, transcript, generateReport, reportPending]);
 
   if (
     !accountLimits?.tableTopicReport ||

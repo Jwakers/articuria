@@ -1,7 +1,7 @@
 import { getUploadUrl } from "@/app/server/mux/mux-actions";
 import { userWithMetadata, validateFile } from "@/lib/utils";
 import { useUser } from "@clerk/nextjs";
-import { MuxVideo, Video } from "@prisma/client";
+import { MuxVideo } from "@prisma/client";
 import ky from "ky";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -10,7 +10,7 @@ export const useMediaRecorder = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
-  const [savedVideoId, setSavedVideoId] = useState<Video["id"] | null>(null);
+  const [savedVideoId, setSavedVideoId] = useState<MuxVideo["id"] | null>(null);
 
   const [recordedBlob, setRecordedBlob] = useState<Blob | null>(null);
   const [recordedVideoURL, setRecordedVideoURL] = useState<string | null>(null);

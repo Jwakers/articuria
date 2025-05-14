@@ -24,6 +24,7 @@
 - [ ] Add loading UI when changing pages on the video management route
 - [ ] Video length should be limited based on tier before saving
 - [ ] Rate limiting api routes.
+- [ ] Remove "Coming soon" from transcript and report features (including in stripe dashboard)
 - [ ] Move email templates to a separate file for better maintainability.
 - [ ] Update favicon.
 - [ ] add (create) logo to Stripe branding section
