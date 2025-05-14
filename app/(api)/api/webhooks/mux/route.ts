@@ -122,7 +122,7 @@ export async function POST(request: Request) {
         return new Response("Webhook received");
 
       // updateMany to avoid prisma throwing an error if it cant find given the where condition
-      await db.muxVideo.update({
+      await db.muxVideo.updateMany({
         where: {
           id: asset?.passthrough,
         },

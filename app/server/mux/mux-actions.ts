@@ -242,4 +242,6 @@ export async function getVideoToken() {
 
   // value used with mux player
   // <MuxPlayer tokens={{ playback: token }} playbackId="" />
+
+  return token;
 }
