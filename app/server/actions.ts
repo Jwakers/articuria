@@ -5,7 +5,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import { Difficulty, Theme } from "@prisma/client";
 import { db } from "./db";
 import { createAiTableTopic } from "./db/queries";
-import { generateTableTopic } from "./google-ai";
+import { generateTableTopic } from "./openai/openai-actions";
 
 export type GenerateTopicOptions = {
   difficulty: Difficulty | undefined;

@@ -31,6 +31,8 @@
 - [ ] Move save logic out of server actions and into an API route. There is an adjustable limit on server actions. See next.config but to be safe we should pass this data to a dedicated endpoint. This should also allow us to properly validate the file type on the server.
   - [ ] Test this by uploading a longer video.
   - [ ] Show progress indicator in toast.promise.
+- [ ] Watch data base for changes on the manage video page [id]. This should prevent the need for refreshing. Another example is the go to video link on the recorder page, this should watch for changes and update accordingly
+- [ ] Calculate average score by summing individual scores and remove it from teh gemini api request
 
 ## 2. New Features
 

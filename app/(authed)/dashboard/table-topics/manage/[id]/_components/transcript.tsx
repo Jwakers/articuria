@@ -44,7 +44,13 @@ AI returns a topic-specific review focused on:
 
 import { getTranscriptionData } from "@/app/server/assembly-ai/assembly-ai-actions";
 import { getUserVideoById } from "@/app/server/db/queries";
-import { generateTopicReport } from "@/app/server/google-ai";
+import { generateTableTopicReport } from "@/app/server/openai/openai-actions";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Spinner from "@/components/ui/spinner";
@@ -59,7 +65,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { disfluencyData } from "@/lib/utils";
-import type { Transcript as TransciptData } from "assemblyai";
+import type { Transcript as TranscriptData } from "assemblyai";
 import { ArrowRight, Play } from "lucide-react";
 import { useEffect, useMemo, useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -78,7 +84,9 @@ export default function Transcript({ video }: TranscriptProps) {
 
   const [transcript, setTranscript] = useState(video?.transcript);
   const [report, setReport] = useState(video?.report);
-  const transcriptData = transcript?.data as TransciptData | undefined;
+  const transcriptData = transcript?.data as TranscriptData | undefined;
+  const audioReady = video?.audioRenditionStatus === "ready";
+  console.log(video);
 
   const handleGenerateTranscript = async () => {
     startTranscriptTransition(async () => {
@@ -94,17 +102,40 @@ export default function Transcript({ video }: TranscriptProps) {
   };
 
   const generateReport = async () => {
+    // TODO: move to open AI for the report
+    // The gemini schema is frequently wrong.
     if (!video?.id) {
       toast.error("No video ID");
       return;
     }
 
-    const { data, error } = await generateTopicReport(video.id);
+    const { data, error } = await generateTableTopicReport(video.id);
     if (error) {
       toast.error(error);
       return;
     }
     setReport(data);
+  };
+
+  const getPlayer = () => {
+    return document.querySelector<HTMLVideoElement>(
+      `[playback-id="${video?.publicPlaybackId}"]`,
+    );
+  };
+
+  const playVideoFrom = (timestamp: number) => {
+    const player = getPlayer();
+    if (!player) {
+      console.warn("Unable to find player");
+      return;
+    }
+
+    player.currentTime = timestamp;
+    player.play();
+    player.scrollIntoView({
+      behavior: "smooth",
+    });
+    console.log(player, timestamp);
   };
 
   useEffect(() => {
@@ -124,7 +155,12 @@ export default function Transcript({ video }: TranscriptProps) {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        {!transcript ? (
+        {!report && !audioReady ? (
+          <div className="flex items-center gap-2 text-muted-foreground">
+            <span>Processing audio, please check back shorty</span>
+          </div>
+        ) : null}
+        {!transcript && audioReady ? (
           <div className="space-y-2">
             <p className="text-muted-foreground">
               Here you can generate a transcript and feedback on your table
@@ -144,6 +180,8 @@ export default function Transcript({ video }: TranscriptProps) {
 
         {transcript ? (
           <div className="space-y-4">
+            <ReportTable report={report ?? null} />
+
             {transcript && !report && reportPending ? (
               <div className="flex items-center gap-2 text-muted-foreground">
                 <span>Generating report...</span>
@@ -166,7 +204,7 @@ export default function Transcript({ video }: TranscriptProps) {
                           <button
                             className="group flex w-full items-center justify-between gap-1"
                             type="button"
-                            // onClick={() => setPlayhead(item.start / 1000)}
+                            onClick={() => playVideoFrom(item.start / 1000)}
                           >
                             <span className="text-xs text-muted-foreground">
                               {(item.start / 1000).toFixed(2)}s
@@ -186,65 +224,6 @@ export default function Transcript({ video }: TranscriptProps) {
             </div>
             <GeneralTable transcript={transcript ?? null} />
             <FillerWordReport transcript={transcript ?? null} />
-            {report ? (
-              <div className="prose">
-                <div className="text-2xl font-medium">Report</div>
-                <p className="text-xl font-medium">Short summary</p>
-                <p>{report.shortSummary}</p>
-
-                <div>
-                  <p className="text-xl font-medium">Creativity</p>
-                  <p>{report.creativity}</p>
-                  <p>Score: {report.creativityScore}</p>
-                </div>
-                <div>
-                  <p className="text-xl font-medium">Clarity</p>
-                  <p>{report.clarity}</p>
-                  <p>Score: {report.clarityScore}</p>
-                </div>
-                <div>
-                  <p className="text-xl font-medium">Engagement</p>
-                  <p>{report.engagement}</p>
-                  <p>Score: {report.engagementScore}</p>
-                </div>
-                <div>
-                  <p className="text-xl font-medium">Pacing</p>
-                  <p>{report.pacing}</p>
-                  <p>Score: {report.pacingScore}</p>
-                </div>
-                <div>
-                  <p className="text-xl font-medium">Language</p>
-                  <p>{report.language}</p>
-                  <p>Score: {report.languageScore}</p>
-                </div>
-                <div>
-                  <p className="text-xl font-medium">Tone</p>
-                  <p>{report.tone}</p>
-                  <p>Score: {report.toneScore}</p>
-                </div>
-                <p>Average score: {report.averageScore}</p>
-                <div>
-                  <div className="text-xl font-medium">Recommendations</div>
-                  <ul>
-                    {report.recommendations?.map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
-                </div>
-                <div>
-                  <div className="text-xl font-medium">Commendations</div>
-                  <ul>
-                    {report.commendations?.map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
-                </div>
-                <div>
-                  <p className="text-xl font-medium">Full summary</p>
-                  <p>{report.summary}</p>
-                </div>
-              </div>
-            ) : null}
           </div>
         ) : null}
       </CardContent>
@@ -253,7 +232,7 @@ export default function Transcript({ video }: TranscriptProps) {
 }
 
 function GeneralTable({ transcript }: { transcript: Transcript }) {
-  const transcriptData = transcript?.data as TransciptData | undefined;
+  const transcriptData = transcript?.data as TranscriptData | undefined;
   if (!transcript || !transcriptData) return null;
 
   return (
@@ -282,8 +261,128 @@ function GeneralTable({ transcript }: { transcript: Transcript }) {
   );
 }
 
+function ReportTable({
+  report,
+}: {
+  report: NonNullable<TranscriptProps["video"]>["report"];
+}) {
+  if (!report) return null;
+
+  return (
+    <section>
+      <div className="prose mx-auto text-center">
+        <div className="text-2xl font-medium">Report</div>
+        <p className="text-xl font-medium">Short summary</p>
+        <p className="text-balance">{report.shortSummary}</p>
+      </div>
+
+      <Accordion type="single" collapsible>
+        <AccordionItem value="creativity">
+          <AccordionTrigger className="text-lg font-medium">
+            <div className="flex w-full items-center gap-4">
+              <span>Creativity</span>
+              <span className="flex size-6 items-center justify-center rounded-full bg-muted text-sm font-bold text-muted-foreground">
+                {report.creativityScore}
+              </span>
+            </div>
+          </AccordionTrigger>
+          <AccordionContent className="prose">
+            <p>{report.creativity}</p>
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="clarity">
+          <AccordionTrigger className="text-lg font-medium">
+            <div className="flex w-full items-center gap-4">
+              <span>Clarity</span>
+              <span className="flex size-6 items-center justify-center rounded-full bg-muted text-sm font-bold text-muted-foreground">
+                {report.clarityScore}
+              </span>{" "}
+            </div>
+          </AccordionTrigger>
+          <AccordionContent className="prose">
+            <p>{report.clarity}</p>
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="engagement">
+          <AccordionTrigger className="text-lg font-medium">
+            <div className="flex w-full items-center gap-4">
+              <span>Engagement</span>
+              <span className="flex size-6 items-center justify-center rounded-full bg-muted text-sm font-bold text-muted-foreground">
+                {report.engagementScore}
+              </span>{" "}
+            </div>
+          </AccordionTrigger>
+          <AccordionContent className="prose">
+            <p>{report.engagement}</p>
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="pacing">
+          <AccordionTrigger className="text-lg font-medium">
+            <div className="flex w-full items-center gap-4">
+              <span>Pacing</span>
+              <span className="flex size-6 items-center justify-center rounded-full bg-muted text-sm font-bold text-muted-foreground">
+                {report.pacingScore}
+              </span>{" "}
+            </div>
+          </AccordionTrigger>
+          <AccordionContent className="prose">
+            <p>{report.pacing}</p>
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="language">
+          <AccordionTrigger className="text-lg font-medium">
+            <div className="flex w-full items-center gap-4">
+              <span>Language</span>
+              <span className="flex size-6 items-center justify-center rounded-full bg-muted text-sm font-bold text-muted-foreground">
+                {report.languageScore}
+              </span>{" "}
+            </div>
+          </AccordionTrigger>
+          <AccordionContent className="prose">
+            <p>{report.language}</p>
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="tone">
+          <AccordionTrigger className="text-lg font-medium">
+            <div className="flex w-full items-center gap-4">
+              <span>Tone</span>
+              <span className="flex size-6 items-center justify-center rounded-full bg-muted text-sm font-bold text-muted-foreground">
+                {report.toneScore}
+              </span>{" "}
+            </div>
+          </AccordionTrigger>
+          <AccordionContent className="prose">
+            <p>{report.tone}</p>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
+      <p className="my-4">
+        Average score: <span className="font-bold">{report.averageScore}</span>
+      </p>
+      <div className="prose">
+        <div>
+          <div className="text-xl font-medium">Recommendations</div>
+          <ul>
+            {report.recommendations?.map((item) => <li key={item}>{item}</li>)}
+          </ul>
+        </div>
+        <div>
+          <div className="text-xl font-medium">Commendations</div>
+          <ul>
+            {report.commendations?.map((item) => <li key={item}>{item}</li>)}
+          </ul>
+        </div>
+        <div>
+          <p className="text-xl font-medium">Full summary</p>
+          <p>{report.summary}</p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function FillerWordReport({ transcript }: { transcript: Transcript }) {
-  const transcriptData = transcript?.data as TransciptData | undefined;
+  const transcriptData = transcript?.data as TranscriptData | undefined;
   if (!transcript || !transcriptData) return null;
   const words = transcriptData?.words;
   if (!words?.length) return null;
@@ -298,7 +397,6 @@ function FillerWordReport({ transcript }: { transcript: Transcript }) {
   }));
 
   // TODO - on hover these words should be highlighted in the table
-
   return (
     <Table className="mt-4">
       <TableHeader>

@@ -41,7 +41,7 @@ import { DIFFICULTY_MAP, ROUTES, THEME_MAP } from "@/lib/constants";
 import { cn, userWithMetadata } from "@/lib/utils";
 import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Difficulty, Theme, Video } from "@prisma/client";
+import { Difficulty, MuxVideo, Theme } from "@prisma/client";
 import { Download, HelpCircle, Save, Trash2 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
@@ -71,7 +71,7 @@ const formSchema = z.object({
 export default function TableTopicsRecorder() {
   const [currentTopic, setCurrentTopic] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
-  const topicId = useRef<Video["tableTopicId"] | null>(null);
+  const topicId = useRef<MuxVideo["tableTopicId"] | null>(null);
   const [countdown, setCountdown] = useState<number | null>(null);
   const { accountLimits } = userWithMetadata(useUser().user);
   const form = useForm<z.infer<typeof formSchema>>({

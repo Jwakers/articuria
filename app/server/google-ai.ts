@@ -1,5 +1,7 @@
 "use server";
 
+// TODO: remove google ai
+
 import { THEME_MAP } from "@/lib/constants";
 import { createPartFromUri, GoogleGenAI, Schema, Type } from "@google/genai";
 import { TableTopic } from "@prisma/client";
@@ -162,7 +164,7 @@ export async function generateTopicReport(videoId: string) {
     if (!audioUpload.uri || !audioUpload.mimeType)
       return { data: null, error: "Unable to upload audio" };
 
-    const promptText = `Please generate a comprehensive feedback report for the following table topic transcript, taking into account all the instructions provided. Audio has also been provided so please consider this in your review: ${JSON.stringify(transcriptData.text)}. Ensure that the response is a JSON object conforming to the specified schema, and all values are present.`;
+    const promptText = `Please generate a comprehensive feedback report for the following table topic transcript, taking into account all the instructions provided. Audio has also been provided so please consider this in your review: ${JSON.stringify(transcriptData.text)}.`;
 
     const response = await ai.models.generateContent({
       model: "gemini-2.0-flash",
