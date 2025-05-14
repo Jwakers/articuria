@@ -140,7 +140,9 @@ export default function Transcript({ video }: TranscriptProps) {
               disabled={transcriptPending}
             >
               <span>
-                {!transcriptPending ? "Generate feedback" : "Generating..."}
+                {!transcriptPending
+                  ? "Generate transcript and feedback"
+                  : "Generating..."}
               </span>
               {!transcriptPending ? <ArrowRight /> : <Spinner />}
             </Button>

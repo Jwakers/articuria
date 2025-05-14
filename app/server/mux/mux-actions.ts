@@ -7,7 +7,7 @@ import { randomUUID } from "crypto";
 import jwt from "jsonwebtoken";
 import { db } from "../db";
 import { getUserVideoById, getUserVideoCount } from "../db/queries";
-import mux from "./mux-client";
+import mux from "./client";
 import { parseStatus } from "./utils";
 
 const origin = `${process.env.NODE_ENV === "production" ? "https" : "http"}://${process.env.NEXT_PUBLIC_APP_URL}`;

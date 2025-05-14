@@ -31,8 +31,8 @@
 - [ ] Move save logic out of server actions and into an API route. There is an adjustable limit on server actions. See next.config but to be safe we should pass this data to a dedicated endpoint. This should also allow us to properly validate the file type on the server.
   - [ ] Test this by uploading a longer video.
   - [ ] Show progress indicator in toast.promise.
-- [ ] Watch data base for changes on the manage video page [id]. This should prevent the need for refreshing. Another example is the go to video link on the recorder page, this should watch for changes and update accordingly
-- [x] Calculate average score by summing individual scores and remove it from teh gemini api request
+- [ ] Watch database for changes on the manage video page [id]. This should prevent the need for refreshing. Another example is the go to video link on the recorder page, this should watch for changes and update accordingly
+- [x] Calculate average score by summing individual scores and remove it from the openai api request
 - [ ] Provide open ai with table topic audio for a better review
 - [ ] Generate transcript with open ai removing assembly ai from the project
 
@@ -70,7 +70,7 @@
 
   - [x] Generate topic
   - [x] UI for difficulty and theme options (premium users only).
-  - [x] Performance review (premium users only. Tools: Speechmatics, AssemblyAI).=
+  - [x] Performance review (premium users only. Tools: Speechmatics, AssemblyAI).
     - [x] UI.
     - [x] API
 
@@ -86,7 +86,7 @@
 | Radar Chart – AI Score Breakdown     | AI review scores (clarity, tone, engagement)                          | For detailed per-speech feedback   |
 | Stacked Area Chart – Time Allocation | e.g., sentiment over time per transcript                              | Great for showing tone shifts      |
 
-- Enhance AI text feedback by passing the audio directly a suitable tool
+- Enhance AI text feedback by passing the audio directly to a suitable tool
 
 - Speech helper:
 

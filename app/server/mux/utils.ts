@@ -13,16 +13,15 @@ export function parseStatus(
     | "skipped"
     | undefined,
 ): MuxProcessingStatus {
-  let status: MuxProcessingStatus = "WAITING";
-  if (["preparing", "waiting", undefined].includes(status)) status = "WAITING";
-  if (currentStatus === "ready" || currentStatus === "asset_created")
-    status = "READY";
+  if (["preparing", "waiting", undefined].includes(currentStatus))
+    return "WAITING";
+  if (["ready", "asset_created"].includes(currentStatus ?? "")) return "READY";
   if (
     ["cancelled", "timed_out", "errored", "skipped"].includes(
       currentStatus ?? "",
     )
   )
-    status = "ERRORED";
+    return "ERRORED";
 
-  return status;
+  return "WAITING";
 }

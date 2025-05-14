@@ -4,7 +4,7 @@ import { ROUTES } from "@/lib/constants";
 import { userWithMetadata } from "@/lib/utils";
 import { currentUser } from "@clerk/nextjs/server";
 import type Stripe from "stripe";
-import { stripe } from "./stripe-client";
+import { stripe } from "./client";
 import { syncStripeDataToClerk } from "./sync-stripe";
 
 export async function generateStripeCheckout() {

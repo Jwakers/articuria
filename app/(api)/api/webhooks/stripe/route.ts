@@ -1,4 +1,4 @@
-import { stripe } from "@/app/server/stripe/stripe-client";
+import { stripe } from "@/app/server/stripe/client";
 import { syncStripeDataToClerk } from "@/app/server/stripe/sync-stripe";
 import { tryCatch } from "@/lib/utils";
 import { headers } from "next/headers";

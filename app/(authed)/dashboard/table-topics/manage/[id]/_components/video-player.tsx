@@ -21,7 +21,6 @@ import { ROUTES } from "@/lib/constants";
 import MuxPlayer from "@mux/mux-player-react";
 import { Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useRef } from "react";
 
 type VideoPlayerProps = {
   video: Awaited<ReturnType<typeof getUserVideoById>>;
@@ -30,7 +29,6 @@ type VideoPlayerProps = {
 export default function VideoPlayer({ video }: VideoPlayerProps) {
   const router = useRouter();
   const { isDeleting, deleteVideo } = useManageVideo({ video });
-  const playerRef = useRef(null);
 
   const handleDelete = async () => {
     await deleteVideo({
@@ -47,7 +45,7 @@ export default function VideoPlayer({ video }: VideoPlayerProps) {
       </CardHeader>
       <CardContent className="space-y-4 p-6">
         {video?.publicPlaybackId ? (
-          <MuxPlayer playbackId={video?.publicPlaybackId} ref={playerRef} />
+          <MuxPlayer playbackId={video?.publicPlaybackId} />
         ) : (
           <Skeleton className="aspect-video w-full rounded" />
         )}

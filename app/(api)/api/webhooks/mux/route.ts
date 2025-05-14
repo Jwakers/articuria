@@ -1,5 +1,5 @@
 import { db } from "@/app/server/db";
-import mux from "@/app/server/mux/mux-client";
+import mux from "@/app/server/mux/client";
 import { StaticRenditionWebhookPayload } from "@/app/server/mux/types";
 import { parseStatus } from "@/app/server/mux/utils";
 import { UnwrapWebhookEvent } from "@mux/mux-node/resources/webhooks.mjs";
