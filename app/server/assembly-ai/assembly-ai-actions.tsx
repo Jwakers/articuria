@@ -1,11 +1,12 @@
 "use server";
 
-import { disfluencyData } from "@/lib/utils";
+import { disfluencyData, userWithMetadata } from "@/lib/utils";
+import { currentUser } from "@clerk/nextjs/server";
 import { db } from "../db";
 import { getUserVideoById } from "../db/queries";
 import { getAudioRendition } from "../mux/mux-actions";
 import { StaticRenditionStatus } from "../mux/types";
-import { assemblyAi } from "./assembly-ai-client";
+import { assemblyAi } from "./client";
 
 export async function getTranscriptionData(
   video: NonNullable<Awaited<ReturnType<typeof getUserVideoById>>>,
@@ -15,6 +16,13 @@ export async function getTranscriptionData(
   if (video?.audioRenditionStatus !== ("ready" satisfies StaticRenditionStatus))
     return { data: null, error: "Video data not finished processing" };
   if (!video.assetId) return { data: null, error: "Video missing asset ID" };
+  const { accountLimits } = userWithMetadata(await currentUser());
+
+  if (!accountLimits?.tableTopicTranscription)
+    return {
+      data: null,
+      error: "You do not have permission to generate a transcript",
+    };
 
   const { audioRendition, playbackId, error } = await getAudioRendition(
     video.assetId,

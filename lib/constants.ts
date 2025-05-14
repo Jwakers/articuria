@@ -24,6 +24,8 @@ export const ACCOUNT_LIMITS: Record<
   {
     tableTopicLimit: number;
     videoSizeLimit: number;
+    tableTopicTranscription: boolean;
+    tableTopicReport: boolean;
     tableTopicOptions: {
       difficulty: boolean;
       theme: boolean;
@@ -32,6 +34,8 @@ export const ACCOUNT_LIMITS: Record<
 > = {
   free: {
     tableTopicLimit: 5,
+    tableTopicTranscription: false,
+    tableTopicReport: false,
     videoSizeLimit: convertMegabytesToBytes(10), // mb
     tableTopicOptions: {
       difficulty: false,
@@ -40,6 +44,8 @@ export const ACCOUNT_LIMITS: Record<
   },
   pro: {
     tableTopicLimit: 50,
+    tableTopicTranscription: true,
+    tableTopicReport: true,
     videoSizeLimit: convertMegabytesToBytes(25), // mb
     tableTopicOptions: {
       difficulty: true,

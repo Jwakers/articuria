@@ -1,6 +1,8 @@
 "use server";
 
 import { THEME_MAP } from "@/lib/constants";
+import { userWithMetadata } from "@/lib/utils";
+import { currentUser } from "@clerk/nextjs/server";
 import { TableTopic } from "@prisma/client";
 import { Transcript } from "assemblyai";
 import * as fs from "fs";
@@ -36,6 +38,14 @@ const reportSchema = z.object({
 type ReportSchema = z.infer<typeof reportSchema>;
 
 export async function generateTableTopicReport(videoId: string) {
+  const { accountLimits } = userWithMetadata(await currentUser());
+
+  if (!accountLimits?.tableTopicReport)
+    return {
+      data: null,
+      error: "You do not have permission to generate a report",
+    };
+
   const video = await getUserVideoById(videoId);
 
   if (!video?.transcript?.data)
@@ -54,7 +64,6 @@ export async function generateTableTopicReport(videoId: string) {
       `Please offer both constructive feedback for improvement and commendations for what was done well, all while using British English (en-GB).`,
     ];
 
-    // TODO logic to check user permissions or if they have used their one free report yet
     const systemInstruction = rules.join(" ");
 
     if (!video.assetId) return { data: null, error: "Missing asset ID" };

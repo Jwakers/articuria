@@ -31,9 +31,6 @@ export default async function VideoPage({
     muxVideo = await getUpdatedVideo(muxVideo);
   }
 
-  // TODO: Format feedback more effectively and place above the transcript
-  // TODO: Add playhead feature to the transcript
-
   return (
     <Suspense fallback={<VideoPlayerSkeleton />}>
       <div className="space-y-2">
