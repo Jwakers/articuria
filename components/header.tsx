@@ -39,10 +39,10 @@ export function Header() {
               <li className="flex gap-2">
                 <SignedOut>
                   <Button variant="ghost" asChild>
-                    <SignInButton />
+                    <SignInButton mode="modal" />
                   </Button>
                   <Button asChild>
-                    <SignUpButton />
+                    <SignUpButton mode="modal" />
                   </Button>
                 </SignedOut>
                 <SignedIn>
