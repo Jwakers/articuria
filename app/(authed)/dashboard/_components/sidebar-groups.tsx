@@ -53,9 +53,9 @@ export function SidebarMain() {
                   <SidebarMenuSubItem className="w-full">
                     <SidebarMenuButton
                       asChild
-                      isActive={
-                        pathname === ROUTES.dashboard.tableTopics.record
-                      }
+                      isActive={pathname.startsWith(
+                        ROUTES.dashboard.tableTopics.record,
+                      )}
                     >
                       <Link
                         href={ROUTES.dashboard.tableTopics.record}
@@ -68,9 +68,9 @@ export function SidebarMain() {
                   <SidebarMenuSubItem>
                     <SidebarMenuButton
                       asChild
-                      isActive={
-                        pathname === ROUTES.dashboard.tableTopics.manage
-                      }
+                      isActive={pathname.includes(
+                        ROUTES.dashboard.tableTopics.manage,
+                      )}
                     >
                       <Link
                         href={ROUTES.dashboard.tableTopics.manage}
@@ -102,7 +102,7 @@ export function SidebarSupport() {
             <SidebarMenuButton
               asChild
               closeMobile
-              isActive={pathname === ROUTES.dashboard.contact}
+              isActive={pathname.startsWith(ROUTES.dashboard.contact)}
             >
               <Link href={ROUTES.dashboard.contact}>
                 <Send />

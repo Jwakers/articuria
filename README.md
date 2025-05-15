@@ -19,8 +19,7 @@
 - [x] Style warning banners with warning colors (light and dark mode)
 - [x] Sign in should open in a modal not a new page
 - [x] Unify all page headings to use the same styling (take from the subscription management page)
-- [ ] Add/update metadata for all pages
-- [ ] Add loading UI when changing pages on the video management route
+- [x] Add/update metadata for all pages
 - [ ] Video length should be limited based on tier before saving
 - [ ] Rate limiting api routes.
 - [ ] Remove "Coming soon" from transcript and report features. Also appears on the billing and subscription page (including in stripe dashboard)

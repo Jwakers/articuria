@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { Suspense } from "react";
-import PageContent from "./_componenets/page-content";
+import PageContent from "./_components/page-content";
 import Loading from "./loading";
 
 export const metadata: Metadata = {
