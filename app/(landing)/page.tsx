@@ -2,7 +2,14 @@ import SubscriptionLanding from "@/components/subscription/subscription-landing"
 import { Button } from "@/components/ui/button";
 import { SignUpButton } from "@clerk/nextjs";
 import { Camera, ChartArea, Zap } from "lucide-react";
+import { Metadata } from "next";
 import { Suspense } from "react";
+
+export const metadata: Metadata = {
+  title: "Home",
+  description:
+    "Unlock your public speaking potential with Articuria's AI-powered practice platform",
+};
 
 export default function LandingPage() {
   return (
@@ -26,13 +33,15 @@ export default function LandingPage() {
       {/* Features Section */}
       <section className="py-2">
         <div className="container mx-auto px-4">
-          <h2 className="mb-12 text-center text-3xl font-bold">How It Works</h2>
+          <h2 className="mb-12 text-center text-lg font-semibold md:text-xl">
+            How It Works
+          </h2>
           <div className="grid gap-8 md:grid-cols-3">
             <div className="rounded-lg p-6 text-center">
               <div className="mb-4 inline-block rounded-full p-4">
                 <Zap size={32} />
               </div>
-              <h3 className="text-xl font-semibold">Generate Topics</h3>
+              <h3 className="text-lg font-medium">Generate Topics</h3>
               <p className="">
                 Get AI-powered table topics tailored to your interests and skill
                 level
@@ -42,7 +51,7 @@ export default function LandingPage() {
               <div className="mb-4 inline-block rounded-full p-4">
                 <Camera size={32} />
               </div>
-              <h3 className="text-xl font-semibold">Record Your Speech</h3>
+              <h3 className="text-lg font-medium">Record Your Speech</h3>
               <p className="">
                 Practice your impromptu speaking skills and record your
                 performance
@@ -52,7 +61,7 @@ export default function LandingPage() {
               <div className="mb-4 inline-block rounded-full p-4">
                 <ChartArea size={32} />
               </div>
-              <h3 className="text-xl font-semibold">Track Progress</h3>
+              <h3 className="text-lg font-medium">Track Progress</h3>
               <p className="">
                 Review your recordings, get feedback, and see your improvement
                 over time
@@ -65,7 +74,7 @@ export default function LandingPage() {
       {/* CTA Section */}
       <section className="relative overflow-hidden py-20">
         <div className="container relative z-10 mx-auto px-4 text-center">
-          <h2 className="mb-6 text-3xl font-bold">
+          <h2 className="mb-6 text-lg font-semibold md:text-xl">
             Ready to Improve Your Public Speaking?
           </h2>
           <p className="mb-8 text-xl">

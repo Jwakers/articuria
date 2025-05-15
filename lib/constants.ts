@@ -6,6 +6,7 @@ export const ROUTES = {
   dashboard: {
     root: "/dashboard",
     tableTopics: {
+      root: "/dashboard/table-topics",
       record: "/dashboard/table-topics/record",
       manage: "/dashboard/table-topics/manage",
     },
@@ -15,7 +16,7 @@ export const ROUTES = {
   success: "/success",
   privacy: "/privacy",
   terms: "/terms",
-};
+} as const;
 
 type TierKeys = "free" | "pro";
 

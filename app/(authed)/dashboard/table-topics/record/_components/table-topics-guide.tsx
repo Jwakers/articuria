@@ -16,7 +16,7 @@ export default function TableTopicsGuide() {
     <div className="w-full max-w-3xl" id="table-topics-guide">
       <div className="mb-4 flex items-center gap-2">
         <HelpCircle className="size-4" />
-        <h2 className="text-2xl font-bold">Table Topics Guide</h2>
+        <h2 className="text-lg font-semibold md:text-xl">Table Topics Guide</h2>
       </div>
 
       <p className="mb-6 text-muted-foreground">
@@ -281,7 +281,7 @@ export default function TableTopicsGuide() {
               </ul>
 
               <div className="mt-4 rounded-md bg-primary/5 p-4">
-                <h4 className="mb-2 font-medium">Pro Tip</h4>
+                <h4 className="mb-2 font-bold">Pro Tip</h4>
                 <p className="text-sm">
                   The ideal table topic speech has a clear opening, one main
                   point with a supporting example, and a concise conclusion.

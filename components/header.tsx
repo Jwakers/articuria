@@ -39,10 +39,10 @@ export function Header() {
               <li className="flex gap-2">
                 <SignedOut>
                   <Button variant="ghost" asChild>
-                    <SignInButton />
+                    <SignInButton mode="modal" />
                   </Button>
                   <Button asChild>
-                    <SignUpButton />
+                    <SignUpButton mode="modal" />
                   </Button>
                 </SignedOut>
                 <SignedIn>
@@ -83,10 +83,10 @@ function MobileMenu() {
         <ul className="space-y-2">
           <SignedOut>
             <li>
-              <SignInButton />
+              <SignInButton mode="modal" />
             </li>
             <li>
-              <SignUpButton />
+              <SignUpButton mode="modal" />
             </li>
           </SignedOut>
           <SignedIn>

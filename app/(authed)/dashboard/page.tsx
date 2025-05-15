@@ -19,7 +19,7 @@ import NoVideos from "./table-topics/_components/no-videos";
 export const metadata: Metadata = {
   title: "Dashboard",
   description:
-    "View your Table topics practice statistics and performance metrics",
+    "View your Table topics, practice statistics and performance metrics",
 };
 
 export default async function DashboardPage() {

@@ -40,7 +40,9 @@ export default function VideoPlayer({ video }: VideoPlayerProps) {
     <Card>
       <CardHeader>
         <CardTitle>
-          <h1 className="text-2xl font-bold">{video?.tableTopic.topic}</h1>
+          <h1 className="text-xl font-bold md:text-2xl">
+            {video?.tableTopic.topic}
+          </h1>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4 p-6">

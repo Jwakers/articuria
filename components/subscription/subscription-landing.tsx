@@ -95,7 +95,7 @@ function FeatureCard({
             <Check className="h-5 w-5 text-highlight-secondary" />
           )}
         </div>
-        <h3 className="mb-2 text-lg font-semibold">{title}</h3>
+        <h3 className="mb-2 text-lg font-medium">{title}</h3>
         <p className="text-balance text-sm text-muted-foreground">{body}</p>
       </div>
     </div>

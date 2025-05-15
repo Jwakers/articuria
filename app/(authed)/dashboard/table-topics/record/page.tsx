@@ -6,8 +6,8 @@ import TableTopicsGuide from "./_components/table-topics-guide";
 import TableTopicsRecorder from "./_components/table-topics-recorder";
 
 export const metadata: Metadata = {
-  title: "Record",
-  description: "Record table topics",
+  title: "Record Table Topics",
+  description: "Record your table topic performance, save and process feedback",
 };
 
 export default async function TopicRecordPage() {

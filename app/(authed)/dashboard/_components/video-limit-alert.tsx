@@ -18,7 +18,7 @@ export default async function VideoLimitAlert() {
   if (!showWarning) return null;
 
   return (
-    <Alert variant="default">
+    <Alert variant="warning">
       <AlertCircle className="h-4 w-4" />
       <AlertTitle>Heads up!</AlertTitle>
       <AlertDescription>

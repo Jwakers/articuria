@@ -1,17 +1,11 @@
 import { SubscriptionBanner } from "@/components/subscription/subscription-banner";
 import { Button } from "@/components/ui/button";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { Metadata } from "next";
 import type * as React from "react";
 import { Suspense } from "react";
 import { Header } from "./_components/header";
 import DashboardSidebar from "./_components/sidebar";
 import { SubscriptionAlert } from "./_components/subscription-alert";
-
-export const metadata: Metadata = {
-  title: "Dashboard",
-  description: "Manage your videos and account",
-};
 
 export default function DashboardShell({
   children,

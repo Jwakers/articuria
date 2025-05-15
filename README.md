@@ -15,32 +15,29 @@
 - Enhance video recording page:
 
 - [x] Add "Cancel anytime" to the subscription drawer pro plan card
-- [ ] Add higher video quality as a pro feature (both in the features list and in the APIs)
-- [ ] Style active link/page in sidebar
-- [ ] Style warning banners with warning colors
-- [ ] Sign in should open in a modal not a new page
-- [ ] Unify all page headings to use the same styling (take from the subscription management page)
-- [ ] Add/update metadata for all pages
-- [ ] Add loading UI when changing pages on the video management route
+- [x] Style active link/page in sidebar
+- [x] Style warning banners with warning colors (light and dark mode)
+- [x] Sign in should open in a modal not a new page
+- [x] Unify all page headings to use the same styling (take from the subscription management page)
+- [x] Add/update metadata for all pages
+- [ ] Remove "Coming soon" from transcript and report features. Also appears on the billing and subscription page (including in stripe dashboard)
 - [ ] Video length should be limited based on tier before saving
-- [ ] Rate limiting api routes.
-- [ ] Remove "Coming soon" from transcript and report features (including in stripe dashboard)
 - [ ] Move email templates to a separate file for better maintainability.
 - [ ] Update favicon.
 - [ ] add (create) logo to Stripe branding section
 - [ ] Improve the home page
-- [ ] Move save logic out of server actions and into an API route. There is an adjustable limit on server actions. See next.config but to be safe we should pass this data to a dedicated endpoint. This should also allow us to properly validate the file type on the server.
-  - [ ] Test this by uploading a longer video.
-  - [ ] Show progress indicator in toast.promise.
 - [ ] Watch database for changes on the manage video page [id]. This should prevent the need for refreshing. Another example is the go to video link on the recorder page, this should watch for changes and update accordingly
 - [x] Calculate average score by summing individual scores and remove it from the openai api request
 - [ ] Provide open ai with table topic audio for a better review
 - [ ] Generate transcript with open ai removing assembly ai from the project
-
 - [ ] Table topic report is quite generous, event for a totally shit video. Perhaps have it review duration in conjunction with what a normal table topic should be
   - [ ] Feedback should only be given on topics longer than one minute?
 
 ## 2. New Features
+
+- [ ] Check and update whether preview deployments causes database migration to the production DB (this must be prevented if so)
+
+- [ ] Add a documentation and support page. There is a card for this on the success page, once complete, enable this card
 
 - Add Stripe
 
@@ -66,6 +63,8 @@
 
 - [ ] Free users should be able to generate 1 feedback report and transcription for free
 - [ ] When a video is saved a notification should show them they can go to the video and generate feedback for it if their account allows
+
+- [ ] Add higher video quality as a pro feature (both in the features list and in the APIs)
 
 - AI-Generated Table Topics:
 
@@ -111,3 +110,5 @@
 - [ ] Add color blind option in user settings that adds numbers to the color indicators on the traffic light system (green circle should have a 1, orange a 2, and red a 3). Don't forget to include these indicators in the guide section of the page too.
 
 - [ ] On recorder page, warn that data will be lost on redirect or refresh (trigger alert dialog when navigating without saving). This is complex and cannot be handled with the beforeunload event. Next.js uses 'soft' navigation so the event does not fire. Need to find a way to intercept route changes before they happen.
+
+- [ ] Rate limiting (when the project starts to gain traction)
