@@ -90,7 +90,7 @@ export function SubscriptionDrawer() {
             <div className="flex flex-col rounded-lg border bg-background p-6">
               <div className="mb-4 flex items-start justify-between">
                 <div>
-                  <h3 className="font-medium">Free Plan</h3>
+                  <h3 className="text-lg font-medium">Free Plan</h3>
                   <p className="text-sm text-muted-foreground">Basic access</p>
                 </div>
                 <div className="text-right">

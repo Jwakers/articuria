@@ -18,7 +18,7 @@ export async function SubscriptionBanner() {
             <Check className="h-5 w-5 text-highlight-secondary" />
           </div>
           <div>
-            <h3 className="text-sm font-medium sm:text-base">
+            <h3 className="text-lg font-medium">
               <span className="bg-gradient-to-r from-highlight to-highlight-secondary bg-clip-text text-transparent">
                 Upgrade to Pro
               </span>

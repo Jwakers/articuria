@@ -115,7 +115,7 @@ export function SubscriptionDetails({ videoCountPromise }: BillingPageProps) {
           </div>
 
           <div>
-            <h3 className="mb-2 font-medium">Plan Features</h3>
+            <h3 className="mb-2 text-lg font-medium">Plan Features</h3>
             <ul className="grid gap-2">
               {SUBSCRIPTION_TIERS.pro.features.map((feature, index) => (
                 <li key={index} className="flex items-center gap-2">
@@ -131,7 +131,7 @@ export function SubscriptionDetails({ videoCountPromise }: BillingPageProps) {
           </div>
 
           <div>
-            <h3 className="mb-2 font-medium">Usage</h3>
+            <h3 className="mb-2 text-lg font-medium">Usage</h3>
             <div className="grid gap-4">
               <div>
                 <div className="mb-1 flex justify-between">

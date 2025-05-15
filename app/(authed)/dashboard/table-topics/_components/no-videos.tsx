@@ -28,7 +28,7 @@ export default function NoVideos() {
             captivating mini-speech. It&apos;s not just practice—it&apos;s your
             personal growth adventure!
           </p>
-          <h3 className="text-lg font-semibold">Unlock These Superpowers:</h3>
+          <h3 className="text-lg font-medium">Unlock These Superpowers:</h3>
           <div className="grid gap-2 md:grid-cols-2">
             <BenefitCard
               icon={Brain}
@@ -54,7 +54,7 @@ export default function NoVideos() {
         </div>
       </CardContent>
       <CardFooter className="flex flex-col items-start gap-3">
-        <h3 className="text-lg font-semibold">Ready to Get Started?</h3>
+        <h3 className="text-lg font-medium">Ready to Get Started?</h3>
         <div className="flex flex-col gap-4 sm:flex-row">
           <Button asChild>
             <Link href={ROUTES.dashboard.tableTopics.record}>
@@ -83,7 +83,7 @@ function BenefitCard({
       <CardContent className="flex items-center p-4 md:pt-6">
         <Icon className="mr-4 h-8 w-8" />
         <div>
-          <h4 className="font-semibold">{title}</h4>
+          <h4 className="font-bold">{title}</h4>
           <p className="text-sm text-muted-foreground">{description}</p>
         </div>
       </CardContent>

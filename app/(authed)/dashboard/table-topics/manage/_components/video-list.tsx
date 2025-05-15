@@ -38,7 +38,7 @@ export function VideoList({ videoListPromise }: VideoListProps) {
   return (
     <Card>
       <CardHeader>
-        <h1 className="text-2xl md:text-3xl">Manage recordings</h1>
+        <h1 className="text-xl font-bold md:text-2xl">Manage recordings</h1>
       </CardHeader>
       <CardContent>
         <Table>
@@ -173,7 +173,7 @@ export function VideoListSkeleton() {
   return (
     <Card>
       <CardHeader>
-        <h1 className="text-2xl md:text-3xl">Manage recordings</h1>
+        <h1 className="text-xl font-bold md:text-2xl">Manage recordings</h1>
       </CardHeader>
       <CardContent>
         <Table>

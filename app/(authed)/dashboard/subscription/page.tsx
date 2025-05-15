@@ -29,7 +29,7 @@ export default async function Page() {
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-2">
           <CreditCard className="h-6 w-6" />
-          <h1 className="text-2xl font-bold">Billing Management</h1>
+          <h1 className="text-xl font-bold md:text-2xl">Billing Management</h1>
         </div>
         <p className="text-muted-foreground">
           Manage your subscription and billing history

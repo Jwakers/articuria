@@ -18,7 +18,7 @@
 - [x] Style active link/page in sidebar
 - [x] Style warning banners with warning colors (light and dark mode)
 - [x] Sign in should open in a modal not a new page
-- [ ] Unify all page headings to use the same styling (take from the subscription management page)
+- [x] Unify all page headings to use the same styling (take from the subscription management page)
 - [ ] Add/update metadata for all pages
 - [ ] Add loading UI when changing pages on the video management route
 - [ ] Video length should be limited based on tier before saving

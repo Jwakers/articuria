@@ -21,13 +21,11 @@ export default function ErrorPage({
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-background to-highlight-secondary/5 p-6">
       <div className="mx-auto w-full max-w-md text-center">
-        <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
-          <AlertCircle className="h-8 w-8 text-red-600" />
+        <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-destructive/10">
+          <AlertCircle className="h-8 w-8 text-destructive" />
         </div>
 
-        <h1 className="mb-2 text-2xl font-bold text-muted-foreground">
-          Something went wrong
-        </h1>
+        <h1 className="text-xl font-bold md:text-2xl">Something went wrong</h1>
 
         <p className="mb-6 text-muted-foreground">
           We encountered an issue while processing your subscription payment.

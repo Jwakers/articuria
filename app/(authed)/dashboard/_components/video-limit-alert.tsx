@@ -15,7 +15,7 @@ export default async function VideoLimitAlert() {
 
   const showWarning = user && videoCount >= accountLimits.tableTopicLimit;
 
-  if (!showWarning && false) return null;
+  if (!showWarning) return null;
 
   return (
     <Alert variant="warning">

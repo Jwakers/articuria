@@ -174,7 +174,9 @@ export default function TableTopicsRecorder() {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <h1 className="text-2xl md:text-3xl">Table topics recorder</h1>
+          <h1 className="text-xl font-bold md:text-2xl">
+            Table topics recorder
+          </h1>
           <a
             href="#table-topics-guide"
             title="Find out more about table topics"

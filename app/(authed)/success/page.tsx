@@ -68,7 +68,7 @@ export default function SubscriptionSuccessPage() {
           <div className="mb-8 rounded-xl border bg-background p-6 shadow-md">
             <div className="flex items-center justify-between border-b pb-4">
               <div>
-                <h2 className="text-lg font-semibold">Pro Plan</h2>
+                <h2 className="text-lg font-semibold md:text-xl">Pro Plan</h2>
                 {startDateUnix ? (
                   <p className="text-sm text-muted-foreground">
                     Started on{" "}
@@ -92,7 +92,7 @@ export default function SubscriptionSuccessPage() {
             </div>
 
             <div className="py-4">
-              <h3 className="mb-3 text-sm font-medium">
+              <h3 className="mb-3 text-lg font-medium">
                 Your subscription includes:
               </h3>
               <ul className="space-y-2">
@@ -125,7 +125,7 @@ export default function SubscriptionSuccessPage() {
             </div>
           </div>
 
-          <h2 className="mb-4 text-xl font-semibold">Next Steps</h2>
+          <h2 className="text-lg font-semibold md:text-xl">Next Steps</h2>
 
           <div className="mb-8 grid gap-4 md:grid-cols-2">
             <Card className="p-4 transition-shadow hover:shadow-md">
@@ -134,7 +134,9 @@ export default function SubscriptionSuccessPage() {
                   <Sparkles className="h-4 w-4 text-highlight" />
                 </div>
                 <div>
-                  <h3 className="mb-1 font-medium">Explore Premium Features</h3>
+                  <h3 className="mb-1 text-lg font-medium">
+                    Explore Premium Features
+                  </h3>
                   <p className="mb-3 text-sm text-muted-foreground">
                     Discover all the new features available with your Pro
                     subscription.

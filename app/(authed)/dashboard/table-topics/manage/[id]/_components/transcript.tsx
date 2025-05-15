@@ -105,7 +105,9 @@ export default function Transcript({ video }: TranscriptProps) {
       <Card>
         <CardHeader>
           <CardTitle>
-            <h2 className="text-xl md:text-2xl">Transcript &amp; Feedback</h2>
+            <h2 className="text-lg font-semibold md:text-xl">
+              Transcript &amp; Feedback
+            </h2>
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -119,7 +121,9 @@ export default function Transcript({ video }: TranscriptProps) {
     <Card>
       <CardHeader>
         <CardTitle>
-          <h2 className="text-xl md:text-2xl">Transcript &amp; Feedback</h2>
+          <h2 className="text-lg font-semibold md:text-xl">
+            Transcript &amp; Feedback
+          </h2>
         </CardTitle>
       </CardHeader>
       <CardContent>
