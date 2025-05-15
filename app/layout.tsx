@@ -2,6 +2,7 @@ import { SubscriptionDrawerProvider } from "@/components/subscription/context";
 import { SubscriptionDrawer } from "@/components/subscription/subscription-drawer";
 import { cn } from "@/lib/utils";
 import { ClerkProvider } from "@clerk/nextjs";
+import { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "../components/theme-provider";
@@ -16,6 +17,14 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+
+export const metadata: Metadata = {
+  title: {
+    template: "%s | Articuria",
+    default: "Articuria",
+  },
+  description: "Practice public speaking at home",
+};
 
 export default function RootLayout({
   children,

@@ -2,7 +2,14 @@ import SubscriptionLanding from "@/components/subscription/subscription-landing"
 import { Button } from "@/components/ui/button";
 import { SignUpButton } from "@clerk/nextjs";
 import { Camera, ChartArea, Zap } from "lucide-react";
+import { Metadata } from "next";
 import { Suspense } from "react";
+
+export const metadata: Metadata = {
+  title: "Home",
+  description:
+    "Unlock your public speaking potential with Articuria's AI-powered practice platform",
+};
 
 export default function LandingPage() {
   return (

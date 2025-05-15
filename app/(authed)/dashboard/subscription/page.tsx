@@ -16,8 +16,9 @@ import { Suspense } from "react";
 import { BillingTabs, BillingTabsSkeleton } from "./_components/billing-tabs";
 
 export const metadata: Metadata = {
-  title: "Billing Management",
-  description: "Manage your subscription and billing details",
+  title: "Subscription & Billing",
+  description:
+    "View and manage your subscription plans, billing history, and payment methods",
 };
 
 export default async function Page() {

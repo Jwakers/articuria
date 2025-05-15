@@ -5,8 +5,9 @@ import VideoLimitAlert from "../../_components/video-limit-alert";
 import { VideoList, VideoListSkeleton } from "./_components/video-list";
 
 export const metadata: Metadata = {
-  title: "Manage",
-  description: "Manage your table topic recordings",
+  title: "Table Topics Management",
+  description:
+    "Effortlessly manage and organize your table topic recordings for enhanced engagement and learning.",
 };
 
 export default async function ManageRecordingsPage({
