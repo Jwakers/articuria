@@ -14,16 +14,9 @@ import {
   Settings,
   Sparkles,
 } from "lucide-react";
-import { Metadata } from "next";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 import Loading from "../loading";
-
-export const metadata: Metadata = {
-  title: "Success",
-  description:
-    "Congratulations on subscribing to Articuria. Get started on your public speaking journey today",
-};
 
 export default function PageContent() {
   const { publicMetadata } = userWithMetadata(useUser().user);

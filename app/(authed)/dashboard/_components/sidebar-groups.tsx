@@ -40,7 +40,10 @@ export function SidebarMain() {
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
-          <Collapsible defaultOpen className="group/collapsible">
+          <Collapsible
+            defaultOpen={pathname.startsWith(ROUTES.dashboard.tableTopics.root)}
+            className="group/collapsible"
+          >
             <SidebarMenuItem>
               <CollapsibleTrigger asChild>
                 <SidebarMenuButton>

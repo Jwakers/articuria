@@ -83,10 +83,10 @@ function MobileMenu() {
         <ul className="space-y-2">
           <SignedOut>
             <li>
-              <SignInButton />
+              <SignInButton mode="modal" />
             </li>
             <li>
-              <SignUpButton />
+              <SignUpButton mode="modal" />
             </li>
           </SignedOut>
           <SignedIn>

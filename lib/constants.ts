@@ -6,6 +6,7 @@ export const ROUTES = {
   dashboard: {
     root: "/dashboard",
     tableTopics: {
+      root: "/dashboard/table-topics",
       record: "/dashboard/table-topics/record",
       manage: "/dashboard/table-topics/manage",
     },
