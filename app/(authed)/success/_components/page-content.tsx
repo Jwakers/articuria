@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
+import { toast } from "sonner";
 import Loading from "../loading";
 
 export default function PageContent() {
@@ -39,6 +40,10 @@ export default function PageContent() {
       })
       .catch((error) => {
         console.error("Failed to sync Stripe data:", error);
+        toast.error(
+          "Failed to sync subscription data. Please refresh or contact support.",
+        );
+        sessionReloaded.current = true;
       });
   }, [session]);
 
@@ -150,18 +155,45 @@ export default function PageContent() {
                 </div>
               </div>
             </Card>
+            {/* <Card className="p-4 transition-shadow hover:shadow-md">
+              <div className="flex items-start gap-3">
+                <div className="flex-shrink-0 rounded-full bg-highlight/10 p-2">
+                  <BookOpen className="h-4 w-4 text-highlight" />
+                </div>
+                <div>
+                  <h3 className="mb-1 text-lg font-medium">
+                    Learn More About Pro Features
+                  </h3>
+                  <p className="mb-3 text-sm text-muted-foreground">
+                    Check out our documentation to learn how to get the most out
+                    of your subscription.
+                  </p>
+                  <Button variant="outline" asChild>
+                    <Link href={ROUTES.dashboard.root}>
+                      View Documentation <ChevronRight className="h-3 w-3" />
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+            </Card> */}
           </div>
 
           <div className="flex flex-col justify-center gap-4 sm:flex-row">
             <Button asChild>
-              <Link href="/dashboard">
+              <Link
+                href={ROUTES.dashboard.root}
+                aria-label="Go to your dashboard"
+              >
                 Go to Dashboard <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
 
             <Button asChild variant="outline">
-              <Link href={ROUTES.dashboard.subscription}>
-                <Settings className="mr-2 h-4 w-4" /> Manage Subscription
+              <Link
+                href={ROUTES.dashboard.subscription}
+                aria-label="Manage your subscription"
+              >
+                Manage Subscription <Settings className="mr-2 h-4 w-4" />
               </Link>
             </Button>
           </div>
