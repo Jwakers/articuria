@@ -56,20 +56,6 @@ export default function Transcript({ video }: TranscriptProps) {
     });
   };
 
-  const generateReport = async () => {
-    if (!video?.id) {
-      toast.error("No video ID");
-      return;
-    }
-
-    const { data, error } = await generateTableTopicReport(video.id);
-    if (error) {
-      toast.error(error);
-      return;
-    }
-    setReport(data);
-  };
-
   const getPlayer = () => {
     return document.querySelector<HTMLVideoElement>(
       `[playback-id="${video?.publicPlaybackId}"]`,
@@ -92,11 +78,24 @@ export default function Transcript({ video }: TranscriptProps) {
 
   useEffect(() => {
     if (!transcript || report || reportPending) return;
+    const generateReport = async () => {
+      if (!video?.id) {
+        toast.error("No video ID");
+        return;
+      }
+
+      const { data, error } = await generateTableTopicReport(video.id);
+      if (error) {
+        toast.error(error);
+        return;
+      }
+      setReport(data);
+    };
 
     startReportTransition(async () => {
       await generateReport();
     });
-  }, [report, transcript, generateReport, reportPending]);
+  }, [report, transcript, reportPending]);
 
   if (
     !accountLimits?.tableTopicReport ||
@@ -168,28 +167,40 @@ export default function Transcript({ video }: TranscriptProps) {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {transcriptData?.sentiment_analysis_results?.map((item) => {
-                    return (
-                      <TableRow className="border-none" key={item.start}>
-                        <TableCell className="border-r py-0">
-                          <button
-                            className="group flex w-full items-center justify-between gap-1"
-                            type="button"
-                            onClick={() => playVideoFrom(item.start / 1000)}
-                          >
-                            <span className="text-xs text-muted-foreground">
-                              {(item.start / 1000).toFixed(2)}s
-                            </span>
-                            <Play className="w-3 opacity-0 transition-opacity group-hover:opacity-100" />
-                          </button>
-                        </TableCell>
-                        <TableCell className="py-0">{item.text}</TableCell>
-                      </TableRow>
-                    );
-                  })}
+                  {transcriptData?.sentiment_analysis_results?.length ? (
+                    transcriptData?.sentiment_analysis_results?.map((item) => {
+                      return (
+                        <TableRow className="border-none" key={item.start}>
+                          <TableCell className="border-r py-0">
+                            <button
+                              className="group flex w-full items-center justify-between gap-1"
+                              type="button"
+                              onClick={() => playVideoFrom(item.start / 1000)}
+                            >
+                              <span className="text-xs text-muted-foreground">
+                                {(item.start / 1000).toFixed(2)}s
+                              </span>
+                              <Play className="w-3 opacity-0 transition-opacity group-hover:opacity-100" />
+                            </button>
+                          </TableCell>
+                          <TableCell className="py-0">{item.text}</TableCell>
+                        </TableRow>
+                      );
+                    })
+                  ) : (
+                    <TableRow>
+                      <TableCell
+                        colSpan={2}
+                        className="py-2 text-center text-muted-foreground"
+                      >
+                        No transcript data available
+                      </TableCell>
+                    </TableRow>
+                  )}
                 </TableBody>
                 <TableCaption className="pb-4 text-center text-sm text-muted-foreground">
-                  Transcript generated {new Date().toLocaleDateString()}
+                  Transcript generated{" "}
+                  {new Date(transcript.createdAt).toLocaleDateString()}
                 </TableCaption>
               </Table>
             </div>

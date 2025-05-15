@@ -15,8 +15,7 @@
 - Enhance video recording page:
 
 - [x] Add "Cancel anytime" to the subscription drawer pro plan card
-- [ ] Add higher video quality as a pro feature (both in the features list and in the APIs)
-- [ ] Style active link/page in sidebar
+- [x] Style active link/page in sidebar
 - [ ] Style warning banners with warning colors
 - [ ] Sign in should open in a modal not a new page
 - [ ] Unify all page headings to use the same styling (take from the subscription management page)
@@ -24,7 +23,7 @@
 - [ ] Add loading UI when changing pages on the video management route
 - [ ] Video length should be limited based on tier before saving
 - [ ] Rate limiting api routes.
-- [ ] Remove "Coming soon" from transcript and report features (including in stripe dashboard)
+- [ ] Remove "Coming soon" from transcript and report features. Also appears on the billing and subscription page (including in stripe dashboard)
 - [ ] Move email templates to a separate file for better maintainability.
 - [ ] Update favicon.
 - [ ] add (create) logo to Stripe branding section
@@ -41,6 +40,8 @@
   - [ ] Feedback should only be given on topics longer than one minute?
 
 ## 2. New Features
+
+- [ ] Check and update whether preview deployments causes database migration to the production DB (this must be prevented if so)
 
 - Add Stripe
 
@@ -66,6 +67,8 @@
 
 - [ ] Free users should be able to generate 1 feedback report and transcription for free
 - [ ] When a video is saved a notification should show them they can go to the video and generate feedback for it if their account allows
+
+- [ ] Add higher video quality as a pro feature (both in the features list and in the APIs)
 
 - AI-Generated Table Topics:
 
