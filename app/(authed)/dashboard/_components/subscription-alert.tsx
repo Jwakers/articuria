@@ -12,7 +12,7 @@ export async function SubscriptionAlert() {
   if (endDateUnix === undefined) return null;
 
   return (
-    <Alert variant="default">
+    <Alert variant="warning">
       <AlertCircle className="h-4 w-4" />
       <AlertTitle>Subscription cancelled!</AlertTitle>
       <AlertDescription>
