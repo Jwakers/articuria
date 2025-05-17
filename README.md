@@ -13,11 +13,10 @@
 ## 1. Updates
 
 - [x] Remove "Coming soon" from transcript and report features. Also appears on the billing and subscription page (including in stripe dashboard)
-- [ ] Video length should be limited based on tier before saving
 - [ ] On recorder page, warn that data will be lost on redirect or refresh (trigger alert dialog when navigating without saving). This is complex and cannot be handled with the beforeunload event. Next.js uses 'soft' navigation so the event does not fire. Need to find a way to intercept route changes before they happen.
 - [ ] Enable a paid plan on mux
-- [ ] Update favicon (can use the mic icon for now or just an "A" in a black background).
-- [ ] add (create) logo to Stripe branding section
+- [x] Update favicon (can use the mic icon for now or just an "A" in a black background).
+- [x] add (create) logo to Stripe branding section
 - [ ] Check and update whether preview deployments causes database migration to the production DB (this must be prevented if so)
 - [ ] Improve the home page
 - [ ] Watch database for changes on the manage video page [id]. This should prevent the need for refreshing. Another example is the go to video link on the recorder page, this should watch for changes and update accordingly

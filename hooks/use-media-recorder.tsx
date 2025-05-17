@@ -129,6 +129,7 @@ export const useMediaRecorder = () => {
           ? error.message
           : "Failed to upload video. Please try again later.",
       );
+      return;
     }
 
     setIsSaving(true);
