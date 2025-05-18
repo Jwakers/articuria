@@ -17,8 +17,10 @@
 - [ ] Enable a paid plan on mux
 - [x] Update favicon (can use the mic icon for now or just an "A" in a black background).
 - [x] add (create) logo to Stripe branding section
-- [ ] Check and update whether preview deployments causes database migration to the production DB (this must be prevented if so)
+- [x] Check and update whether preview deployments causes database migration to the production DB (this must be prevented if so)
 - [ ] Improve the home page
+- [ ] Upgrade tailwind
+- [ ] Implement brand colors accross code base not just for special elements
 - [ ] Watch database for changes on the manage video page [id]. This should prevent the need for refreshing. Another example is the go to video link on the recorder page, this should watch for changes and update accordingly
 - [ ] Provide open ai with table topic audio for a better review
 - [ ] Generate transcript with open ai removing assembly ai from the project

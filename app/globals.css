@@ -96,3 +96,12 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+/* TODO: include this in design system */
+.gradient-text {
+  @apply bg-gradient-to-r from-highlight to-highlight-secondary bg-clip-text text-transparent;
+}
+
+.feature-card {
+  @apply relative p-6 rounded-xl border bg-white shadow-sm hover:shadow-md transition-all duration-300;
+}

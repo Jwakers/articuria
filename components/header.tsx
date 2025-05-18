@@ -28,7 +28,7 @@ export function Header() {
   const isMobile = useIsMobile();
 
   return (
-    <header className="sticky top-0 z-50 bg-background/95 px-6 py-4 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/40">
+    <header className="fixed inset-x-0 top-0 z-50 w-full px-6 py-4 backdrop-blur md:absolute md:backdrop-blur-none">
       <div className="container mx-auto flex items-center justify-between px-4">
         <Link href={ROUTES.landing} className="text-2xl font-bold">
           Articuria
