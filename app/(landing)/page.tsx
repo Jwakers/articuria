@@ -1,7 +1,8 @@
 import SubscriptionLanding from "@/components/subscription/subscription-landing";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SignUpButton } from "@clerk/nextjs";
-import { Camera, ChartArea, Zap } from "lucide-react";
+import { Camera, ChartBar, Zap } from "lucide-react";
 import { Metadata } from "next";
 import { Suspense } from "react";
 
@@ -15,63 +16,59 @@ export default function LandingPage() {
   return (
     <>
       <Hero />
-      {/* Features Section */}
-      <section className="py-2">
-        <div className="container mx-auto px-4">
-          <h2 className="mb-12 text-center text-lg font-semibold md:text-xl">
-            How It Works
-          </h2>
-          <div className="grid gap-8 md:grid-cols-3">
-            <div className="rounded-lg p-6 text-center">
-              <div className="mb-4 inline-block rounded-full p-4">
-                <Zap size={32} />
-              </div>
-              <h3 className="text-lg font-medium">Generate Topics</h3>
-              <p>
-                Get AI-powered table topics tailored to your interests and skill
-                level
-              </p>
-            </div>
-            <div className="rounded-lg p-6 text-center">
-              <div className="mb-4 inline-block rounded-full p-4">
-                <Camera size={32} />
-              </div>
-              <h3 className="text-lg font-medium">Record Your Speech</h3>
-              <p>
-                Practice your impromptu speaking skills and record your
-                performance
-              </p>
-            </div>
-            <div className="rounded-lg p-6 text-center">
-              <div className="mb-4 inline-block rounded-full p-4">
-                <ChartArea size={32} />
-              </div>
-              <h3 className="text-lg font-medium">Track Progress</h3>
-              <p>
-                Review your recordings, get feedback, and see your improvement
-                over time
-              </p>
-            </div>
+      <section
+        id="how-it-works"
+        className="bg-background px-6 pt-24 text-foreground md:px-10"
+      >
+        <div className="container mx-auto">
+          <div className="mb-16 text-center">
+            <h2 className="gradient-text mb-4 inline-block text-4xl font-bold md:text-5xl">
+              How It Works
+            </h2>
+            <p className="mx-auto max-w-2xl text-xl text-muted-foreground">
+              Our platform makes it easy to practice and improve your public
+              speaking skills
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+            <FeatureCard
+              icon={<Zap className="text-highlight" />}
+              title="Smart Topic Generator"
+              description="Get personalized, AI-powered table topics based on your interests and speaking goals."
+            />
+            <FeatureCard
+              icon={<Camera className="text-highlight" />}
+              title="Practice & Record"
+              description="Hone your impromptu speaking by recording real-time responses to random prompts."
+            />
+            <FeatureCard
+              icon={<ChartBar className="text-highlight" />}
+              title="Measure Your Growth"
+              description="Track your progress, review past performances, and gain insights to improve over time."
+            />
           </div>
         </div>
       </section>
-      {/* CTA Section */}
-      <section className="relative overflow-hidden py-20">
-        <div className="container relative z-10 mx-auto px-4 text-center">
-          <h2 className="mb-6 text-lg font-semibold md:text-xl">
-            Ready to Improve Your Public Speaking?
-          </h2>
-          <p className="mb-8 text-xl">
-            sign up today and take your communication skills to the next level
-          </p>
-          <SignUpButton>
-            <Button size="lg">Sign Up Now</Button>
-          </SignUpButton>
-        </div>
-      </section>
+
       <Suspense fallback={null}>
         <SubscriptionLanding />
       </Suspense>
+
+      {/* CTA Section */}
+      <section className="bg-gradient-to-b from-highlight/10 to-highlight-secondary/10 px-6 py-24 md:px-10">
+        <div className="container mx-auto text-center">
+          <h2 className="mb-4 text-3xl font-bold md:text-5xl">
+            Ready to Improve Your Public Speaking?
+          </h2>
+          <p className="mx-auto mb-10 max-w-2xl text-xl opacity-90">
+            Sign up today and take your communication skills to the next level
+          </p>
+          <Button size="lg" asChild variant="subscribe">
+            <SignUpButton mode="modal">Sign Up Now</SignUpButton>
+          </Button>
+        </div>
+      </section>
     </>
   );
 }
@@ -80,7 +77,7 @@ function Hero() {
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-highlight/10 from-50% to-highlight-secondary/20 px-6 py-32 md:px-10 md:py-40">
       {/* Background Elements */}
-      <div className="bg-dot-pattern absolute inset-0 opacity-20" />
+      <div className="bg-dots absolute inset-0 bg-[size:30px_30px] opacity-10" />
       <div className="absolute right-10 top-20 h-64 w-64 rounded-full bg-highlight/20 blur-3xl" />
       <div className="absolute bottom-10 left-10 h-72 w-72 rounded-full bg-highlight-secondary/10 blur-3xl" />
 
@@ -88,8 +85,22 @@ function Hero() {
       <div className="animate-float absolute left-1/4 top-1/4 size-20 rounded-full bg-highlight/10" />
       <div className="animate-pulse-slow absolute right-1/4 top-1/3 h-16 w-16 rounded-full border-2 border-highlight/20" />
 
-      {/* Texture overlay */}
-      <div className="bg-noise absolute inset-0 opacity-5"></div>
+      {/* Noise texture overlay */}
+      <svg
+        viewBox="0 0 150 150"
+        className="absolute inset-0 opacity-20"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <filter id="noiseFilter">
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="7.53"
+            numOctaves="2"
+            stitchTiles="stitch"
+          />
+        </filter>
+        <rect width="100%" height="100%" filter="url(#noiseFilter)" />
+      </svg>
 
       <div className="container relative z-10 mx-auto">
         <div className="mx-auto max-w-3xl text-center">
@@ -111,7 +122,7 @@ function Hero() {
               className="animate-bounce-subtle"
               asChild
             >
-              <SignUpButton>Get Started for Free</SignUpButton>
+              <SignUpButton mode="modal">Get Started for Free</SignUpButton>
             </Button>
             {/* <Button size="lg" variant="outline" asChild>
               TODO: Link to documentation page
@@ -137,5 +148,25 @@ function Hero() {
         </svg>
       </div>
     </section>
+  );
+}
+
+function FeatureCard({
+  icon,
+  title,
+  description,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+}) {
+  return (
+    <Card className="shadow-md shadow-highlight/20">
+      <CardHeader>
+        {icon}
+        <CardTitle>{title}</CardTitle>
+      </CardHeader>
+      <CardContent>{description}</CardContent>
+    </Card>
   );
 }

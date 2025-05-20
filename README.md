@@ -18,7 +18,7 @@
 - [x] Update favicon (can use the mic icon for now or just an "A" in a black background).
 - [x] add (create) logo to Stripe branding section
 - [x] Check and update whether preview deployments causes database migration to the production DB (this must be prevented if so)
-- [ ] Improve the home page
+- [x] Improve the home page
 - [ ] Upgrade tailwind
 - [ ] Implement brand colors accross code base not just for special elements
 - [ ] Watch database for changes on the manage video page [id]. This should prevent the need for refreshing. Another example is the go to video link on the recorder page, this should watch for changes and update accordingly
@@ -29,7 +29,7 @@
 
 ## 2. New Features
 
-- [ ] Add a documentation and support page. There is a card for this on the success page, once complete, enable this card
+- [ ] Add a documentation and support page. There is a card for this on the success page and a link on the home page, once complete, enable these
 
 - [ ] Free users should be able to generate 1 feedback report and transcription for free
 - [ ] When a video is saved a notification should show them they can go to the video and generate feedback for it if their account allows

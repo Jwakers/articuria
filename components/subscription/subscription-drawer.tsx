@@ -65,7 +65,7 @@ export function SubscriptionDrawer() {
       <DrawerContent className="max-h-[80%] bg-gradient-to-b from-background to-highlight/10">
         <div className="container mx-auto w-full overflow-y-auto px-4 py-4">
           <DrawerHeader className="text-center">
-            <DrawerTitle className="bg-gradient-to-r from-highlight to-highlight-secondary bg-clip-text text-center text-2xl font-bold text-transparent">
+            <DrawerTitle className="gradient-text text-center text-2xl font-bold">
               Choose Your Plan
             </DrawerTitle>
             <DrawerDescription className="text-center text-muted-foreground">
