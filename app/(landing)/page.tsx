@@ -16,66 +16,18 @@ export default function LandingPage() {
   return (
     <>
       <Hero />
-      <section
-        id="how-it-works"
-        className="bg-background px-6 pt-24 text-foreground md:px-10"
-      >
-        <div className="container mx-auto">
-          <div className="mb-16 text-center">
-            <h2 className="gradient-text mb-4 inline-block text-4xl font-bold md:text-5xl">
-              How It Works
-            </h2>
-            <p className="mx-auto max-w-2xl text-xl text-muted-foreground">
-              Our platform makes it easy to practice and improve your public
-              speaking skills
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-            <FeatureCard
-              icon={<Zap className="text-highlight" />}
-              title="Smart Topic Generator"
-              description="Get personalized, AI-powered table topics based on your interests and speaking goals."
-            />
-            <FeatureCard
-              icon={<Camera className="text-highlight" />}
-              title="Practice & Record"
-              description="Hone your impromptu speaking by recording real-time responses to random prompts."
-            />
-            <FeatureCard
-              icon={<ChartBar className="text-highlight" />}
-              title="Measure Your Growth"
-              description="Track your progress, review past performances, and gain insights to improve over time."
-            />
-          </div>
-        </div>
-      </section>
-
+      <FeaturesSection />
       <Suspense fallback={null}>
         <SubscriptionLanding />
       </Suspense>
-
-      {/* CTA Section */}
-      <section className="bg-gradient-to-b from-highlight/10 to-highlight-secondary/10 px-6 py-24 md:px-10">
-        <div className="container mx-auto text-center">
-          <h2 className="mb-4 text-3xl font-bold md:text-5xl">
-            Ready to Improve Your Public Speaking?
-          </h2>
-          <p className="mx-auto mb-10 max-w-2xl text-xl opacity-90">
-            Sign up today and take your communication skills to the next level
-          </p>
-          <Button size="lg" asChild variant="subscribe">
-            <SignUpButton mode="modal">Sign Up Now</SignUpButton>
-          </Button>
-        </div>
-      </section>
+      <CtaSection />
     </>
   );
 }
 
 function Hero() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-highlight/10 from-50% to-highlight-secondary/20 px-6 py-32 md:px-10 md:py-40">
+    <section className="relative overflow-hidden bg-gradient-to-br from-highlight/10 from-50% to-highlight-secondary/20 py-32 md:py-40">
       {/* Background Elements */}
       <div className="bg-dots absolute inset-0 bg-[size:30px_30px] opacity-10" />
       <div className="absolute right-10 top-20 h-64 w-64 rounded-full bg-highlight/20 blur-3xl" />
@@ -168,5 +120,59 @@ function FeatureCard({
       </CardHeader>
       <CardContent>{description}</CardContent>
     </Card>
+  );
+}
+
+function FeaturesSection() {
+  return (
+    <section id="how-it-works" className="bg-background pt-24 text-foreground">
+      <div className="container mx-auto">
+        <div className="mb-16 text-center">
+          <h2 className="gradient-text mb-4 inline-block text-4xl font-bold md:text-5xl">
+            How It Works
+          </h2>
+          <p className="mx-auto max-w-2xl text-xl text-muted-foreground">
+            Our platform makes it easy to practice and improve your public
+            speaking skills
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+          <FeatureCard
+            icon={<Zap className="text-highlight" />}
+            title="Smart Topic Generator"
+            description="Get personalized, AI-powered table topics based on your interests and speaking goals."
+          />
+          <FeatureCard
+            icon={<Camera className="text-highlight" />}
+            title="Practice & Record"
+            description="Hone your impromptu speaking by recording real-time responses to random prompts."
+          />
+          <FeatureCard
+            icon={<ChartBar className="text-highlight" />}
+            title="Measure Your Growth"
+            description="Track your progress, review past performances, and gain insights to improve over time."
+          />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function CtaSection() {
+  return (
+    <section className="bg-gradient-to-b from-highlight/10 to-highlight-secondary/10 py-24">
+      <div className="container mx-auto text-center">
+        <h2 className="mb-4 text-3xl font-bold md:text-5xl">
+          Ready to Improve Your Public Speaking?
+        </h2>
+        <p className="mx-auto mb-10 max-w-2xl text-xl opacity-90">
+          Sign up today and take your communication skills to the next level
+        </p>
+        <Button size="lg" asChild variant="subscribe">
+          <SignUpButton mode="modal">Sign Up Now</SignUpButton>
+        </Button>
+      </div>
+    </section>
   );
 }

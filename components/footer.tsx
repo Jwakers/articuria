@@ -3,8 +3,8 @@ import Link from "next/link";
 
 export function Footer() {
   return (
-    <footer className="px-6 py-6">
-      <div className="container mx-auto flex items-center justify-between px-4">
+    <footer className="py-6">
+      <div className="container mx-auto flex items-center justify-between">
         <p className="text-sm">
           © {new Date().getFullYear()} Articuria. All rights reserved.
         </p>

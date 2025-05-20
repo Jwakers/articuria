@@ -17,7 +17,7 @@ export default function Error({
   }, [error]);
 
   return (
-    <section className="container mx-auto flex flex-col items-center gap-y-4 px-4 py-10">
+    <section className="container mx-auto flex flex-col items-center gap-y-4 py-10">
       <h2 className="text-lg font-semibold md:text-xl">
         Something went wrong!
       </h2>
