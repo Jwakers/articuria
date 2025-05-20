@@ -1,3 +1,4 @@
+import { Noise } from "@/components/noise-filter";
 import SubscriptionLanding from "@/components/subscription/subscription-landing";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -29,30 +30,31 @@ function Hero() {
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-highlight/10 from-50% to-highlight-secondary/20 py-32 md:py-40">
       {/* Background Elements */}
-      <div className="bg-dots absolute inset-0 bg-[size:30px_30px] opacity-10" />
-      <div className="absolute right-10 top-20 h-64 w-64 rounded-full bg-highlight/20 blur-3xl" />
-      <div className="absolute bottom-10 left-10 h-72 w-72 rounded-full bg-highlight-secondary/10 blur-3xl" />
+      <div
+        aria-hidden="true"
+        className="bg-dots pointer-events-none absolute inset-0 bg-[size:30px_30px] opacity-10"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute right-10 top-20 h-64 w-64 rounded-full bg-highlight/20 blur-3xl"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute bottom-10 left-10 h-72 w-72 rounded-full bg-highlight-secondary/10 blur-3xl"
+      />
 
       {/* Animated floating shapes */}
-      <div className="animate-float absolute left-1/4 top-1/4 size-20 rounded-full bg-highlight/10" />
-      <div className="animate-pulse-slow absolute right-1/4 top-1/3 h-16 w-16 rounded-full border-2 border-highlight/20" />
+      <div
+        aria-hidden="true"
+        className="motion-safe:animate-float pointer-events-none absolute left-1/4 top-1/4 size-20 rounded-full bg-highlight/10 motion-reduce:animate-none"
+      />
+      <div
+        aria-hidden="true"
+        className="motion-safe:animate-pulse-slow pointer-events-none absolute right-1/4 top-1/3 h-16 w-16 rounded-full border-2 border-highlight/20 motion-reduce:animate-none"
+      />
 
       {/* Noise texture overlay */}
-      <svg
-        viewBox="0 0 150 150"
-        className="absolute inset-0 opacity-20"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <filter id="noiseFilter">
-          <feTurbulence
-            type="fractalNoise"
-            baseFrequency="7.53"
-            numOctaves="2"
-            stitchTiles="stitch"
-          />
-        </filter>
-        <rect width="100%" height="100%" filter="url(#noiseFilter)" />
-      </svg>
+      <Noise />
 
       <div className="container relative z-10 mx-auto">
         <div className="mx-auto max-w-3xl text-center">
@@ -115,7 +117,7 @@ function FeatureCard({
   return (
     <Card className="shadow-md shadow-highlight/20">
       <CardHeader>
-        {icon}
+        <span aria-hidden="true">{icon}</span>
         <CardTitle>{title}</CardTitle>
       </CardHeader>
       <CardContent>{description}</CardContent>

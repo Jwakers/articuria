@@ -1,3 +1,4 @@
+import { NoiseFilter } from "@/components/noise-filter";
 import { SubscriptionDrawerProvider } from "@/components/subscription/context";
 import { SubscriptionDrawer } from "@/components/subscription/subscription-drawer";
 import { cn } from "@/lib/utils";
@@ -41,6 +42,7 @@ export default function RootLayout({
             <SubscriptionDrawerProvider>
               <div vaul-drawer-wrapper="true">
                 <div className="relative grid min-h-dvh grid-rows-[auto_1fr_auto] bg-background">
+                  <NoiseFilter />
                   {children}
                 </div>
               </div>

@@ -113,7 +113,7 @@ export const SUBSCRIPTION_TIERS: Record<
         description:
           "With AI technology we can help you write, improve, rehearse and perfect your upcoming speech or presentation",
         shortDescription:
-          "Write and prefect your next speech with our speech assistant",
+          "Write and perfect your next speech with our speech assistant",
         comingSoon: true,
       },
     ],

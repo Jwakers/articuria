@@ -46,7 +46,7 @@ export default async function SubscriptionLanding() {
                       </div>
                     ) : null}
                   </div>
-                  <div className="text-text-muted-foreground mt-2 text-sm">
+                  <div className="mt-2 text-sm text-muted-foreground">
                     Cancel anytime. No hidden fees.
                   </div>
                 </div>
