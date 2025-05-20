@@ -2,7 +2,7 @@ import { Noise } from "@/components/noise-filter";
 import SubscriptionLanding from "@/components/subscription/subscription-landing";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { SignUpButton } from "@clerk/nextjs";
+import { SignedOut, SignUpButton } from "@clerk/nextjs";
 import { Camera, ChartBar, Zap } from "lucide-react";
 import { Metadata } from "next";
 import { Suspense } from "react";
@@ -70,14 +70,16 @@ function Hero() {
             better speaker.
           </p>
           <div className="animate-fade-in flex flex-wrap justify-center gap-4">
-            <Button
-              size="lg"
-              variant="subscribe"
-              className="animate-bounce-subtle"
-              asChild
-            >
-              <SignUpButton mode="modal">Get Started for Free</SignUpButton>
-            </Button>
+            <SignedOut>
+              <Button
+                size="lg"
+                variant="subscribe"
+                className="animate-bounce-subtle"
+                asChild
+              >
+                <SignUpButton mode="modal">Get Started for Free</SignUpButton>
+              </Button>
+            </SignedOut>
             {/* <Button size="lg" variant="outline" asChild>
               TODO: Link to documentation page
               <Link href="#how-it-works">
@@ -171,9 +173,11 @@ function CtaSection() {
         <p className="mx-auto mb-10 max-w-2xl text-xl opacity-90">
           Sign up today and take your communication skills to the next level
         </p>
-        <Button size="lg" asChild variant="subscribe">
-          <SignUpButton mode="modal">Sign Up Now</SignUpButton>
-        </Button>
+        <SignedOut>
+          <Button size="lg" asChild variant="subscribe">
+            <SignUpButton mode="modal">Sign Up Now</SignUpButton>
+          </Button>
+        </SignedOut>
       </div>
     </section>
   );
