@@ -60,7 +60,7 @@ export default function PageContent() {
               <CheckCircle className="h-8 w-8 text-white" />
             </div>
 
-            <h1 className="bg-gradient-to-r from-highlight to-highlight-secondary bg-clip-text text-3xl font-bold text-transparent md:text-4xl">
+            <h1 className="gradient-text text-3xl font-bold md:text-4xl">
               Subscription Successful!
             </h1>
 

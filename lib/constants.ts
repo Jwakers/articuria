@@ -75,6 +75,12 @@ export const SUBSCRIPTION_TIERS: Record<
         description: `Save and rewatch up to ${ACCOUNT_LIMITS.free.tableTopicLimit} table topics`,
         shortDescription: `Save and rewatch up to ${ACCOUNT_LIMITS.free.tableTopicLimit} table topics`,
       },
+      {
+        title: "Transcript and feedback",
+        description:
+          "Generate 1 transcript and feedback report of your table topic to get a taste of this pro feature",
+        shortDescription: "Generate 1 transcript and feedback report for free",
+      },
     ],
   },
   pro: {
@@ -95,6 +101,19 @@ export const SUBSCRIPTION_TIERS: Record<
         description:
           "Generate feedback and stats on your recorded topics to guide your progress",
         shortDescription: "Generate feedback and stats on your recorded topics",
+      },
+      {
+        title: "Transcripts",
+        description:
+          "Generate transcripts of your recordings with timestamp playback",
+        shortDescription: "Generate transcripts of your recordings",
+      },
+      {
+        title: "Speech Assistant",
+        description:
+          "With AI technology we can help you write, improve, rehearse and perfect your upcoming speech or presentation",
+        shortDescription:
+          "Write and perfect your next speech with our speech assistant",
         comingSoon: true,
       },
     ],

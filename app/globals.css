@@ -96,3 +96,9 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  .gradient-text {
+    @apply bg-gradient-to-r from-highlight to-highlight-secondary bg-clip-text text-transparent;
+  }
+}

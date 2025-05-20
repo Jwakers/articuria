@@ -19,9 +19,7 @@ export async function SubscriptionBanner() {
           </div>
           <div>
             <h3 className="text-lg font-medium">
-              <span className="bg-gradient-to-r from-highlight to-highlight-secondary bg-clip-text text-transparent">
-                Upgrade to Pro
-              </span>
+              <span className="gradient-text">Upgrade to Pro</span>
             </h3>
             <p className="text-xs text-muted-foreground">
               Get access to premium features

@@ -17,9 +17,7 @@ export async function SubscriptionSidebarCard() {
           <div className="flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full bg-highlight/10">
             <Check className="h-2.5 w-2.5 text-highlight-secondary" />
           </div>
-          <span className="bg-gradient-to-r from-highlight to-highlight-secondary bg-clip-text text-transparent">
-            Upgrade to Pro
-          </span>
+          <span className="gradient-text">Upgrade to Pro</span>
         </h3>
 
         <div className="mt-2 flex items-center justify-between">

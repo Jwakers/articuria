@@ -8,6 +8,9 @@ export default {
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
+    container: {
+      padding: "1rem",
+    },
     extend: {
       colors: {
         background: "hsl(var(--background))",
@@ -93,10 +96,23 @@ export default {
             height: "0",
           },
         },
+        float: {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-15px)" },
+        },
+        "pulse-slow": {
+          "0%, 100%": { transform: "scale(1); opacity: 0.7;" },
+          "50%": { transform: "scale(1.1); opacity: 0.5;" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        float: "float 6s ease-in-out infinite",
+        "pulse-slow": "pulse-slow 4s ease-in-out infinite",
+      },
+      backgroundImage: {
+        dots: "radial-gradient(circle at 1px 1px, hsl(var(--highlight-secondary)) 1px, transparent 0)",
       },
     },
   },
