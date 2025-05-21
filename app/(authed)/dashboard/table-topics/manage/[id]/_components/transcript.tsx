@@ -128,7 +128,7 @@ export default function Transcript({ video }: TranscriptProps) {
       </CardHeader>
       <CardContent>
         {!report && !audioReady ? (
-          <div className="flex items-center gap-2 text-muted-foreground">
+          <div className="text-muted-foreground flex items-center gap-2">
             <span>Processing audio, please check back shorty</span>
           </div>
         ) : null}
@@ -157,12 +157,12 @@ export default function Transcript({ video }: TranscriptProps) {
             <ReportTable report={report ?? null} />
 
             {transcript && !report && reportPending ? (
-              <div className="flex items-center gap-2 text-muted-foreground">
+              <div className="text-muted-foreground flex items-center gap-2">
                 <span>Generating report...</span>
                 <Spinner />
               </div>
             ) : null}
-            <div className="rounded border bg-muted shadow-inner">
+            <div className="bg-muted rounded border shadow-inner">
               <Table className="border-b">
                 <TableHeader>
                   <TableRow className="border-none">
@@ -181,7 +181,7 @@ export default function Transcript({ video }: TranscriptProps) {
                               type="button"
                               onClick={() => playVideoFrom(item.start / 1000)}
                             >
-                              <span className="text-xs text-muted-foreground">
+                              <span className="text-muted-foreground text-xs">
                                 {(item.start / 1000).toFixed(2)}s
                               </span>
                               <Play className="w-3 opacity-0 transition-opacity group-hover:opacity-100" />
@@ -195,14 +195,14 @@ export default function Transcript({ video }: TranscriptProps) {
                     <TableRow>
                       <TableCell
                         colSpan={2}
-                        className="py-2 text-center text-muted-foreground"
+                        className="text-muted-foreground py-2 text-center"
                       >
                         No transcript data available
                       </TableCell>
                     </TableRow>
                   )}
                 </TableBody>
-                <TableCaption className="pb-4 text-center text-sm text-muted-foreground">
+                <TableCaption className="text-muted-foreground pb-4 text-center text-sm">
                   Transcript generated{" "}
                   {new Date(transcript.createdAt).toLocaleDateString()}
                 </TableCaption>
@@ -256,7 +256,7 @@ function ReportTable({
 
   return (
     <section>
-      <div className="prose mx-auto text-center">
+      <div className="prose dark:prose-invert mx-auto text-center">
         <div className="text-2xl font-medium">Report</div>
         <p className="text-xl font-medium">Short summary</p>
         <p className="text-balance">{report.shortSummary}</p>
@@ -267,12 +267,12 @@ function ReportTable({
           <AccordionTrigger className="text-lg font-medium">
             <div className="flex w-full items-center gap-4">
               <span>Creativity</span>
-              <span className="flex size-6 items-center justify-center rounded-full bg-muted text-sm font-bold text-muted-foreground">
+              <span className="bg-muted text-muted-foreground flex size-6 items-center justify-center rounded-full text-sm font-bold">
                 {report.creativityScore}
               </span>
             </div>
           </AccordionTrigger>
-          <AccordionContent className="prose">
+          <AccordionContent className="prose dark:prose-invert">
             <p>{report.creativity}</p>
           </AccordionContent>
         </AccordionItem>
@@ -280,12 +280,12 @@ function ReportTable({
           <AccordionTrigger className="text-lg font-medium">
             <div className="flex w-full items-center gap-4">
               <span>Clarity</span>
-              <span className="flex size-6 items-center justify-center rounded-full bg-muted text-sm font-bold text-muted-foreground">
+              <span className="bg-muted text-muted-foreground flex size-6 items-center justify-center rounded-full text-sm font-bold">
                 {report.clarityScore}
               </span>{" "}
             </div>
           </AccordionTrigger>
-          <AccordionContent className="prose">
+          <AccordionContent className="prose dark:prose-invert">
             <p>{report.clarity}</p>
           </AccordionContent>
         </AccordionItem>
@@ -293,12 +293,12 @@ function ReportTable({
           <AccordionTrigger className="text-lg font-medium">
             <div className="flex w-full items-center gap-4">
               <span>Engagement</span>
-              <span className="flex size-6 items-center justify-center rounded-full bg-muted text-sm font-bold text-muted-foreground">
+              <span className="bg-muted text-muted-foreground flex size-6 items-center justify-center rounded-full text-sm font-bold">
                 {report.engagementScore}
               </span>{" "}
             </div>
           </AccordionTrigger>
-          <AccordionContent className="prose">
+          <AccordionContent className="prose dark:prose-invert">
             <p>{report.engagement}</p>
           </AccordionContent>
         </AccordionItem>
@@ -306,12 +306,12 @@ function ReportTable({
           <AccordionTrigger className="text-lg font-medium">
             <div className="flex w-full items-center gap-4">
               <span>Pacing</span>
-              <span className="flex size-6 items-center justify-center rounded-full bg-muted text-sm font-bold text-muted-foreground">
+              <span className="bg-muted text-muted-foreground flex size-6 items-center justify-center rounded-full text-sm font-bold">
                 {report.pacingScore}
               </span>{" "}
             </div>
           </AccordionTrigger>
-          <AccordionContent className="prose">
+          <AccordionContent className="prose dark:prose-invert">
             <p>{report.pacing}</p>
           </AccordionContent>
         </AccordionItem>
@@ -319,12 +319,12 @@ function ReportTable({
           <AccordionTrigger className="text-lg font-medium">
             <div className="flex w-full items-center gap-4">
               <span>Language</span>
-              <span className="flex size-6 items-center justify-center rounded-full bg-muted text-sm font-bold text-muted-foreground">
+              <span className="bg-muted text-muted-foreground flex size-6 items-center justify-center rounded-full text-sm font-bold">
                 {report.languageScore}
               </span>{" "}
             </div>
           </AccordionTrigger>
-          <AccordionContent className="prose">
+          <AccordionContent className="prose dark:prose-invert">
             <p>{report.language}</p>
           </AccordionContent>
         </AccordionItem>
@@ -332,12 +332,12 @@ function ReportTable({
           <AccordionTrigger className="text-lg font-medium">
             <div className="flex w-full items-center gap-4">
               <span>Tone</span>
-              <span className="flex size-6 items-center justify-center rounded-full bg-muted text-sm font-bold text-muted-foreground">
+              <span className="bg-muted text-muted-foreground flex size-6 items-center justify-center rounded-full text-sm font-bold">
                 {report.toneScore}
               </span>{" "}
             </div>
           </AccordionTrigger>
-          <AccordionContent className="prose">
+          <AccordionContent className="prose dark:prose-invert">
             <p>{report.tone}</p>
           </AccordionContent>
         </AccordionItem>
@@ -345,7 +345,7 @@ function ReportTable({
       <p className="my-4">
         Average score: <span className="font-bold">{report.averageScore}</span>
       </p>
-      <div className="prose">
+      <div className="prose dark:prose-invert">
         <div>
           <div className="text-xl font-medium">Recommendations</div>
           <ul>

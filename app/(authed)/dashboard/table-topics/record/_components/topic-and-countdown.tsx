@@ -27,7 +27,7 @@ export default function TopicAndCountdown({
         data-animate-topic
         className={cn(
           "absolute flex w-full flex-col justify-center gap-4",
-          "hover:!opacity-100",
+          "hover:opacity-100!",
         )}
         initial={{
           y: "-50%",

@@ -14,7 +14,7 @@ export async function SubscriptionSidebarCard() {
     <SubscriptionWrapper>
       <div className="p-3">
         <h3 className="flex items-center gap-1.5 text-lg font-medium">
-          <div className="flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full bg-highlight/10">
+          <div className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-highlight/10">
             <Check className="h-2.5 w-2.5 text-highlight-secondary" />
           </div>
           <span className="gradient-text">Upgrade to Pro</span>

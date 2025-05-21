@@ -14,7 +14,7 @@ export async function SubscriptionBanner() {
     <SubscriptionWrapper>
       <div className="flex flex-wrap items-center justify-between gap-4 p-4">
         <div className="flex items-center gap-3">
-          <div className="hidden h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-highlight/10 sm:flex">
+          <div className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-full bg-highlight/10 sm:flex">
             <Check className="h-5 w-5 text-highlight-secondary" />
           </div>
           <div>

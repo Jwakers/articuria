@@ -2,7 +2,7 @@ import { Noise } from "@/components/noise-filter";
 import SubscriptionLanding from "@/components/subscription/subscription-landing";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { SignUpButton } from "@clerk/nextjs";
+import { SignedOut, SignUpButton } from "@clerk/nextjs";
 import { Camera, ChartBar, Zap } from "lucide-react";
 import { Metadata } from "next";
 import { Suspense } from "react";
@@ -28,56 +28,58 @@ export default function LandingPage() {
 
 function Hero() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-highlight/10 from-50% to-highlight-secondary/20 py-32 md:py-40">
+    <section className="from-highlight/10 to-highlight-secondary/20 relative overflow-hidden bg-linear-to-br from-50% py-32 md:py-40">
       {/* Background Elements */}
       <div
         aria-hidden="true"
-        className="bg-dots pointer-events-none absolute inset-0 bg-[size:30px_30px] opacity-10"
+        className="bg-dots pointer-events-none absolute inset-0 bg-size-[30px_30px] opacity-10"
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute right-10 top-20 h-64 w-64 rounded-full bg-highlight/20 blur-3xl"
+        className="bg-highlight/20 pointer-events-none absolute top-20 right-10 h-64 w-64 rounded-full blur-3xl"
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute bottom-10 left-10 h-72 w-72 rounded-full bg-highlight-secondary/10 blur-3xl"
+        className="bg-highlight-secondary/10 pointer-events-none absolute bottom-10 left-10 h-72 w-72 rounded-full blur-3xl"
       />
 
       {/* Animated floating shapes */}
       <div
         aria-hidden="true"
-        className="motion-safe:animate-float pointer-events-none absolute left-1/4 top-1/4 size-20 rounded-full bg-highlight/10 motion-reduce:animate-none"
+        className="motion-safe:animate-float bg-highlight/10 pointer-events-none absolute top-1/4 left-1/4 size-20 rounded-full motion-reduce:animate-none"
       />
       <div
         aria-hidden="true"
-        className="motion-safe:animate-pulse-slow pointer-events-none absolute right-1/4 top-1/3 h-16 w-16 rounded-full border-2 border-highlight/20 motion-reduce:animate-none"
+        className="motion-safe:animate-pulse-slow border-highlight/40 pointer-events-none absolute top-1/3 right-1/4 h-16 w-16 rounded-full border-2 motion-reduce:animate-none"
       />
 
       {/* Noise texture overlay */}
       <Noise />
 
-      <div className="container relative z-10 mx-auto">
+      <div className="relative z-10 container mx-auto">
         <div className="mx-auto max-w-3xl text-center">
-          <div className="animate-fade-in mb-2 inline-block rounded-full bg-gradient-to-r from-highlight to-highlight-secondary px-4 py-1 text-sm font-medium text-background">
+          <div className="animate-fade-in from-highlight to-highlight-secondary text-background mb-2 inline-block rounded-full bg-linear-to-r px-4 py-1 text-sm font-medium">
             AI-Powered Speaking Practice
           </div>
-          <h1 className="animate-fade-in gradient-text mb-6 text-5xl font-bold drop-shadow-sm md:text-6xl">
+          <h1 className="animate-fade-in gradient-text mb-6 text-5xl font-bold drop-shadow-xs md:text-6xl">
             Master public speaking with confidence
           </h1>
-          <p className="animate-fade-in mx-auto mb-8 max-w-2xl text-xl text-muted-foreground">
+          <p className="animate-fade-in text-muted-foreground mx-auto mb-8 max-w-2xl text-xl">
             Practice impromptu speaking skills with AI-generated topics and
             video recording. Build confidence, track progress, and become a
             better speaker.
           </p>
           <div className="animate-fade-in flex flex-wrap justify-center gap-4">
-            <Button
-              size="lg"
-              variant="subscribe"
-              className="animate-bounce-subtle"
-              asChild
-            >
-              <SignUpButton mode="modal">Get Started for Free</SignUpButton>
-            </Button>
+            <SignedOut>
+              <Button
+                size="lg"
+                variant="subscribe"
+                className="animate-bounce-subtle"
+                asChild
+              >
+                <SignUpButton mode="modal">Get Started for Free</SignUpButton>
+              </Button>
+            </SignedOut>
             {/* <Button size="lg" variant="outline" asChild>
               TODO: Link to documentation page
               <Link href="#how-it-works">
@@ -89,11 +91,11 @@ function Hero() {
       </div>
 
       {/* Wave separator */}
-      <div className="absolute -bottom-1 left-0 right-0 h-14">
+      <div className="absolute right-0 -bottom-1 left-0 h-14">
         <svg
           viewBox="0 0 1200 120"
           preserveAspectRatio="none"
-          className="absolute bottom-0 h-full w-full drop-shadow-[0_0px_10px_hsl(var(--highlight-secondary)_/_0.4)]"
+          className="absolute bottom-0 h-full w-full drop-shadow-[0_0px_10px_hsl(var(--highlight-secondary)/0.4)]"
         >
           <path
             d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V120H0V95.8C59.71,118.92,150.07,93.4,221.79,78.45Z"
@@ -115,7 +117,7 @@ function FeatureCard({
   description: string;
 }) {
   return (
-    <Card className="shadow-md shadow-highlight/20">
+    <Card className="shadow-highlight/20 shadow-md">
       <CardHeader>
         <span aria-hidden="true">{icon}</span>
         <CardTitle>{title}</CardTitle>
@@ -127,13 +129,13 @@ function FeatureCard({
 
 function FeaturesSection() {
   return (
-    <section id="how-it-works" className="bg-background pt-24 text-foreground">
+    <section id="how-it-works" className="bg-background text-foreground pt-24">
       <div className="container mx-auto">
         <div className="mb-16 text-center">
           <h2 className="gradient-text mb-4 inline-block text-4xl font-bold md:text-5xl">
             How It Works
           </h2>
-          <p className="mx-auto max-w-2xl text-xl text-muted-foreground">
+          <p className="text-muted-foreground mx-auto max-w-2xl text-xl">
             Our platform makes it easy to practice and improve your public
             speaking skills
           </p>
@@ -163,7 +165,7 @@ function FeaturesSection() {
 
 function CtaSection() {
   return (
-    <section className="bg-gradient-to-b from-highlight/10 to-highlight-secondary/10 py-24">
+    <section className="from-highlight/10 to-highlight-secondary/10 bg-linear-to-b py-24">
       <div className="container mx-auto text-center">
         <h2 className="mb-4 text-3xl font-bold md:text-5xl">
           Ready to Improve Your Public Speaking?
@@ -171,9 +173,11 @@ function CtaSection() {
         <p className="mx-auto mb-10 max-w-2xl text-xl opacity-90">
           Sign up today and take your communication skills to the next level
         </p>
-        <Button size="lg" asChild variant="subscribe">
-          <SignUpButton mode="modal">Sign Up Now</SignUpButton>
-        </Button>
+        <SignedOut>
+          <Button size="lg" asChild variant="subscribe">
+            <SignUpButton mode="modal">Sign Up Now</SignUpButton>
+          </Button>
+        </SignedOut>
       </div>
     </section>
   );

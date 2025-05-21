@@ -8,7 +8,7 @@ export default async function SubscriptionLanding() {
   const { user, publicMetadata } = userWithMetadata(await currentUser());
 
   return (
-    <section className="bg-gradient-to-b from-background to-highlight/10 py-12 md:py-24 lg:py-32">
+    <section className="bg-linear-to-b from-background to-highlight/10 py-12 md:py-24 lg:py-32">
       <div className="container mx-auto">
         <div className="mb-12 text-center">
           <h2 className="gradient-text text-3xl font-bold md:text-5xl">
@@ -34,7 +34,7 @@ export default async function SubscriptionLanding() {
           <div className="mx-auto mt-12 max-w-3xl rounded-xl border bg-background p-8 shadow-md">
             <div className="flex flex-col gap-6 md:flex-row md:items-center">
               <div className="flex-1">
-                <div className="mb-4 rounded-lg bg-gradient-to-r from-highlight/10 to-highlight-secondary/10 p-4">
+                <div className="mb-4 rounded-lg bg-linear-to-r from-highlight/10 to-highlight-secondary/10 p-4">
                   <div className="flex items-center justify-between">
                     <div className="text-lg font-medium">Pro Plan</div>
                     {SUBSCRIPTION_TIERS.pro.price ? (
@@ -52,7 +52,7 @@ export default async function SubscriptionLanding() {
                 </div>
               </div>
 
-              <div className="flex-shrink-0">
+              <div className="shrink-0">
                 <SubscriptionTrigger className="w-full md:w-auto">
                   Upgrade Now
                 </SubscriptionTrigger>
@@ -75,8 +75,8 @@ function FeatureCard({
   comingSoon: boolean;
 }) {
   return (
-    <div className="relative overflow-hidden rounded-xl border bg-background shadow-sm transition-shadow hover:shadow-md">
-      <div className="h-2 bg-gradient-to-r from-highlight to-highlight-secondary"></div>
+    <div className="relative overflow-hidden rounded-xl border bg-background shadow-xs transition-shadow hover:shadow-md">
+      <div className="h-2 bg-linear-to-r from-highlight to-highlight-secondary"></div>
       <div className="p-6">
         <div
           className={cn(

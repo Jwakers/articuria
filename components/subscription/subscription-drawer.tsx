@@ -62,7 +62,7 @@ export function SubscriptionDrawer() {
 
   return (
     <Drawer open={isOpen} onOpenChange={setIsOpen}>
-      <DrawerContent className="max-h-[80%] bg-gradient-to-b from-background to-highlight/10">
+      <DrawerContent className="max-h-[80%] bg-linear-to-b from-background to-highlight/10">
         <div className="container mx-auto w-full overflow-y-auto py-4">
           <DrawerHeader className="text-center">
             <DrawerTitle className="gradient-text text-center text-2xl font-bold">
@@ -126,7 +126,7 @@ export function SubscriptionDrawer() {
 
             {/* Pro Plan - More appealing with gradient and emphasis */}
             <div className="relative overflow-hidden rounded-lg shadow-md">
-              <div className="absolute inset-0 bg-gradient-to-br from-highlight to-highlight-secondary" />
+              <div className="absolute inset-0 bg-linear-to-br from-highlight to-highlight-secondary" />
               <div className="isolate m-1 rounded border bg-background p-6">
                 <div className="mb-4 flex items-start justify-between">
                   <div>
