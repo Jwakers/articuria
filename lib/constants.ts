@@ -15,7 +15,7 @@ export const ROUTES = {
   },
   success: "/success",
   privacy: "/privacy",
-  terms: "/terms",
+  terms: "/terms-of-service",
 } as const;
 
 type TierKeys = "free" | "pro";

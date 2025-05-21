@@ -19,9 +19,10 @@
 - [x] add (create) logo to Stripe branding section
 - [x] Check and update whether preview deployments causes database migration to the production DB (this must be prevented if so)
 - [x] Improve the home page
+- [x] Add privacy and terms of service page
 - [ ] Upgrade tailwind
-- [ ] Implement brand colors accross code base not just for special elements
-- [ ] Watch database for changes on the manage video page [id]. This should prevent the need for refreshing. Another example is the go to video link on the recorder page, this should watch for changes and update accordingly
+- [ ] Implement brand colors across code base not just for special elements
+- [ ] Refactor to convex
 - [ ] Provide open ai with table topic audio for a better review
 - [ ] Generate transcript with open ai removing assembly ai from the project
 - [ ] Table topic report is quite generous, event for a totally shit video. Perhaps have it review duration in conjunction with what a normal table topic should be
