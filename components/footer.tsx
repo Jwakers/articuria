@@ -1,10 +1,17 @@
 import { ROUTES } from "@/lib/constants";
+import { cn } from "@/lib/utils";
+import { ClassValue } from "clsx";
 import Link from "next/link";
 
-export function Footer() {
+export function Footer({ className }: { className?: ClassValue }) {
   return (
-    <footer className="py-6">
-      <div className="container mx-auto flex items-center justify-between">
+    <footer className={cn("py-6", className)}>
+      <div
+        className={cn(
+          "mx-auto flex items-center justify-between",
+          !className && "container",
+        )}
+      >
         <p className="text-sm">
           © {new Date().getFullYear()} Articuria. All rights reserved.
         </p>
@@ -13,7 +20,7 @@ export function Footer() {
             <li>
               <Link
                 href={ROUTES.privacy}
-                className="text-sm transition-colors hover:opacity-60 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring"
+                className="focus-visible:ring-ring text-sm transition-colors hover:opacity-60 focus-visible:ring-2 focus-visible:outline-hidden"
                 aria-label="Privacy Policy"
               >
                 Privacy Policy
@@ -22,7 +29,7 @@ export function Footer() {
             <li>
               <Link
                 href={ROUTES.terms}
-                className="text-sm transition-colors hover:opacity-60 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring"
+                className="focus-visible:ring-ring text-sm transition-colors hover:opacity-60 focus-visible:ring-2 focus-visible:outline-hidden"
                 aria-label="Terms of Service"
               >
                 Terms of Service

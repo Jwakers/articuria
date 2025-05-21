@@ -1,11 +1,11 @@
 import { ROUTES } from "@/lib/constants";
 import Link from "next/link";
 
-export default function PrivacyPage() {
+export default function TermsOfServicePage() {
   return (
     <article className="container mx-auto pt-20">
       <h1 className="text-xl font-bold md:text-2xl">Terms of service</h1>
-      <div className="prose">
+      <div className="prose dark:prose-invert">
         <p>Effective Date: 21 May 2025</p>
 
         <p>

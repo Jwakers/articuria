@@ -20,8 +20,8 @@
 - [x] Check and update whether preview deployments causes database migration to the production DB (this must be prevented if so)
 - [x] Improve the home page
 - [x] Add privacy and terms of service page
-- [ ] Upgrade tailwind
-- [ ] Implement brand colors across code base not just for special elements
+- [x] Upgrade tailwind
+- [x] Implement brand colors across code base not just for special elements
 - [ ] Refactor to convex
 - [ ] Provide open ai with table topic audio for a better review
 - [ ] Generate transcript with open ai removing assembly ai from the project

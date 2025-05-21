@@ -5,7 +5,7 @@ export default function PrivacyPage() {
   return (
     <article className="container mx-auto pt-20">
       <h1 className="text-xl font-bold md:text-2xl">Privacy Policy</h1>
-      <div className="prose">
+      <div className="prose dark:prose-invert">
         <p>Effective Date: 21 May 2025</p>
 
         <p>
