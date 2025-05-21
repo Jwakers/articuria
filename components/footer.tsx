@@ -13,7 +13,7 @@ export function Footer() {
             <li>
               <Link
                 href={ROUTES.privacy}
-                className="text-sm transition-colors hover:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="text-sm transition-colors hover:opacity-60 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring"
                 aria-label="Privacy Policy"
               >
                 Privacy Policy
@@ -22,7 +22,7 @@ export function Footer() {
             <li>
               <Link
                 href={ROUTES.terms}
-                className="text-sm transition-colors hover:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="text-sm transition-colors hover:opacity-60 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring"
                 aria-label="Terms of Service"
               >
                 Terms of Service

@@ -68,7 +68,7 @@ export function BillingHistory({ billingDataPromise }: BillingPageProps) {
             {data?.map((item) => (
               <TableRow key={item.id}>
                 <TableCell
-                  className="max-w-12 overflow-hidden text-ellipsis font-medium"
+                  className="max-w-12 overflow-hidden font-medium text-ellipsis"
                   title={item.id}
                 >
                   {item.id}
@@ -115,9 +115,9 @@ export function BillingHistory({ billingDataPromise }: BillingPageProps) {
 
         {!data?.length ? (
           <div className="flex flex-col items-center justify-center py-8 text-center">
-            <FileText className="mb-4 h-12 w-12 text-muted-foreground" />
+            <FileText className="text-muted-foreground mb-4 size-12" />
             <h3 className="text-lg font-medium">No invoices yet</h3>
-            <p className="mt-1 text-sm text-muted-foreground">
+            <p className="text-muted-foreground mt-1 text-sm">
               Your billing history will appear here once you have been charged.
             </p>
           </div>

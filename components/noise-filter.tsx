@@ -19,7 +19,7 @@ export function Noise() {
   return (
     <div
       aria-hidden="true"
-      className="absolute inset-0 opacity-20 [filter:url(#noiseFilter)]"
+      className="absolute inset-0 opacity-20 filter-[url(#noiseFilter)]"
     />
   );
 }

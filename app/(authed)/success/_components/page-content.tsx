@@ -52,11 +52,11 @@ export default function PageContent() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-b from-background to-highlight-secondary/5">
+    <div className="flex min-h-screen flex-col bg-linear-to-b from-background to-highlight-secondary/5">
       <main className="flex flex-1 items-center justify-center p-6">
         <div className="mx-auto w-full max-w-3xl">
           <div className="mb-8 text-center">
-            <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-r from-highlight to-highlight-secondary">
+            <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-linear-to-r from-highlight to-highlight-secondary">
               <CheckCircle className="h-8 w-8 text-white" />
             </div>
 
@@ -106,7 +106,7 @@ export default function PageContent() {
                     className="flex items-center gap-2 text-sm"
                     key={feature.title}
                   >
-                    <div className="flex-shrink-0 rounded-full bg-highlight/10 p-1">
+                    <div className="shrink-0 rounded-full bg-highlight/10 p-1">
                       {feature.comingSoon ? (
                         <Sparkles className="h-3 w-3 text-highlight-secondary" />
                       ) : (
@@ -135,7 +135,7 @@ export default function PageContent() {
           <div className="mb-8 grid gap-4 md:grid-cols-2">
             <Card className="p-4 transition-shadow hover:shadow-md">
               <div className="flex items-start gap-3">
-                <div className="flex-shrink-0 rounded-full bg-highlight/10 p-2">
+                <div className="shrink-0 rounded-full bg-highlight/10 p-2">
                   <Sparkles className="h-4 w-4 text-highlight" />
                 </div>
                 <div>
@@ -157,7 +157,7 @@ export default function PageContent() {
             </Card>
             {/* <Card className="p-4 transition-shadow hover:shadow-md">
               <div className="flex items-start gap-3">
-                <div className="flex-shrink-0 rounded-full bg-highlight/10 p-2">
+                <div className="shrink-0 rounded-full bg-highlight/10 p-2">
                   <BookOpen className="h-4 w-4 text-highlight" />
                 </div>
                 <div>

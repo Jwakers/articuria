@@ -19,7 +19,7 @@ export default function ErrorPage({
   }, [error]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-background to-highlight-secondary/5 p-6">
+    <div className="flex min-h-screen items-center justify-center bg-linear-to-b from-background to-highlight-secondary/5 p-6">
       <div className="mx-auto w-full max-w-md text-center">
         <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-destructive/10">
           <AlertCircle className="h-8 w-8 text-destructive" />

@@ -324,9 +324,9 @@ export default function TableTopicsRecorder() {
 
             {/* Backdrop blur must be outside of conditional rendering to properly transition */}
             <div
-              key="backdrop-blur"
+              key="backdrop-blur-sm"
               className={cn(
-                "pointer-events-none absolute inset-0 backdrop-blur-sm transition-opacity duration-500",
+                "pointer-events-none absolute inset-0 backdrop-blur-xs transition-opacity duration-500",
                 currentTopic && !recordedVideoURL && !isRecording
                   ? "opacity-100"
                   : "opacity-0",
