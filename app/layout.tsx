@@ -7,6 +7,7 @@ import { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "../components/theme-provider";
+import ConvexClientProvider from "./convex-client-provider";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -34,24 +35,30 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en">
-        <body
-          className={cn(geistSans.variable, geistMono.variable, "antialiased")}
-        >
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <SubscriptionDrawerProvider>
-              <div vaul-drawer-wrapper="true">
-                <div className="relative grid min-h-dvh grid-rows-[auto_1fr_auto] bg-background">
-                  <NoiseFilter />
-                  {children}
+      <ConvexClientProvider>
+        <html lang="en">
+          <body
+            className={cn(
+              geistSans.variable,
+              geistMono.variable,
+              "antialiased",
+            )}
+          >
+            <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+              <SubscriptionDrawerProvider>
+                <div vaul-drawer-wrapper="true">
+                  <div className="bg-background relative grid min-h-dvh grid-rows-[auto_1fr_auto]">
+                    <NoiseFilter />
+                    {children}
+                  </div>
                 </div>
-              </div>
-              <Toaster richColors />
-              <SubscriptionDrawer />
-            </SubscriptionDrawerProvider>
-          </ThemeProvider>
-        </body>
-      </html>
+                <Toaster richColors />
+                <SubscriptionDrawer />
+              </SubscriptionDrawerProvider>
+            </ThemeProvider>
+          </body>
+        </html>
+      </ConvexClientProvider>
     </ClerkProvider>
   );
 }

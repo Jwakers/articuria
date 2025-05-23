@@ -36,42 +36,68 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import Spinner from "@/components/ui/spinner";
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
+import { DIFFICULTY_OPTIONS, THEME_OPTIONS } from "@/convex/schema";
 import { useMediaRecorder } from "@/hooks/use-media-recorder";
-import { DIFFICULTY_MAP, ROUTES, THEME_MAP } from "@/lib/constants";
+import { ROUTES } from "@/lib/constants";
 import { cn, userWithMetadata } from "@/lib/utils";
 import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Difficulty, MuxVideo, Theme } from "@prisma/client";
+import { useQuery } from "convex/react";
 import { Download, HelpCircle, Save, Trash2 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
-import { useEffect, useRef, useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import TopicAndCountdown from "./topic-and-countdown";
 
+const DIFFICULTY_MAP: Record<(typeof DIFFICULTY_OPTIONS)[number], string> = {
+  BEGINNER: "Beginner",
+  INTERMEDIATE: "Intermediate",
+  ADVANCED: "Advanced",
+  EXPERT: "Expert",
+} as const;
+
+const THEME_MAP: Record<(typeof THEME_OPTIONS)[number], string> = {
+  CREATIVITY_AND_IMAGINATION: "Creativity and Imagination",
+  CULTURE_AND_SOCIETY: "Culture and Society",
+  CURRENT_EVENTS: "Current Events",
+  ETHICAL_DILEMMAS: "Ethical Dilemmas",
+  GENERAL: "General",
+  HYPOTHETICAL_SCENARIOS: "Hypothetical Scenarios",
+  NATURE_AND_ENVIRONMENT: "Nature and Environment",
+  PERSONAL_EXPERIENCES: "Personal Experiences",
+  PROFESSIONAL_DEVELOPMENT: "Professional Development",
+} as const;
+
 const COUNTDOWN_TIME = 5;
-const difficultyValues = Object.values(DIFFICULTY_MAP);
-const themeValues = Object.values(THEME_MAP);
+const DIFFICULTY_VALUES = Object.values(DIFFICULTY_MAP);
+const THEME_VALUES = Object.values(THEME_MAP);
 
 const formSchema = z.object({
   difficulty: z
-    .nativeEnum(Difficulty, {
-      message: `Invalid selection, should be one of ${difficultyValues.join(", ")}`,
+    .enum([...DIFFICULTY_OPTIONS], {
+      message: `Invalid selection, should be one of ${DIFFICULTY_VALUES.join(", ")}`,
     })
     .optional(),
   theme: z
-    .nativeEnum(Theme, {
-      message: `Invalid selection, should be one of ${themeValues.join(", ")}`,
+    .enum([...THEME_OPTIONS], {
+      message: `Invalid selection, should be one of ${THEME_VALUES.join(", ")}`,
     })
     .optional(),
 });
 
 export default function TableTopicsRecorder() {
-  const [currentTopic, setCurrentTopic] = useState<string | null>(null);
+  const [currentTopicId, setCurrentTopicId] = useState<Id<"tableTopic"> | null>(
+    null,
+  );
+  const currentTopic = useQuery(api.tableTopics.get, {
+    topicId: currentTopicId ?? undefined,
+  });
   const [isPending, startTransition] = useTransition();
-  const topicId = useRef<MuxVideo["tableTopicId"] | null>(null);
   const [countdown, setCountdown] = useState<number | null>(null);
   const { accountLimits } = userWithMetadata(useUser().user);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -103,13 +129,13 @@ export default function TableTopicsRecorder() {
 
     startTransition(async () => {
       try {
-        if (currentTopic) handleDiscardRecording(); // Note: awaiting here causes some strange behaviour where the stream is not properly reset
-        const { topic, id } = await getTableTopic({
+        if (currentTopicId) handleDiscardRecording(); // Note: awaiting here causes some strange behaviour where the stream is not properly reset
+        const topicId = await getTableTopic({
           difficulty,
           theme,
         });
-        setCurrentTopic(topic);
-        topicId.current = id;
+
+        setCurrentTopicId(topicId);
         setCountdown(COUNTDOWN_TIME);
       } catch (error) {
         const message =
@@ -120,13 +146,12 @@ export default function TableTopicsRecorder() {
   };
 
   const handleSaveRecording = async () => {
-    if (!topicId.current)
-      return toast.error("Topic ID not set. Please generate a new topic.");
-
-    await uploadVideo({
-      title: currentTopic ?? "Table topic",
-      tableTopicId: topicId.current,
-    });
+    // if (!topicId.current)
+    //   return toast.error("Topic ID not set. Please generate a new topic.");
+    // await uploadVideo({
+    //   title: currentTopic ?? "Table topic",
+    //   tableTopicId: topicId.current,
+    // });
   };
 
   const handleDownloadRecording = () => {
@@ -144,8 +169,7 @@ export default function TableTopicsRecorder() {
 
   const handleDiscardRecording = async () => {
     await resetRecording();
-    setCurrentTopic(null);
-    topicId.current = null;
+    setCurrentTopicId(null);
   };
 
   const getTimingColor = () => {
@@ -259,7 +283,7 @@ export default function TableTopicsRecorder() {
               )}
             />
             {!canSetDifficulty && !canSetTheme ? (
-              <p className="text-sm text-muted-foreground md:col-span-2">
+              <p className="text-muted-foreground text-sm md:col-span-2">
                 Setting options for table topics are only available for paid
                 users.
               </p>
@@ -279,7 +303,7 @@ export default function TableTopicsRecorder() {
             </Button>
           </form>
         </Form>
-        <div className="relative aspect-video overflow-hidden rounded-md bg-accent">
+        <div className="bg-accent relative aspect-video overflow-hidden rounded-md">
           <video
             ref={videoElementRef}
             className="h-full w-full"
@@ -291,7 +315,7 @@ export default function TableTopicsRecorder() {
             aria-label="Table topic recording preview"
           />
           {isRecording ? (
-            <div className="absolute right-4 top-4 flex size-4 items-center justify-center md:size-6">
+            <div className="absolute top-4 right-4 flex size-4 items-center justify-center md:size-6">
               <span
                 className={cn(
                   "absolute inline-flex size-full animate-ping rounded-full",
@@ -308,7 +332,7 @@ export default function TableTopicsRecorder() {
           ) : null}
 
           <AnimatePresence>
-            {isPending && !currentTopic && !recordedVideoURL ? (
+            {isPending && !currentTopicId && !recordedVideoURL ? (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -316,7 +340,7 @@ export default function TableTopicsRecorder() {
                 transition={{
                   duration: 0.3,
                 }}
-                className="absolute inset-0 flex items-center justify-center bg-overlay text-overlay-foreground"
+                className="bg-overlay text-overlay-foreground absolute inset-0 flex items-center justify-center"
               >
                 <Spinner />
               </motion.div>
@@ -327,21 +351,21 @@ export default function TableTopicsRecorder() {
               key="backdrop-blur-sm"
               className={cn(
                 "pointer-events-none absolute inset-0 backdrop-blur-xs transition-opacity duration-500",
-                currentTopic && !recordedVideoURL && !isRecording
+                currentTopic?.topic && !recordedVideoURL && !isRecording
                   ? "opacity-100"
                   : "opacity-0",
               )}
             />
-            {currentTopic && !recordedVideoURL ? (
+            {currentTopic?.topic && !recordedVideoURL ? (
               <motion.div
-                key={currentTopic}
+                key={currentTopic?.topic}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.3 }}
               >
                 <TopicAndCountdown
-                  topic={currentTopic}
+                  topic={currentTopic?.topic}
                   countdown={countdown}
                   showBackground={!isRecording}
                 />

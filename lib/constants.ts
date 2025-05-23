@@ -120,11 +120,6 @@ export const SUBSCRIPTION_TIERS: Record<
   },
 };
 
-export enum ERROR_CODES {
-  reachedVideoLimit = "VL",
-  videoSizeLimitExceeded = "SL",
-}
-
 export const CONTACT_FORM_REASONS = {
   issue: { key: "issue", value: "Issue" },
   feedback: { key: "feedback", value: "Application feedback" },

@@ -3,7 +3,7 @@ import type { useUser } from "@clerk/nextjs";
 import { User } from "@clerk/nextjs/server";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { ACCOUNT_LIMITS, DISFLUENCIES, ERROR_CODES } from "./constants";
+import { ACCOUNT_LIMITS, DISFLUENCIES } from "./constants";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -22,9 +22,6 @@ export function validateFile({
   if (file.size > accountLimits.videoSizeLimit) {
     throw new Error(
       "File size exceeds the maximum file size on your account. Upgrade your account to increase this limit.",
-      {
-        cause: ERROR_CODES.videoSizeLimitExceeded,
-      },
     );
   }
 
@@ -83,6 +80,9 @@ export function userWithMetadata(user: User | UserResource | null | undefined) {
       publicMetadata: null,
       accountLimits: null,
     };
+  // TODO fetch user from convex (maybe move to a helper folder or the auth file - note, move the auth file)
+  // const user = await fetchQuery(api.users.current);
+
   const metadata: ClerkUserPublicMetadata = user.publicMetadata;
   const accountLimits = getAccountLimits(metadata);
 

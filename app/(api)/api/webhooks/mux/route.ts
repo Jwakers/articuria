@@ -4,6 +4,8 @@ import { StaticRenditionWebhookPayload } from "@/app/server/mux/types";
 import { parseStatus } from "@/app/server/mux/utils";
 import { UnwrapWebhookEvent } from "@mux/mux-node/resources/webhooks.mjs";
 
+// DELETE THIS WEBHOOK AND ADD FUNCTIONALITY TO CONVEX
+
 const webhookSecret = process.env.MUX_WEBHOOK_SIGNING_SECRET!;
 
 if (!webhookSecret) {

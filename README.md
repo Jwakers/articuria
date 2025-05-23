@@ -5,7 +5,6 @@
 - [x] Log out button in user menu does not work
 - [x] Traffic light system in accordions looks rough
 - [ ] Video still processing dialog is a bit shit
-- [ ] Error uploading large videos > 1:30. Prisma transaction is timing out.
 - [ ] Generating a second topic causes the video stream to fail.
 - [ ] contact page needs a loading.tsx
 - [ ] If the user does not save a video for a topic they will see the same one again
@@ -23,6 +22,7 @@
 - [x] Upgrade tailwind
 - [x] Implement brand colors across code base not just for special elements
 - [ ] Refactor to convex
+- [ ] Upgrade to cursor pro
 - [ ] Provide open ai with table topic audio for a better review
 - [ ] Generate transcript with open ai removing assembly ai from the project
 - [ ] Table topic report is quite generous, event for a totally shit video. Perhaps have it review duration in conjunction with what a normal table topic should be

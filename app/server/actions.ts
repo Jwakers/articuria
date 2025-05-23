@@ -1,10 +1,11 @@
 "use server";
 
+import { api } from "@/convex/_generated/api";
 import { userWithMetadata } from "@/lib/utils";
 import { currentUser } from "@clerk/nextjs/server";
 import { Difficulty, Theme } from "@prisma/client";
-import { db } from "./db";
-import { createAiTableTopic } from "./db/queries";
+import { fetchMutation } from "convex/nextjs";
+import { getAuthToken } from "../auth";
 import { generateTableTopic } from "./openai/openai-actions";
 
 export type GenerateTopicOptions = {
@@ -38,43 +39,58 @@ export async function getTableTopic(
     if (accountLimits.tableTopicOptions.theme && options.theme)
       theme = options.theme;
 
-    const videos = await db.muxVideo.findMany({
-      select: { tableTopicId: true, tableTopic: { select: { topic: true } } },
-    });
+    // const videos = await db.muxVideo.findMany({
+    //   select: { tableTopicId: true, tableTopic: { select: { topic: true } } },
+    // });
 
-    const existingTopics = videos.map((item) => item.tableTopic.topic);
-    const existingTopicIds = videos.map((item) => item.tableTopicId);
+    // const existingTopics = videos.map((item) => item.tableTopic.topic);
+    // const existingTopicIds = videos.map((item) => item.tableTopicId);
 
-    const [topic] = await db.tableTopic.findMany({
-      take: 10,
-      where: {
-        difficulty,
-        themes: {
-          has: theme,
-        },
-        id: {
-          notIn: existingTopicIds,
-        },
-      },
-    });
+    // const [topic] = await db.tableTopic.findMany({
+    //   take: 10,
+    //   where: {
+    //     difficulty,
+    //     themes: {
+    //       has: theme,
+    //     },
+    //     id: {
+    //       notIn: existingTopicIds,
+    //     },
+    //   },
+    // });
 
-    if (topic) return topic;
+    // if (topic) return topic;
 
     const aiTopic = await generateTableTopic({
       difficulty,
       theme,
-      topicBlackList: existingTopics,
+      topicBlackList:
+        /*existingTopics,*/
+        [],
     });
 
-    const dbTopic = await createAiTableTopic({
-      difficulty,
-      theme,
-      topic: aiTopic,
-    });
+    const topicId = await fetchMutation(
+      api.tableTopics.create,
+      {
+        difficulty,
+        theme,
+        topic: aiTopic,
+      },
+      {
+        token: await getAuthToken(),
+      },
+    );
 
-    return dbTopic;
+    // const dbTopic = await createAiTableTopic({
+    //   difficulty,
+    //   theme,
+    //   topic: aiTopic,
+    // });
+
+    return topicId;
   } catch (error) {
     console.error("Error in getTableTopic:", error);
+    // TODO delete the topic from the database
     throw new Error("Failed to get table topic");
   }
 }

@@ -3,7 +3,6 @@ import { userWithMetadata } from "@/lib/utils";
 import { currentUser } from "@clerk/nextjs/server";
 import { MuxVideo, TableTopic } from "@prisma/client";
 import { isSameMonth, subMonths } from "date-fns";
-import "server-only";
 import { GenerateTopicOptions } from "../actions";
 
 type CreateAiTableTopicOptions = GenerateTopicOptions & {
