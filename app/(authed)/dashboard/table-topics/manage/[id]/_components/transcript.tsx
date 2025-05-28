@@ -52,12 +52,20 @@ export default function Transcript({ videoId }: TranscriptProps) {
 
   const handleGenerateTranscript = async () => {
     startTranscriptTransition(async () => {
-      if (transcript || !video) return;
-      const { error } = await getTranscriptionData(video._id);
-
-      if (error) {
-        toast.error(error);
+      if (transcript || !video) {
+        toast.error("Transcript already exists");
         return;
+      }
+      try {
+        const { error } = await getTranscriptionData(video._id);
+
+        if (error) {
+          toast.error(error);
+          return;
+        }
+      } catch (err) {
+        toast.error("Unexpected error while requesting transcription");
+        console.error(err);
       }
     });
   };
@@ -102,8 +110,8 @@ export default function Transcript({ videoId }: TranscriptProps) {
   }, [report, transcript, reportPending]);
 
   if (
-    !accountLimits?.tableTopicReport ||
-    !accountLimits?.tableTopicTranscription
+    accountLimits &&
+    (!accountLimits.tableTopicReport || !accountLimits.tableTopicTranscription)
   ) {
     return (
       <Card>

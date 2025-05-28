@@ -7,7 +7,13 @@ export const get = query({
   },
   async handler(ctx, args) {
     if (!args.reportId) return null;
-    return await ctx.db.get(args.reportId);
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Unauthorized");
+
+    const report = await ctx.db.get(args.reportId);
+    if (report?.user !== identity.tokenIdentifier) return null;
+
+    return report;
   },
 });
 

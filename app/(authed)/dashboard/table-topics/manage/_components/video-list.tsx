@@ -97,9 +97,7 @@ export function VideoList() {
                     <span
                       aria-label={`Duration: ${
                         video.duration
-                          ? `${Math.floor(video.duration / 60)} minutes and ${
-                              video.duration % 60
-                            } seconds`
+                          ? `${Math.floor(video.duration / 60)} minutes and ${Math.floor(video.duration % 60)} seconds`
                           : "Not available"
                       }`}
                     >

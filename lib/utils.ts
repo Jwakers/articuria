@@ -61,25 +61,6 @@ export function getAccountLimits(user: Doc<"users">) {
   return ACCOUNT_LIMITS.free;
 }
 
-// type UserResource = ReturnType<typeof useUser>["user"];
-// export type UserData = ReturnType<typeof userWithMetadata>;
-
-// export function userWithMetadata(user: User | UserResource | null | undefined) {
-//   if (!user)
-//     return {
-//       user: null,
-//       publicMetadata: null,
-//       accountLimits: null,
-//     };
-//   // TODO fetch user from convex (maybe move to a helper folder or the auth file - note, move the auth file)
-//   // const user = await fetchQuery(api.users.current);
-
-//   const metadata: ClerkUserPublicMetadata = user.publicMetadata;
-//   const accountLimits = getAccountLimits(metadata);
-
-//   return { user, publicMetadata: metadata, accountLimits };
-// }
-
 export function price(value: number) {
   const GBPound = new Intl.NumberFormat("en-GB", {
     style: "currency",

@@ -29,9 +29,9 @@ type VideoPlayerProps = {
 };
 
 export default function VideoPlayer({ videoId }: VideoPlayerProps) {
+  const router = useRouter();
   const { video, tableTopic } =
     useQuery(api.videos.getEnriched, { videoId }) ?? {};
-  const router = useRouter();
   const { isDeleting, deleteVideo } = useManageVideo({
     video,
   });
@@ -41,6 +41,10 @@ export default function VideoPlayer({ videoId }: VideoPlayerProps) {
     void deleteVideo();
     router.push(ROUTES.dashboard.tableTopics.manage);
   };
+
+  if (!video) {
+    return <VideoPlayerSkeleton />;
+  }
 
   return (
     <Card>

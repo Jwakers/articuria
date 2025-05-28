@@ -50,12 +50,26 @@ export const getOrCreateTopic = mutation({
     if (!identity) throw new Error("Unauthorized");
 
     // Find an existing topic the user has not already done
-    // TODO: when videos are setup
-    // for await (const topic of ctx.db.query("tableTopic")) {
-    //   if (!args.excludeIds.includes(topic._id)) {
-    //     return topic;
-    //   }
-    // }
+    const videos = await ctx.db
+      .query("videos")
+      .filter((q) => q.eq(q.field("user"), identity.tokenIdentifier))
+      .collect();
+    const existingTopics = videos.map((video) => video.tableTopic);
+
+    const topics = ctx.db
+      .query("tableTopics")
+      .filter((q) =>
+        q.and(
+          q.eq(q.field("difficulty"), args.difficulty),
+          q.eq(q.field("theme"), args.theme),
+        ),
+      );
+
+    for await (const topic of topics) {
+      if (!existingTopics.includes(topic._id)) {
+        return topic;
+      }
+    }
 
     // If we need a new topic create one
     const topicId = await ctx.db.insert("tableTopics", {
@@ -103,6 +117,7 @@ export const updateTopicWithAi = internalAction({
     console.log(BASE_URL);
     const res = await fetch(`${BASE_URL}/api/openai/create-topic`, {
       method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         difficulty: args.difficulty,
         theme: args.theme,

@@ -36,7 +36,6 @@ import { toast } from "sonner";
 
 export function SubscriptionDetails() {
   const { user } = useUser();
-  console.log(user);
   const videos = useQuery(api.videos.list);
   const videoCount = videos?.length ?? 0;
   const [showCancelDialog, setShowCancelDialog] = useState(false);

@@ -14,7 +14,7 @@ export const get = query({
 export const create = mutation({
   args: {
     videoId: v.id("videos"),
-    data: v.any(),
+    data: v.any(), // TODO: type this data once using open ai for transcription
     speakingDuration: v.number(),
     wordsPerMinute: v.number(),
     fillerWordCount: v.number(),

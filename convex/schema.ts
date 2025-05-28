@@ -39,7 +39,7 @@ export default defineSchema({
     image: v.optional(v.string()),
     subscription: v.optional(v.union(v.literal("FREE"), v.literal("PRO"))),
     stripeCustomerId: v.optional(v.string()),
-    subscriptionData: v.optional(v.any()),
+    subscriptionData: v.optional(v.any()), // TODO: add validation
   }).index("by_clerk_id", ["clerkId"]),
   tableTopics: defineTable({
     topic: v.optional(v.string()),

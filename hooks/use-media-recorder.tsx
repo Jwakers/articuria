@@ -48,6 +48,7 @@ export const useMediaRecorder = () => {
         description:
           "Failed to access camera/microphone. Please ensure they are not in use by another application. And are authorized for use in your browser.",
       });
+      hasInitUserMedia.current = false;
     }
   };
 

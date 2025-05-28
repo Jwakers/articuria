@@ -47,6 +47,7 @@ export async function POST(request: Request) {
             )?.id,
           },
         });
+        break;
       case "video.asset.ready":
         if (video?.status === "READY" || data.status !== "ready")
           return new Response(null, { status: 200 });
@@ -61,6 +62,7 @@ export async function POST(request: Request) {
             )?.id,
           },
         });
+        break;
       case "video.asset.static_rendition.created":
       case "video.asset.static_rendition.ready":
         try {
@@ -94,6 +96,7 @@ export async function POST(request: Request) {
           console.error(error);
           return new Response("Webhook error", { status: 200 });
         }
+        break;
       default:
         console.log("Ignored Mux webhook event", type);
     }

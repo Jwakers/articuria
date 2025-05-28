@@ -74,7 +74,17 @@ export async function getStripeBillingData() {
 }
 
 export async function getReceiptUrl(chargeId: string) {
+  const { user } = await getUserServer();
+
+  if (!user) return null;
+  if (!user.stripeCustomerId) return null;
+
   const charge = await stripe.charges.retrieve(chargeId);
+
+  // Validate the charge belongs to the authenticated user
+  if (charge.customer !== user.stripeCustomerId) {
+    throw new Error("Unauthorized access to receipt");
+  }
 
   return charge.receipt_url;
 }
@@ -89,7 +99,7 @@ export async function cancelSubscription() {
   try {
     const subscription = await stripe.subscriptions.cancel(subscriptionId);
 
-    if (subscription) await syncStripeDataToClerk();
+    if (subscription) await syncStripeDataToClerk(user.stripeCustomerId);
     const data = JSON.parse(JSON.stringify(subscription));
 
     return { data, error: null };

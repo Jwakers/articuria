@@ -75,9 +75,13 @@ export function BillingHistory({ billingDataPromise }: BillingTabsProps) {
                   {item.id}
                 </TableCell>
                 <TableCell>
-                  {new Date(item.created * 1000).toLocaleDateString()}
+                  {item.created
+                    ? new Date(item.created * 1000).toLocaleDateString()
+                    : "N/A"}
                 </TableCell>
-                <TableCell>{price(item.amount / 100)}</TableCell>
+                <TableCell>
+                  {item.amount ? price(item.amount / 100) : "N/A"}
+                </TableCell>
                 <TableCell>
                   <Badge
                     variant={
@@ -89,7 +93,9 @@ export function BillingHistory({ billingDataPromise }: BillingTabsProps) {
                         : ""
                     }
                   >
-                    {item.status === "succeeded" ? "Paid" : "Unpaid"}
+                    {item.status === "succeeded"
+                      ? "Paid"
+                      : item.status || "Unknown"}
                   </Badge>
                 </TableCell>
                 <TableCell>{item.description ?? "-"}</TableCell>

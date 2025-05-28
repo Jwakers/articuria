@@ -112,7 +112,7 @@ export default function TableTopicsRecorder() {
 
     startTransition(async () => {
       try {
-        if (currentTopicId) handleDiscardRecording(); // Note: awaiting here causes some strange behaviour where the stream is not properly reset
+        if (currentTopicId) await handleDiscardRecording();
         const topicId = await getTableTopic({
           difficulty,
           theme,
@@ -157,10 +157,10 @@ export default function TableTopicsRecorder() {
   };
 
   const getTimingColor = () => {
-    if (timeElapsed <= 60) return "bg-transparent";
     if (timeElapsed > 120) return "bg-red-500";
     if (timeElapsed > 90) return "bg-amber-500";
     if (timeElapsed > 60) return "bg-green-500";
+    return "bg-transparent";
   };
 
   const timingColor = getTimingColor();
@@ -390,9 +390,9 @@ export default function TableTopicsRecorder() {
                 </Button>
               ) : null}
               {video && video.status !== "READY" ? (
-                <div className="text-muted-foreground flex items-center gap-2">
-                  <Loader2 className="animate-spin" />
+                <div className="text-muted-foreground flex items-center gap-2 text-sm">
                   Processing video...
+                  <Loader2 className="animate-spin" />
                 </div>
               ) : null}
               <Button onClick={handleDownloadRecording} variant="secondary">

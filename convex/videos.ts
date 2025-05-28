@@ -69,7 +69,6 @@ export const list = query({
 
 export const create = mutation({
   args: {
-    title: v.string(),
     tableTopicId: v.id("tableTopics"),
   },
   async handler(ctx, args) {
@@ -117,7 +116,14 @@ export const getById = query({
     videoId: v.id("videos"),
   },
   async handler(ctx, args) {
-    return await ctx.db.get(args.videoId);
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Unauthorized");
+
+    const video = await ctx.db.get(args.videoId);
+    if (!video || video.user !== identity.tokenIdentifier)
+      throw new Error("Unauthorized");
+
+    return video;
   },
 });
 
@@ -134,6 +140,13 @@ export const updateById = mutation({
     }),
   },
   async handler(ctx, args) {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Unauthorized");
+
+    const video = await ctx.db.get(args.videoId);
+    if (!video || video.user !== identity.tokenIdentifier)
+      throw new Error("Unauthorized");
+
     await ctx.db.patch(args.videoId, args.updateData);
   },
 });

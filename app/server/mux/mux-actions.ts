@@ -8,7 +8,9 @@ import jwt from "jsonwebtoken";
 import mux from "./client";
 import { parseStatus } from "./utils";
 
-const origin = `${process.env.NODE_ENV === "production" ? "https" : "http"}://${process.env.NEXT_PUBLIC_APP_URL}`;
+const appHost = process.env.NEXT_PUBLIC_APP_URL;
+if (!appHost) throw new Error("[MUX] NEXT_PUBLIC_APP_URL missing");
+const origin = `${process.env.NODE_ENV === "production" ? "https" : "http"}://${appHost}`;
 
 export async function createVideoUpload({
   title,
@@ -36,7 +38,6 @@ export async function createVideoUpload({
   const videoId = await fetchMutation(
     api.videos.create,
     {
-      title,
       tableTopicId,
     },
     {

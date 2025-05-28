@@ -13,8 +13,9 @@ export function TotalVideosCard() {
 
   const count = videos?.length ?? 0;
   const countThisMonth =
-    videos?.filter(({ video }) => isSameMonth(video._creationTime, new Date()))
-      .length ?? 0;
+    videos?.filter(({ video }) =>
+      isSameMonth(new Date(video._creationTime), new Date()),
+    ).length ?? 0;
 
   if (!videos) return <StatCardSkeleton />;
 
@@ -42,6 +43,7 @@ export function AverageVideoDurationCard() {
     );
 
   const getAverage = (data: typeof videos) => {
+    if (data.length === 0) return 0;
     const average = data.reduce(
       (acc, { video }) => (acc += video?.duration ?? 0),
       0,
@@ -90,7 +92,7 @@ export function TotalVideoDurationCard() {
   );
 
   const totalDuration = videos.reduce(
-    (acc, { video }) => (acc += video.duration!),
+    (acc, { video }) => (acc += video?.duration ?? 0),
     0,
   );
   const thisMonthsTotalDuration = thisMonthsVideos.reduce(

@@ -21,10 +21,12 @@
 - [x] Add privacy and terms of service page
 - [x] Upgrade tailwind
 - [x] Implement brand colors across code base not just for special elements
-- [ ] Provide open ai with table topic audio for a better review
 - [ ] Generate transcript with open ai removing assembly ai from the project
+  - [ ] Stream the transcript to the client
+- [ ] Provide open ai with table topic audio for a better review
 - [ ] Table topic report is quite generous, event for a totally shit video. Perhaps have it review duration in conjunction with what a normal table topic should be
   - [ ] Feedback should only be given on topics longer than one minute?
+- [ ] With the stripe getReceiptUrl function, validate the charge belongs to the user
 
 # Convex refactor
 

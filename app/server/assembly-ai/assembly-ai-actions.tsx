@@ -44,7 +44,16 @@ export async function getTranscriptionData(videoId: Id<"videos">) {
   if (error) return { error };
   if (!audioRendition) return { error: "Unable to fetch audio rendition" };
 
-  const audioRenditionUrl = `https://stream.mux.com/${playbackId.id}/${audioRendition?.name}`;
+  // Validate playbackId and audioRendition name
+  if (!playbackId?.id || !audioRendition?.name) {
+    return { error: "Invalid playback ID or audio rendition name" };
+  }
+
+  // Use URL constructor for safer URL building
+  const audioRenditionUrl = new URL(
+    `${playbackId.id}/${encodeURIComponent(audioRendition.name)}`,
+    "https://stream.mux.com/",
+  ).toString();
 
   try {
     console.log("[ASSEMBLY] starting transcription");
