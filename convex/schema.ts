@@ -88,38 +88,3 @@ export default defineSchema({
     summary: v.optional(v.string()),
   }),
 });
-
-// model Transcript {
-//   id               String   @id @default(cuid())
-//   createdAt        DateTime @default(now())
-//   data             Json
-//   speakingDuration Float    @default(0)
-//   wordsPerMinute   Int      @default(0)
-//   fillerWordCount  Int      @default(0)
-//   video            MuxVideo @relation(fields: [videoId], references: [id], onDelete: Cascade)
-//   videoId          String   @unique
-// }
-
-// model Report {
-//   id              String   @id @default(cuid())
-//   createdAt       DateTime @default(now())
-//   creativity      String?
-//   creativityScore Int?
-//   clarity         String?
-//   clarityScore    Int?
-//   engagement      String?
-//   engagementScore Int?
-//   tone            String?
-//   toneScore       Int?
-//   pacing          String?
-//   pacingScore     Int?
-//   language        String?
-//   languageScore   Int?
-//   averageScore    Int?
-//   recommendations String[]
-//   commendations   String[]
-//   shortSummary    String?
-//   summary         String?
-//   video           MuxVideo @relation(fields: [videoId], references: [id], onDelete: Cascade)
-//   videoId         String   @unique
-// }

@@ -43,7 +43,7 @@ export async function POST(request: Request) {
             status: parseStatus(data.status),
             duration: data.duration,
             publicPlaybackId: data.playback_ids?.find(
-              (item: any) => item.policy === "public",
+              (item) => item.policy === "public",
             )?.id,
           },
         });
@@ -58,7 +58,7 @@ export async function POST(request: Request) {
             status: parseStatus(data.status),
             duration: data.duration,
             publicPlaybackId: data.playback_ids?.find(
-              (item: any) => item.policy === "public",
+              (item) => item.policy === "public",
             )?.id,
           },
         });

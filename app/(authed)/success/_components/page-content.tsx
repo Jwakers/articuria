@@ -1,10 +1,10 @@
 "use client";
 
-import { getUserServer } from "@/app/server/auth";
 import { syncStripeDataToClerk } from "@/app/server/stripe/sync-stripe";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useConfetti } from "@/hooks/use-confetti";
+import { useUser } from "@/hooks/use-user";
 import { ROUTES, SUBSCRIPTION_TIERS } from "@/lib/constants";
 import { price } from "@/lib/utils";
 import { useSession } from "@clerk/nextjs";
@@ -20,8 +20,8 @@ import { useEffect, useRef } from "react";
 import { toast } from "sonner";
 import Loading from "../loading";
 
-export default async function PageContent() {
-  const { user } = await getUserServer();
+export default function PageContent() {
+  const { user } = useUser();
   const { session } = useSession();
   const sessionReloaded = useRef(false);
   const isSubscriptionActive = user?.subscriptionData?.status === "active";

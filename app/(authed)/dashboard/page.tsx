@@ -25,7 +25,6 @@ export const metadata: Metadata = {
 };
 
 export default async function DashboardPage() {
-  // const { videoCount } = await getUserVideoDetails();
   const videos = await fetchQuery(api.videos.list, undefined, {
     token: await getAuthToken(),
   });

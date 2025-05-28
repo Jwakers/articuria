@@ -99,7 +99,7 @@ export default function TableTopicsRecorder() {
     uploadVideo,
   } = useMediaRecorder();
 
-  const { video, tableTopic } =
+  const { video } =
     useQuery(api.videos.getEnriched, {
       videoId: savedVideoId ?? undefined,
     }) ?? {};

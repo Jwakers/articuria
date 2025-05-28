@@ -20,7 +20,6 @@ import {
 } from "@/components/ui/table";
 import { api } from "@/convex/_generated/api";
 import { DIFFICULTY_MAP, ROUTES, THEME_MAP } from "@/lib/constants";
-import { cn } from "@/lib/utils";
 import { useQuery } from "convex/react";
 import { formatDuration } from "date-fns";
 import { ChevronLeft, ChevronRight, Play } from "lucide-react";
@@ -131,50 +130,50 @@ export function VideoList() {
   );
 }
 
-function Pagination({
-  currentPage,
-  totalPages,
-}: {
-  currentPage: number;
-  totalPages: number;
-}) {
-  const hasPrev = currentPage > 1;
-  const hasNext = currentPage < totalPages;
-  const text = `Page ${currentPage} of ${totalPages}`;
+// function Pagination({
+//   currentPage,
+//   totalPages,
+// }: {
+//   currentPage: number;
+//   totalPages: number;
+// }) {
+//   const hasPrev = currentPage > 1;
+//   const hasNext = currentPage < totalPages;
+//   const text = `Page ${currentPage} of ${totalPages}`;
 
-  return (
-    <div className="flex w-full items-end justify-between">
-      <span className="text-muted-foreground text-sm" aria-label={text}>
-        {text}
-      </span>
+//   return (
+//     <div className="flex w-full items-end justify-between">
+//       <span className="text-muted-foreground text-sm" aria-label={text}>
+//         {text}
+//       </span>
 
-      <div className="flex gap-2">
-        <Link
-          href={`${ROUTES.dashboard.tableTopics.manage}?page=${
-            currentPage - 1
-          }`}
-          aria-label="Previous page"
-          className={cn(!hasPrev && "pointer-events-none")}
-        >
-          <Button variant="outline" size="sm" disabled={!hasPrev}>
-            <ChevronLeft />
-          </Button>
-        </Link>
-        <Link
-          href={`${ROUTES.dashboard.tableTopics.manage}?page=${
-            currentPage + 1
-          }`}
-          aria-label="Next page"
-          className={cn(!hasNext && "pointer-events-none")}
-        >
-          <Button variant="outline" size="sm" disabled={!hasNext}>
-            <ChevronRight />
-          </Button>
-        </Link>
-      </div>
-    </div>
-  );
-}
+//       <div className="flex gap-2">
+//         <Link
+//           href={`${ROUTES.dashboard.tableTopics.manage}?page=${
+//             currentPage - 1
+//           }`}
+//           aria-label="Previous page"
+//           className={cn(!hasPrev && "pointer-events-none")}
+//         >
+//           <Button variant="outline" size="sm" disabled={!hasPrev}>
+//             <ChevronLeft />
+//           </Button>
+//         </Link>
+//         <Link
+//           href={`${ROUTES.dashboard.tableTopics.manage}?page=${
+//             currentPage + 1
+//           }`}
+//           aria-label="Next page"
+//           className={cn(!hasNext && "pointer-events-none")}
+//         >
+//           <Button variant="outline" size="sm" disabled={!hasNext}>
+//             <ChevronRight />
+//           </Button>
+//         </Link>
+//       </div>
+//     </div>
+//   );
+// }
 
 export function VideoListSkeleton() {
   return (

@@ -102,8 +102,6 @@ export const updateTopic = internalMutation({
   },
 });
 
-// TODO: store clerk data in a users table
-
 const BASE_URL = process.env.APP_URL;
 
 export const updateTopicWithAi = internalAction({

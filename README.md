@@ -27,17 +27,18 @@
 - [ ] Table topic report is quite generous, event for a totally shit video. Perhaps have it review duration in conjunction with what a normal table topic should be
   - [ ] Feedback should only be given on topics longer than one minute?
 - [ ] With the stripe getReceiptUrl function, validate the charge belongs to the user
+- [ ] Add pagination back to the video list page
+- [ ] Setup eslint validation locally with existing config (same that applies to vercel builds)
 
 # Convex refactor
 
-- [ ] Move the auth file to a different folder
 - [ ] Set up cron jobs to populate missing video data
 - [x] Utility function to return user data and account limits
-- [ ] Users should reference videos (instead of the video referencing the user ID) ? query this approach first for best practices ?
-- [ ] Remove old prisma code and env variables (including from PROD)
+- [x] Remove old prisma code and env variables (including from PROD)
 - [ ] Once the refactor is finished, try again with creating actions with the openai and mux SDKs
-- [ ] Review with code rabbit before PR
+- [x] Review with code rabbit before PR
 - [ ] Populate env variables and webhook URLs for production including signing secrets
+- [ ] Remove redundant env vars (including cloudflare) from vercel and vercel env pull to local
 - [ ] Refactor for all best practices https://docs.convex.dev/understanding/best-practices/
 - [ ] Close down Supabase account
 - [ ] Research convex caching and make adjustments to code
