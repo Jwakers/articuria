@@ -1,3 +1,5 @@
+"use client";
+
 import { getReceiptUrl } from "@/app/server/stripe/stripe-actions";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -8,7 +10,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import Spinner from "@/components/ui/spinner";
 import {
   Table,
   TableBody,
@@ -18,13 +19,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { price } from "@/lib/utils";
-import { Download, FileText } from "lucide-react";
+import { Download, FileText, Loader2 } from "lucide-react";
 import { use, useEffect, useTransition } from "react";
 import { toast } from "sonner";
 import type Stripe from "stripe";
-import { BillingPageProps } from "./billing-tabs";
+import { BillingTabsProps } from "./billing-tabs";
 
-export function BillingHistory({ billingDataPromise }: BillingPageProps) {
+export function BillingHistory({ billingDataPromise }: BillingTabsProps) {
   const { data, error } = use(billingDataPromise);
   const [pending, startTransition] = useTransition();
 
@@ -105,7 +106,11 @@ export function BillingHistory({ billingDataPromise }: BillingPageProps) {
                       )
                     }
                   >
-                    {pending ? <Spinner /> : <Download className="h-4 w-4" />}
+                    {pending ? (
+                      <Loader2 className="size-4 animate-spin" />
+                    ) : (
+                      <Download className="size-4" />
+                    )}
                   </Button>
                 </TableCell>
               </TableRow>

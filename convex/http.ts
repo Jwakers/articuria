@@ -10,7 +10,7 @@ http.route({
   path: "/clerk-users-webhook",
   method: "POST",
   handler: httpAction(async (ctx, request) => {
-    const event = await validateRequest(request);
+    const event = await validateClerkWebhook(request);
     if (!event) {
       return new Response("Error occurred", { status: 400 });
     }
@@ -35,7 +35,9 @@ http.route({
   }),
 });
 
-async function validateRequest(req: Request): Promise<WebhookEvent | null> {
+async function validateClerkWebhook(
+  req: Request,
+): Promise<WebhookEvent | null> {
   const payloadString = await req.text();
   const svixHeaders = {
     "svix-id": req.headers.get("svix-id")!,

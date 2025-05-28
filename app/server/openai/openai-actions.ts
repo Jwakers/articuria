@@ -1,15 +1,14 @@
 "use server";
 
+import { api } from "@/convex/_generated/api";
+import { Doc, Id } from "@/convex/_generated/dataModel";
 import { THEME_MAP } from "@/lib/constants";
-import { userWithMetadata } from "@/lib/utils";
-import { currentUser } from "@clerk/nextjs/server";
-import { TableTopic } from "@prisma/client";
 import { Transcript } from "assemblyai";
+import { fetchMutation, fetchQuery } from "convex/nextjs";
 import { zodTextFormat } from "openai/helpers/zod";
 import { z } from "zod";
 import { GenerateTopicOptions } from "../actions";
-import { db } from "../db";
-import { getUserVideoById } from "../db/queries";
+import { getAuthToken, getUserServer } from "../auth";
 import client from "./client";
 
 const scoreSchema = z.object({
@@ -32,8 +31,8 @@ const reportSchema = z.object({
 
 type ReportSchema = z.infer<typeof reportSchema>;
 
-export async function generateTableTopicReport(videoId: string) {
-  const { accountLimits } = userWithMetadata(await currentUser());
+export async function generateTableTopicReport(videoId: Id<"videos">) {
+  const { accountLimits } = await getUserServer();
 
   if (!accountLimits?.tableTopicReport)
     return {
@@ -41,19 +40,30 @@ export async function generateTableTopicReport(videoId: string) {
       error: "You do not have permission to generate a report",
     };
 
-  const video = await getUserVideoById(videoId);
+  const { video, tableTopic, transcript } =
+    (await fetchQuery(
+      api.videos.getEnriched,
+      {
+        videoId,
+      },
+      {
+        token: await getAuthToken(),
+      },
+    )) ?? {};
 
-  if (!video?.transcript?.data)
-    return { data: null, error: "No video/transcript data provided" };
-  const transcriptData = video.transcript.data as Transcript;
+  if (video?.report) return { error: "Report already exists" };
+  if (!transcript?.data) return { error: "No video/transcript data provided" };
+  if (!tableTopic?.topic) return { error: "No table topic data provided" };
+
+  const transcriptData = transcript.data as Transcript;
 
   try {
     const rules = [
       `You are the toastmaster, tasked with reviewing the provided table topic transcript.`,
       `Your analysis should focus on creativity, clarity, engagement, tone, pacing, and language.`,
       `For each of these aspects, please provide a score from 1 to 10, along with specific feedback.`,
-      `The audio duration was ${transcriptData.audio_duration} seconds, the speaking duration was ${(video.transcript.speakingDuration / 1000).toFixed(2)} seconds, and the words per minute were ${video.transcript.wordsPerMinute}.`,
-      `The topic was "${video.tableTopic.topic.trim()}" with a difficulty of "${video.tableTopic.difficulty}" and themes of ${video.tableTopic.themes.join(", ")}.`,
+      `The audio duration was ${transcriptData.audio_duration} seconds, the speaking duration was ${transcript.speakingDuration ? (transcript.speakingDuration / 1000).toFixed(2) : "unknown"} seconds, and the words per minute were ${transcript.wordsPerMinute}.`,
+      `The topic was "${tableTopic.topic.trim()}" with a difficulty of "${tableTopic.difficulty}" and themes of ${tableTopic.theme}.`,
       `Please aim for specific examples from the transcript to illustrate your points in both the feedback and commendations.`,
       `Please refer to the user in 2nd person for example "You did this well".`,
       `Please offer both constructive feedback for improvement and commendations for what was done well, all while using British English (en-GB).`,
@@ -63,14 +73,14 @@ export async function generateTableTopicReport(videoId: string) {
 
     // Save audio rendition locally - could come in handy later
 
-    // if (!video.assetId) return { data: null, error: "Missing asset ID" };
+    // if (!video.assetId) return { error: "Missing asset ID" };
     // const { audioRendition, playbackId, error } = await getAudioRendition(
     //   video.assetId,
     // );
 
-    // if (error) return { data: null, error };
+    // if (error) return { error };
     // if (!audioRendition || !playbackId)
-    //   return { data: null, error: "Missing audio data" };
+    //   return { error: "Missing audio data" };
 
     // const res = await ky(
     //   `https://stream.mux.com/${playbackId.id}/${audioRendition.name}`,
@@ -125,8 +135,10 @@ export async function generateTableTopicReport(videoId: string) {
       const average = total / scores.length;
       const averageScore = parseFloat(average.toFixed(1));
 
-      const report = await db.report.create({
-        data: {
+      await fetchMutation(
+        api.reports.create,
+        {
+          videoId: videoId,
           averageScore,
           clarity: data.clarity?.feedback,
           clarityScore: data.clarity?.score,
@@ -144,26 +156,27 @@ export async function generateTableTopicReport(videoId: string) {
           summary: data.summary,
           tone: data.tone?.feedback,
           toneScore: data.tone?.score,
-          videoId: video.id,
         },
-      });
+        {
+          token: await getAuthToken(),
+        },
+      );
 
       return {
-        data: report,
         error: null,
       };
     } catch (parseError) {
       console.error("Error parsing OpenAI response:", parseError);
       console.error("Problematic Response Text:", response.text);
-      return { data: null, error: "Error parsing the feedback response" };
+      return { error: "Error parsing the feedback response" };
     }
   } catch (error) {
     console.error("Error generating feedback:", error);
-    return { data: null, error: "Error generating feedback" };
+    return { error: "Error generating feedback" };
   }
 }
 type GenerateTableTopicArgs = GenerateTopicOptions & {
-  topicBlackList?: TableTopic["topic"][];
+  topicBlackList?: Doc<"tableTopics">["topic"][];
 };
 
 export async function generateTableTopic({

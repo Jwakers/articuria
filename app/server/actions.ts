@@ -1,12 +1,13 @@
 "use server";
 
 import { api } from "@/convex/_generated/api";
-import { userWithMetadata } from "@/lib/utils";
-import { currentUser } from "@clerk/nextjs/server";
-import { Difficulty, Theme } from "@prisma/client";
+import { DIFFICULTY_OPTIONS, THEME_OPTIONS } from "@/convex/schema";
 import { fetchMutation } from "convex/nextjs";
-import { getAuthToken } from "../auth";
+import { getAuthToken, getUserServer } from "./auth";
 import { generateTableTopic } from "./openai/openai-actions";
+
+type Difficulty = (typeof DIFFICULTY_OPTIONS)[number];
+type Theme = (typeof THEME_OPTIONS)[number];
 
 export type GenerateTopicOptions = {
   difficulty: Difficulty | undefined;
@@ -20,7 +21,7 @@ export async function getTableTopic(
   },
 ) {
   try {
-    const { user, accountLimits } = userWithMetadata(await currentUser());
+    const { user, accountLimits } = await getUserServer();
 
     if (!user) throw new Error("Not signed in");
 

@@ -1,75 +1,83 @@
 "use server";
 
-import { userWithMetadata } from "@/lib/utils";
-import { currentUser } from "@clerk/nextjs/server";
-import { MuxVideo, TableTopic } from "@prisma/client";
-import { randomUUID } from "crypto";
+import { getAuthToken, getUserServer } from "@/app/server/auth";
+import { api } from "@/convex/_generated/api";
+import { Doc, Id } from "@/convex/_generated/dataModel";
+import { fetchMutation, fetchQuery } from "convex/nextjs";
 import jwt from "jsonwebtoken";
-import { db } from "../db";
-import { getUserVideoById, getUserVideoCount } from "../db/queries";
 import mux from "./client";
 import { parseStatus } from "./utils";
 
 const origin = `${process.env.NODE_ENV === "production" ? "https" : "http"}://${process.env.NEXT_PUBLIC_APP_URL}`;
 
-export async function getUploadUrl({
+export async function createVideoUpload({
   title,
   tableTopicId,
 }: {
   title: string;
-  tableTopicId: TableTopic["id"];
+  tableTopicId: Id<"tableTopics">;
 }) {
-  const { user, accountLimits } = userWithMetadata(await currentUser());
+  const { user, accountLimits } = await getUserServer();
   if (!user) throw new Error("Not signed in");
   if (!origin) throw new Error("Origin is not defined");
 
-  const videoCount = await getUserVideoCount();
-
-  if (videoCount >= accountLimits.tableTopicLimit)
-    throw new Error("Video upload limit reached for this account");
-
-  const id = randomUUID();
-
-  const data = await db.$transaction(
-    async (prisma) => {
-      const upload = await mux.video.uploads.create({
-        cors_origin: origin,
-        new_asset_settings: {
-          playback_policy: ["public"],
-          video_quality: "basic",
-          passthrough: id,
-          static_renditions: [
-            {
-              resolution: "audio-only",
-            },
-          ],
-          meta: {
-            title: title.trim(),
-            creator_id: user.id,
-            external_id: id,
-          },
-        },
-      });
-
-      const video = await prisma.muxVideo.create({
-        data: {
-          id,
-          userId: user.id,
-          assetId: upload.asset_id,
-          uploadId: upload.id,
-          status: parseStatus(upload.status),
-          tableTopicId,
-        },
-      });
-
-      return { upload, video };
-    },
+  const videos = await fetchQuery(
+    api.videos.list,
+    {},
     {
-      timeout: 10000,
+      token: await getAuthToken(),
     },
   );
 
-  return data;
+  if (videos.length >= accountLimits.tableTopicLimit)
+    throw new Error("Video upload limit reached for this account");
+
+  // Create a new video
+  const videoId = await fetchMutation(
+    api.videos.create,
+    {
+      title,
+      tableTopicId,
+    },
+    {
+      token: await getAuthToken(),
+    },
+  );
+
+  const upload = await mux.video.uploads.create({
+    cors_origin: origin,
+    new_asset_settings: {
+      playback_policy: ["public"],
+      video_quality: "basic",
+      passthrough: videoId,
+      static_renditions: [
+        {
+          resolution: "audio-only",
+        },
+      ],
+      meta: {
+        title: title.trim(),
+        creator_id: user._id,
+        external_id: videoId,
+      },
+    },
+  });
+
+  // update the video with the upload id
+  await fetchMutation(
+    api.videos.update,
+    {
+      videoId,
+      uploadId: upload.id,
+      status: parseStatus(upload.status),
+      assetId: upload.asset_id,
+    },
+    {
+      token: await getAuthToken(),
+    },
+  );
+
+  return { upload, videoId };
 }
 
 export async function getVideoData(assetId: string) {
@@ -94,98 +102,23 @@ export async function getUploadData(uploadId: string) {
   }
 }
 
-type UserVideo = Awaited<ReturnType<typeof getUserVideoById>>;
-
-export async function getUpdatedVideo(muxVideo: UserVideo): Promise<UserVideo> {
-  const user = await currentUser();
-
-  if (!user?.id) throw new Error("User is not signed in");
-  if (!muxVideo) return muxVideo;
-  if (!muxVideo.uploadId) {
-    console.error("Video does not have an upload ID");
-    return muxVideo;
-  }
-
-  if (!muxVideo.assetId) {
-    const upload = await mux.video.uploads.retrieve(muxVideo.uploadId);
-
-    if (!upload.asset_id) return muxVideo;
-
-    const asset = await mux.video.assets.retrieve(upload.asset_id);
-
-    const video = await db.muxVideo.update({
-      where: {
-        id: muxVideo.id,
-        userId: user.id,
-      },
-      data: {
-        status: parseStatus(asset.status),
-        assetId: asset.id,
-        publicPlaybackId: asset?.playback_ids?.find(
-          (item) => item.policy === "public",
-        )?.id,
-        audioRenditionStatus: parseStatus(
-          asset?.static_renditions?.files?.find(
-            (file) => file.resolution === "audio-only",
-          )?.status,
-        ),
-      },
-      include: {
-        transcript: true,
-        report: true,
-        tableTopic: true,
-      },
-    });
-
-    return video;
-  }
-
-  const { asset, error } = await getVideoData(muxVideo.assetId);
-  if (error) throw new Error(error);
-
-  const video = await db.muxVideo.update({
-    where: {
-      id: muxVideo.id,
-    },
-    data: {
-      assetId: asset?.id,
-      status: parseStatus(asset?.status),
-      duration: asset?.duration,
-      publicPlaybackId: asset?.playback_ids?.find(
-        (item) => item.policy === "public",
-      )?.id,
-      audioRenditionStatus: parseStatus(
-        asset?.static_renditions?.files?.find(
-          (file) => file.resolution === "audio-only",
-        )?.status,
-      ),
-    },
-    include: {
-      transcript: true,
-      report: true,
-      tableTopic: true,
-    },
-  });
-
-  return video;
-}
-
-export async function deleteAsset(video: MuxVideo) {
+export async function deleteAsset(video: Doc<"videos">) {
   try {
-    const user = await currentUser();
-    if (!user?.id) throw new Error("User is not signed in");
+    const { user } = await getUserServer();
+    if (!user?._id) throw new Error("User is not signed in");
 
-    await db.$transaction(async (prisma) => {
-      if (!video?.assetId) throw new Error("Asset ID is not set");
+    if (!video?.assetId) throw new Error("Asset ID is not set");
 
-      await prisma.muxVideo.delete({
-        where: {
-          userId: user.id,
-          id: video.id,
-        },
-      });
-      await mux.video.assets.delete(video.assetId);
-    });
+    await mux.video.assets.delete(video.assetId);
+    await fetchMutation(
+      api.videos.deleteById,
+      {
+        videoId: video._id,
+      },
+      {
+        token: await getAuthToken(),
+      },
+    );
   } catch (error) {
     console.error(error);
     throw new Error("Unable to delete video");

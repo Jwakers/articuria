@@ -1,27 +1,24 @@
 import { deleteAsset } from "@/app/server/mux/mux-actions";
-import { MuxVideo } from "@prisma/client";
+import { Doc } from "@/convex/_generated/dataModel";
 import { useState } from "react";
 import { toast } from "sonner";
 
-export default function useManageVideo({ video }: { video: MuxVideo | null }) {
+export default function useManageVideo({
+  video,
+}: {
+  video: Doc<"videos"> | undefined;
+}) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [downloadDialogOpen, setDownloadDialogOpen] = useState(false);
 
-  const deleteVideo = async ({
-    successCallback,
-  }: {
-    successCallback: () => void;
-  }) => {
+  const deleteVideo = async () => {
     if (!video) return toast.error("No video is set");
     setIsDeleting(true);
 
     try {
       toast.promise(deleteAsset(video), {
         loading: "Deleting video...",
-        success: () => {
-          successCallback?.();
-          return "Video deleted";
-        },
+        success: "Video deleted",
         error: (err) => {
           console.log(err);
           return "There was an error deleting this video";

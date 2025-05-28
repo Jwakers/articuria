@@ -10,11 +10,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import Spinner from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
 import { CONTACT_FORM_REASONS, ROUTES } from "@/lib/constants";
 import { useUser } from "@clerk/nextjs";
-import { Send } from "lucide-react";
+import { Loader2, Send } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { startTransition, useActionState, useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -126,7 +125,7 @@ export default function ContactForm() {
         className="w-full md:col-span-2"
         disabled={isPending}
       >
-        {isPending ? <Spinner /> : <Send />}
+        {isPending ? <Loader2 className="animate-spin" /> : <Send />}
         {isPending ? "Submitting..." : "Submit"}
       </Button>
     </form>

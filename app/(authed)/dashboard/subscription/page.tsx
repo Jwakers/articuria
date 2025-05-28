@@ -1,4 +1,3 @@
-import { getUserVideoCount } from "@/app/server/db/queries";
 import { getStripeBillingData } from "@/app/server/stripe/stripe-actions";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,7 +21,6 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-  const videoCountPromise = getUserVideoCount();
   const billingDataPromise = getStripeBillingData();
 
   return (
@@ -39,10 +37,7 @@ export default async function Page() {
         </p>
       </div>
       <Suspense fallback={<BillingTabsSkeleton />}>
-        <BillingTabs
-          billingDataPromise={billingDataPromise}
-          videoCountPromise={videoCountPromise}
-        />
+        <BillingTabs billingDataPromise={billingDataPromise} />
       </Suspense>
       <Card>
         <CardHeader>

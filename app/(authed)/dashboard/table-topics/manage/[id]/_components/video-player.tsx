@@ -1,6 +1,5 @@
 "use client";
 
-import { getUserVideoById } from "@/app/server/db/queries";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,34 +14,39 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
 import useManageVideo from "@/hooks/use-manage-video";
 import { ROUTES } from "@/lib/constants";
 
 import MuxPlayer from "@mux/mux-player-react";
+import { useQuery } from "convex/react";
 import { Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 type VideoPlayerProps = {
-  video: Awaited<ReturnType<typeof getUserVideoById>>;
+  videoId: Id<"videos">;
 };
 
-export default function VideoPlayer({ video }: VideoPlayerProps) {
+export default function VideoPlayer({ videoId }: VideoPlayerProps) {
+  const { video, tableTopic } =
+    useQuery(api.videos.getEnriched, { videoId }) ?? {};
   const router = useRouter();
-  const { isDeleting, deleteVideo } = useManageVideo({ video });
+  const { isDeleting, deleteVideo } = useManageVideo({
+    video,
+  });
 
-  const handleDelete = async () => {
-    await deleteVideo({
-      successCallback: () => router.push(ROUTES.dashboard.tableTopics.manage),
-    });
+  const handleDelete = () => {
+    // Do not await deleteVideo. It will cause a client error where the video no longer exists
+    void deleteVideo();
+    router.push(ROUTES.dashboard.tableTopics.manage);
   };
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>
-          <h1 className="text-xl font-bold md:text-2xl">
-            {video?.tableTopic.topic}
-          </h1>
+          <h1 className="text-xl font-bold md:text-2xl">{tableTopic?.topic}</h1>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4 p-6">

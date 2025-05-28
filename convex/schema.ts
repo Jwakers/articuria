@@ -41,12 +41,12 @@ export default defineSchema({
     stripeCustomerId: v.optional(v.string()),
     subscriptionData: v.optional(v.any()),
   }).index("by_clerk_id", ["clerkId"]),
-  tableTopic: defineTable({
+  tableTopics: defineTable({
     topic: v.optional(v.string()),
     difficulty: v.optional(difficultyUnion),
     theme: v.union(themeUnion),
   }),
-  video: defineTable({
+  videos: defineTable({
     user: v.string(),
     uploadId: v.optional(v.string()),
     assetId: v.optional(v.string()),
@@ -54,6 +54,72 @@ export default defineSchema({
     publicPlaybackId: v.optional(v.string()),
     audioRenditionStatus: muxProcessingStatus,
     duration: v.optional(v.number()),
-    tableTopic: v.id("tableTopic"),
+    tableTopic: v.id("tableTopics"),
+    transcript: v.optional(v.id("transcripts")),
+    report: v.optional(v.id("reports")),
   }).index("by_user", ["user"]),
+  transcripts: defineTable({
+    data: v.any(),
+    user: v.string(),
+    videoId: v.id("videos"),
+    speakingDuration: v.optional(v.number()),
+    wordsPerMinute: v.optional(v.number()),
+    fillerWordCount: v.optional(v.number()),
+  }),
+  reports: defineTable({
+    user: v.string(),
+    videoId: v.id("videos"),
+    creativity: v.optional(v.string()),
+    creativityScore: v.optional(v.number()),
+    clarity: v.optional(v.string()),
+    clarityScore: v.optional(v.number()),
+    engagement: v.optional(v.string()),
+    engagementScore: v.optional(v.number()),
+    tone: v.optional(v.string()),
+    toneScore: v.optional(v.number()),
+    pacing: v.optional(v.string()),
+    pacingScore: v.optional(v.number()),
+    language: v.optional(v.string()),
+    languageScore: v.optional(v.number()),
+    averageScore: v.optional(v.number()),
+    recommendations: v.optional(v.array(v.string())),
+    commendations: v.optional(v.array(v.string())),
+    shortSummary: v.optional(v.string()),
+    summary: v.optional(v.string()),
+  }),
 });
+
+// model Transcript {
+//   id               String   @id @default(cuid())
+//   createdAt        DateTime @default(now())
+//   data             Json
+//   speakingDuration Float    @default(0)
+//   wordsPerMinute   Int      @default(0)
+//   fillerWordCount  Int      @default(0)
+//   video            MuxVideo @relation(fields: [videoId], references: [id], onDelete: Cascade)
+//   videoId          String   @unique
+// }
+
+// model Report {
+//   id              String   @id @default(cuid())
+//   createdAt       DateTime @default(now())
+//   creativity      String?
+//   creativityScore Int?
+//   clarity         String?
+//   clarityScore    Int?
+//   engagement      String?
+//   engagementScore Int?
+//   tone            String?
+//   toneScore       Int?
+//   pacing          String?
+//   pacingScore     Int?
+//   language        String?
+//   languageScore   Int?
+//   averageScore    Int?
+//   recommendations String[]
+//   commendations   String[]
+//   shortSummary    String?
+//   summary         String?
+//   video           MuxVideo @relation(fields: [videoId], references: [id], onDelete: Cascade)
+//   videoId         String   @unique
+// }

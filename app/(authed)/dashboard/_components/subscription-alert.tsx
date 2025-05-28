@@ -1,13 +1,12 @@
+import { getUserServer } from "@/app/server/auth";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { userWithMetadata } from "@/lib/utils";
-import { currentUser } from "@clerk/nextjs/server";
 import { AlertCircle } from "lucide-react";
 
 export async function SubscriptionAlert() {
-  const { publicMetadata } = userWithMetadata(await currentUser());
+  const { user } = await getUserServer();
 
-  if (publicMetadata?.subscriptionData?.status !== "canceled") return null;
-  const endDateUnix = publicMetadata.subscriptionData.currentPeriodEnd;
+  if (user?.subscriptionData?.status !== "canceled") return null;
+  const endDateUnix = user.subscriptionData.currentPeriodEnd;
 
   if (endDateUnix === undefined) return null;
 

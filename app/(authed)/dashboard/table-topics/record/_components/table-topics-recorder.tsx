@@ -35,17 +35,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import Spinner from "@/components/ui/spinner";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { DIFFICULTY_OPTIONS, THEME_OPTIONS } from "@/convex/schema";
 import { useMediaRecorder } from "@/hooks/use-media-recorder";
-import { ROUTES } from "@/lib/constants";
-import { cn, userWithMetadata } from "@/lib/utils";
-import { useUser } from "@clerk/nextjs";
+import { useUser } from "@/hooks/use-user";
+import { DIFFICULTY_MAP, ROUTES, THEME_MAP } from "@/lib/constants";
+import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "convex/react";
-import { Download, HelpCircle, Save, Trash2 } from "lucide-react";
+import { Download, HelpCircle, Loader2, Save, Trash2 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import { useEffect, useState, useTransition } from "react";
@@ -53,25 +52,6 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import TopicAndCountdown from "./topic-and-countdown";
-
-const DIFFICULTY_MAP: Record<(typeof DIFFICULTY_OPTIONS)[number], string> = {
-  BEGINNER: "Beginner",
-  INTERMEDIATE: "Intermediate",
-  ADVANCED: "Advanced",
-  EXPERT: "Expert",
-} as const;
-
-const THEME_MAP: Record<(typeof THEME_OPTIONS)[number], string> = {
-  CREATIVITY_AND_IMAGINATION: "Creativity and Imagination",
-  CULTURE_AND_SOCIETY: "Culture and Society",
-  CURRENT_EVENTS: "Current Events",
-  ETHICAL_DILEMMAS: "Ethical Dilemmas",
-  GENERAL: "General",
-  HYPOTHETICAL_SCENARIOS: "Hypothetical Scenarios",
-  NATURE_AND_ENVIRONMENT: "Nature and Environment",
-  PERSONAL_EXPERIENCES: "Personal Experiences",
-  PROFESSIONAL_DEVELOPMENT: "Professional Development",
-} as const;
 
 const COUNTDOWN_TIME = 5;
 const DIFFICULTY_VALUES = Object.values(DIFFICULTY_MAP);
@@ -91,15 +71,14 @@ const formSchema = z.object({
 });
 
 export default function TableTopicsRecorder() {
-  const [currentTopicId, setCurrentTopicId] = useState<Id<"tableTopic"> | null>(
-    null,
-  );
+  const [currentTopicId, setCurrentTopicId] =
+    useState<Id<"tableTopics"> | null>(null);
   const currentTopic = useQuery(api.tableTopics.get, {
     topicId: currentTopicId ?? undefined,
   });
   const [isPending, startTransition] = useTransition();
   const [countdown, setCountdown] = useState<number | null>(null);
-  const { accountLimits } = userWithMetadata(useUser().user);
+  const { accountLimits } = useUser();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
@@ -110,7 +89,6 @@ export default function TableTopicsRecorder() {
   const {
     isRecording,
     isSaving,
-    isSaved,
     savedVideoId,
     recordedVideoURL,
     videoElementRef,
@@ -120,6 +98,11 @@ export default function TableTopicsRecorder() {
     resetRecording,
     uploadVideo,
   } = useMediaRecorder();
+
+  const { video, tableTopic } =
+    useQuery(api.videos.getEnriched, {
+      videoId: savedVideoId ?? undefined,
+    }) ?? {};
 
   const onSubmit = ({ difficulty, theme }: z.infer<typeof formSchema>) => {
     if ((difficulty && !canSetDifficulty) || (theme && !canSetTheme)) {
@@ -146,12 +129,13 @@ export default function TableTopicsRecorder() {
   };
 
   const handleSaveRecording = async () => {
-    // if (!topicId.current)
-    //   return toast.error("Topic ID not set. Please generate a new topic.");
-    // await uploadVideo({
-    //   title: currentTopic ?? "Table topic",
-    //   tableTopicId: topicId.current,
-    // });
+    if (!currentTopic?._id)
+      return toast.error("Topic ID not set. Please generate a new topic.");
+
+    await uploadVideo({
+      title: currentTopic?.topic ?? "Table topic",
+      tableTopicId: currentTopic?._id,
+    });
   };
 
   const handleDownloadRecording = () => {
@@ -298,7 +282,7 @@ export default function TableTopicsRecorder() {
               type="submit"
               size="lg"
             >
-              {isPending ? <Spinner /> : null}
+              {isPending ? <Loader2 className="animate-spin" /> : null}
               {!recordedVideoURL ? "Generate topic" : "Generate new topic"}
             </Button>
           </form>
@@ -342,7 +326,7 @@ export default function TableTopicsRecorder() {
                 }}
                 className="bg-overlay text-overlay-foreground absolute inset-0 flex items-center justify-center"
               >
-                <Spinner />
+                <Loader2 className="animate-spin" />
               </motion.div>
             ) : null}
 
@@ -385,32 +369,38 @@ export default function TableTopicsRecorder() {
         {recordedVideoURL && (
           <div className="flex w-full flex-wrap justify-between gap-4">
             <div className="flex gap-2">
-              {!isSaved ? (
+              {!video ? (
                 <Button
                   onClick={handleSaveRecording}
                   disabled={isSaving}
                   aria-busy={isSaving}
                   aria-live="polite"
                 >
-                  {isSaving ? <Spinner /> : <Save />}
+                  {isSaving ? <Loader2 className="animate-spin" /> : <Save />}
                   {isSaving ? "Saving..." : "Save"}
                 </Button>
               ) : null}
-              {savedVideoId ? (
-                <Button asChild variant="link">
+              {video?.status === "READY" ? (
+                <Button asChild>
                   <Link
-                    href={`${ROUTES.dashboard.tableTopics.manage}/${savedVideoId}`}
+                    href={`${ROUTES.dashboard.tableTopics.manage}/${video._id}`}
                   >
                     Go to video
                   </Link>
                 </Button>
+              ) : null}
+              {video && video.status !== "READY" ? (
+                <div className="text-muted-foreground flex items-center gap-2">
+                  <Loader2 className="animate-spin" />
+                  Processing video...
+                </div>
               ) : null}
               <Button onClick={handleDownloadRecording} variant="secondary">
                 <Download />
                 Download
               </Button>
             </div>
-            {!isSaved ? (
+            {!video ? (
               <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <Button variant="destructive">

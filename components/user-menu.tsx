@@ -2,7 +2,7 @@
 
 import { CreditCard, LogOut } from "lucide-react";
 
-import { SignOutButton, useClerk, useUser } from "@clerk/nextjs";
+import { SignOutButton, useClerk } from "@clerk/nextjs";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import {
   DropdownMenu,
@@ -15,34 +15,36 @@ import {
 } from "./ui/dropdown-menu";
 
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useUser } from "@/hooks/use-user";
 import { ROUTES } from "@/lib/constants";
-import { userWithMetadata } from "@/lib/utils";
 import { BadgeCheck, ChevronsUpDown } from "lucide-react";
 import Link from "next/link";
 import { Button } from "./ui/button";
 
 export default function UserMenu() {
-  const { user, publicMetadata } = userWithMetadata(useUser().user);
+  const { user } = useUser();
   const { openUserProfile } = useClerk();
-  const subActive = publicMetadata?.subscriptionData?.status === "active";
+  const subActive = user?.subscriptionData?.status === "active";
 
   const isMobile = useIsMobile();
+
+  if (!user) return null;
+
+  const fullName = user.firstName + " " + user.lastName;
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="h-auto w-full p-1">
           <Avatar className="h-8 w-8 rounded-lg">
-            <AvatarImage src={user?.imageUrl} alt={user?.fullName ?? ""} />
+            <AvatarImage src={user?.image} alt={fullName ?? ""} />
             <AvatarFallback className="rounded-lg">
               {user?.firstName?.[0]}
             </AvatarFallback>
           </Avatar>
           <div className="grid flex-1 text-left text-sm leading-tight">
-            <span className="truncate font-semibold">{user?.fullName}</span>
-            <span className="truncate text-xs">
-              {user?.emailAddresses?.[0].emailAddress}
-            </span>
+            <span className="truncate font-semibold">{fullName}</span>
+            <span className="truncate text-xs">{user?.email}</span>
           </div>
           <ChevronsUpDown className="ml-auto size-4" />
         </Button>
@@ -56,16 +58,14 @@ export default function UserMenu() {
         <DropdownMenuLabel className="p-0 font-normal">
           <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
             <Avatar className="h-8 w-8 rounded-lg">
-              <AvatarImage src={user?.imageUrl} alt={user?.fullName ?? ""} />
+              <AvatarImage src={user?.image} alt={fullName ?? ""} />
               <AvatarFallback className="rounded-lg">
                 {user?.firstName?.[0]}
               </AvatarFallback>
             </Avatar>
             <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-semibold">{user?.fullName}</span>
-              <span className="truncate text-xs">
-                {user?.emailAddresses?.[0].emailAddress}
-              </span>
+              <span className="truncate font-semibold">{fullName}</span>
+              <span className="truncate text-xs">{user?.email}</span>
             </div>
           </div>
         </DropdownMenuLabel>

@@ -1,29 +1,39 @@
 "use server";
 
-import { disfluencyData, userWithMetadata } from "@/lib/utils";
-import { currentUser } from "@clerk/nextjs/server";
-import { Prisma } from "@prisma/client";
-import { db } from "../db";
-import { getUserVideoById } from "../db/queries";
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
+import { disfluencyData } from "@/lib/utils";
+import { fetchMutation, fetchQuery } from "convex/nextjs";
+import { getAuthToken, getUserServer } from "../auth";
 import { getAudioRendition } from "../mux/mux-actions";
 import { assemblyAi } from "./client";
 
-export async function getTranscriptionData(
-  video: NonNullable<Awaited<ReturnType<typeof getUserVideoById>>>,
-) {
-  if (video?.transcript)
-    return { data: null, error: "Transcript data already exists" };
+export async function getTranscriptionData(videoId: Id<"videos">) {
+  const data = await fetchQuery(
+    api.videos.getEnriched,
+    {
+      videoId,
+    },
+    {
+      token: await getAuthToken(),
+    },
+  );
+
+  if (!data) return { error: "Video not found" };
+
+  const { video, transcript } = data;
+
+  if (transcript) return { error: "Transcript data already exists" };
   if (video?.audioRenditionStatus !== "READY")
-    return { data: null, error: "Video data not finished processing" };
-  if (!video.assetId) return { data: null, error: "Video missing asset ID" };
+    return { error: "Video data not finished processing" };
+  if (!video.assetId) return { error: "Video missing asset ID" };
 
-  const { user, accountLimits } = userWithMetadata(await currentUser());
+  const { user, accountLimits } = await getUserServer();
 
-  if (!user) return { data: null, error: "Unauthenticated" };
+  if (!user) return { error: "Unauthenticated" };
 
   if (!accountLimits?.tableTopicTranscription)
     return {
-      data: null,
       error: "You do not have permission to generate a transcript",
     };
 
@@ -31,9 +41,8 @@ export async function getTranscriptionData(
     video.assetId,
   );
 
-  if (error) return { data: null, error };
-  if (!audioRendition)
-    return { data: null, error: "Unable to fetch audio rendition" };
+  if (error) return { error };
+  if (!audioRendition) return { error: "Unable to fetch audio rendition" };
 
   const audioRenditionUrl = `https://stream.mux.com/${playbackId.id}/${audioRendition?.name}`;
 
@@ -70,35 +79,23 @@ export async function getTranscriptionData(
     }));
     const fillerWordCount = fillerWords.reduce((a, c) => a + c.count, 0);
 
-    try {
-      const data = await db.transcript.create({
-        data: {
-          data: transcript,
-          videoId: video.id,
-          speakingDuration,
-          wordsPerMinute,
-          fillerWordCount,
-        },
-      });
-      return { data, error: null };
-    } catch (err) {
-      if (
-        err instanceof Prisma.PrismaClientKnownRequestError &&
-        err.code === "P2002"
-      ) {
-        // P2002 is the error code for unique constraint violations
-        return {
-          data: null,
-          error: "A transcript for this video already exists",
-        };
-      }
-
-      throw err;
-    }
+    await fetchMutation(
+      api.transcripts.create,
+      {
+        videoId,
+        data: transcript,
+        speakingDuration,
+        wordsPerMinute,
+        fillerWordCount,
+      },
+      {
+        token: await getAuthToken(),
+      },
+    );
+    return { error: null };
   } catch (err) {
     console.error("[ASSEMBLY] Error generating transcript:", err);
     return {
-      data: null,
       error: "Failed to generate transcript. Please try again later.",
     };
   }

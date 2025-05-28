@@ -1,27 +1,26 @@
+import { getUserServer } from "@/app/server/auth";
 import { SUBSCRIPTION_TIERS } from "@/lib/constants";
-import { price, userWithMetadata } from "@/lib/utils";
-import { currentUser } from "@clerk/nextjs/server";
+import { price } from "@/lib/utils";
 import { Check } from "lucide-react";
 import { SubscriptionTrigger } from "./subscription-trigger";
 import { SubscriptionWrapper } from "./subscription-wrapper";
 
 export async function SubscriptionBanner() {
-  const { user, publicMetadata } = userWithMetadata(await currentUser());
-  if (!user || publicMetadata.subscriptionData?.status === "active")
-    return null;
+  const { user } = await getUserServer();
+  if (!user || user.subscriptionData?.status === "active") return null;
 
   return (
     <SubscriptionWrapper>
       <div className="flex flex-wrap items-center justify-between gap-4 p-4">
         <div className="flex items-center gap-3">
-          <div className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-full bg-highlight/10 sm:flex">
-            <Check className="h-5 w-5 text-highlight-secondary" />
+          <div className="bg-highlight/10 hidden h-10 w-10 shrink-0 items-center justify-center rounded-full sm:flex">
+            <Check className="text-highlight-secondary h-5 w-5" />
           </div>
           <div>
             <h3 className="text-lg font-medium">
               <span className="gradient-text">Upgrade to Pro</span>
             </h3>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-muted-foreground text-xs">
               Get access to premium features
             </p>
           </div>

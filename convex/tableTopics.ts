@@ -14,12 +14,12 @@ export const create = mutation({
     theme: v.optional(themeUnion),
     difficulty: v.optional(difficultyUnion),
   },
-  handler: async (ctx, args) => {
+  async handler(ctx, args) {
     const identity = await ctx.auth.getUserIdentity();
     console.log("identity", identity);
     if (!identity) throw new Error("Unauthorized");
 
-    const topicId = await ctx.db.insert("tableTopic", {
+    const topicId = await ctx.db.insert("tableTopics", {
       topic: args.topic,
       theme: args.theme ?? "GENERAL",
       difficulty: args.difficulty,
@@ -31,9 +31,9 @@ export const create = mutation({
 
 export const get = query({
   args: {
-    topicId: v.optional(v.id("tableTopic")),
+    topicId: v.optional(v.id("tableTopics")),
   },
-  handler: async (ctx, args) => {
+  async handler(ctx, args) {
     if (!args.topicId) return null;
     const topic = await ctx.db.get(args.topicId);
     return topic;
@@ -45,7 +45,7 @@ export const getOrCreateTopic = mutation({
     difficulty: difficultyUnion,
     theme: themeUnion,
   },
-  handler: async (ctx, args) => {
+  async handler(ctx, args) {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) throw new Error("Unauthorized");
 
@@ -58,7 +58,7 @@ export const getOrCreateTopic = mutation({
     // }
 
     // If we need a new topic create one
-    const topicId = await ctx.db.insert("tableTopic", {
+    const topicId = await ctx.db.insert("tableTopics", {
       topic: undefined, // This will be updated by the scheduled action
       theme: args.theme,
       difficulty: args.difficulty,
@@ -78,10 +78,10 @@ export const getOrCreateTopic = mutation({
 
 export const updateTopic = internalMutation({
   args: {
-    topicId: v.id("tableTopic"),
+    topicId: v.id("tableTopics"),
     topic: v.string(),
   },
-  handler: async (ctx, args) => {
+  async handler(ctx, args) {
     await ctx.db.patch(args.topicId, {
       topic: args.topic,
     });
@@ -94,7 +94,7 @@ const BASE_URL = process.env.APP_URL;
 
 export const updateTopicWithAi = internalAction({
   args: {
-    topicId: v.id("tableTopic"),
+    topicId: v.id("tableTopics"),
     difficulty: difficultyUnion,
     theme: themeUnion,
     topicBlackList: v.array(v.string()),

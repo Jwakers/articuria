@@ -23,22 +23,25 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { api } from "@/convex/_generated/api";
+import { useUser } from "@/hooks/use-user";
 import { ACCOUNT_LIMITS, ROUTES, SUBSCRIPTION_TIERS } from "@/lib/constants";
-import { price, userWithMetadata } from "@/lib/utils";
-import { useUser } from "@clerk/nextjs";
+import { price } from "@/lib/utils";
+import { useQuery } from "convex/react";
 import { Check, Sparkle } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { use, useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import { toast } from "sonner";
-import { BillingPageProps } from "./billing-tabs";
 
-export function SubscriptionDetails({ videoCountPromise }: BillingPageProps) {
-  const videoCount = use(videoCountPromise);
+export function SubscriptionDetails() {
+  const { user } = useUser();
+  console.log(user);
+  const videos = useQuery(api.videos.list);
+  const videoCount = videos?.length ?? 0;
   const [showCancelDialog, setShowCancelDialog] = useState(false);
-  const { publicMetadata } = userWithMetadata(useUser().user);
   const router = useRouter();
-  const subData = publicMetadata?.subscriptionData;
+  const subData = user?.subscriptionData;
   const nextBillingUnix = subData?.currentPeriodEnd;
 
   const handleCancelSubscription = useCallback(async () => {
@@ -120,9 +123,9 @@ export function SubscriptionDetails({ videoCountPromise }: BillingPageProps) {
               {SUBSCRIPTION_TIERS.pro.features.map((feature, index) => (
                 <li key={index} className="flex items-center gap-2">
                   {feature.comingSoon ? (
-                    <Sparkle className="h-4 w-4 text-highlight-secondary" />
+                    <Sparkle className="text-highlight-secondary h-4 w-4" />
                   ) : (
-                    <Check className="h-4 w-4 text-highlight-secondary" />
+                    <Check className="text-highlight-secondary h-4 w-4" />
                   )}
                   <span>{feature.title}</span>
                 </li>
@@ -158,7 +161,7 @@ export function SubscriptionDetails({ videoCountPromise }: BillingPageProps) {
               <Button
                 variant="link"
                 size="sm"
-                className="ml-auto text-destructive"
+                className="text-destructive ml-auto"
               >
                 Cancel Subscription
               </Button>
@@ -174,7 +177,7 @@ export function SubscriptionDetails({ videoCountPromise }: BillingPageProps) {
                     lose access to premium features at the end of your current
                     billing period.
                   </span>
-                  <span className="block font-bold text-destructive">
+                  <span className="text-destructive block font-bold">
                     Any videos you have saved passed the free limit may be
                     permanently deleted.
                   </span>
