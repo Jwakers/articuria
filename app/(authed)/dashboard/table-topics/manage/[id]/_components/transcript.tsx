@@ -1,7 +1,6 @@
 "use client";
 
 import { getTranscriptionData } from "@/app/server/assembly-ai/assembly-ai-actions";
-import { getUserVideoById } from "@/app/server/db/queries";
 import { generateTableTopicReport } from "@/app/server/openai/openai-actions";
 import {
   Accordion,
@@ -11,7 +10,6 @@ import {
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import Spinner from "@/components/ui/spinner";
 import {
   Table,
   TableBody,
@@ -22,37 +20,53 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { disfluencyData, userWithMetadata } from "@/lib/utils";
-import { useUser } from "@clerk/nextjs";
+import { api } from "@/convex/_generated/api";
+import { Doc, Id } from "@/convex/_generated/dataModel";
+import { useUser } from "@/hooks/use-user";
+import { disfluencyData } from "@/lib/utils";
 import type { Transcript as TranscriptData } from "assemblyai";
-import { ArrowRight, Play } from "lucide-react";
-import { useEffect, useState, useTransition } from "react";
+import { useQuery } from "convex/react";
+import { ArrowRight, Loader2, Play } from "lucide-react";
+import { useEffect, useTransition } from "react";
 import { toast } from "sonner";
 
-type Transcript = NonNullable<TranscriptProps["video"]>["transcript"] | null;
 type TranscriptProps = {
-  video: Awaited<ReturnType<typeof getUserVideoById>>;
+  videoId: Id<"videos">;
 };
 
-export default function Transcript({ video }: TranscriptProps) {
-  const { accountLimits } = userWithMetadata(useUser().user);
+export default function Transcript({ videoId }: TranscriptProps) {
+  const { accountLimits } = useUser();
+  const video = useQuery(api.videos.getById, {
+    videoId,
+  });
+  const transcript = useQuery(api.transcripts.get, {
+    transcriptId: video?.transcript,
+  });
+  const report = useQuery(api.reports.get, {
+    reportId: video?.report,
+  });
   const [transcriptPending, startTranscriptTransition] = useTransition();
   const [reportPending, startReportTransition] = useTransition();
-  const [transcript, setTranscript] = useState(video?.transcript);
-  const [report, setReport] = useState(video?.report);
   const transcriptData = transcript?.data as TranscriptData | undefined;
   const audioReady = video?.audioRenditionStatus === "READY";
 
   const handleGenerateTranscript = async () => {
     startTranscriptTransition(async () => {
-      if (transcript || !video) return;
-      const { data, error } = await getTranscriptionData(video);
-
-      if (error) {
-        toast.error(error);
+      if (transcript || !video) {
+        toast.error("Transcript already exists");
         return;
       }
-      setTranscript(data);
+      try {
+        const { error } = await getTranscriptionData(video._id);
+
+        if (error) {
+          toast.error(error);
+          return;
+        }
+      } catch (err) {
+        toast.error("Unexpected error while requesting transcription");
+        console.error(err);
+      }
     });
   };
 
@@ -77,29 +91,27 @@ export default function Transcript({ video }: TranscriptProps) {
   };
 
   useEffect(() => {
-    if (!transcript || report || reportPending) return;
+    if (!transcript || video?.report || report || reportPending) return;
+    console.log("Generating report");
     const generateReport = async () => {
-      if (!video?.id) {
+      if (!video?._id) {
         toast.error("No video ID");
         return;
       }
-
-      const { data, error } = await generateTableTopicReport(video.id);
+      const { error } = await generateTableTopicReport(videoId);
       if (error) {
         toast.error(error);
         return;
       }
-      setReport(data);
     };
-
     startReportTransition(async () => {
       await generateReport();
     });
   }, [report, transcript, reportPending]);
 
   if (
-    !accountLimits?.tableTopicReport ||
-    !accountLimits?.tableTopicTranscription
+    accountLimits &&
+    (!accountLimits.tableTopicReport || !accountLimits.tableTopicTranscription)
   ) {
     return (
       <Card>
@@ -129,10 +141,11 @@ export default function Transcript({ video }: TranscriptProps) {
       <CardContent>
         {!report && !audioReady ? (
           <div className="text-muted-foreground flex items-center gap-2">
-            <span>Processing audio, please check back shorty</span>
+            <span>Processing audio...</span>
+            <Loader2 className="animate-spin" />
           </div>
         ) : null}
-        {!transcript && audioReady ? (
+        {!transcript && !transcriptPending && audioReady ? (
           <div className="space-y-2">
             <p className="text-muted-foreground">
               Here you can generate a transcript and feedback on your table
@@ -147,7 +160,11 @@ export default function Transcript({ video }: TranscriptProps) {
                   ? "Generate transcript and feedback"
                   : "Generating..."}
               </span>
-              {!transcriptPending ? <ArrowRight /> : <Spinner />}
+              {!transcriptPending ? (
+                <ArrowRight />
+              ) : (
+                <Loader2 className="animate-spin" />
+              )}
             </Button>
           </div>
         ) : null}
@@ -159,7 +176,7 @@ export default function Transcript({ video }: TranscriptProps) {
             {transcript && !report && reportPending ? (
               <div className="text-muted-foreground flex items-center gap-2">
                 <span>Generating report...</span>
-                <Spinner />
+                <Loader2 className="animate-spin" />
               </div>
             ) : null}
             <div className="bg-muted rounded border shadow-inner">
@@ -204,7 +221,7 @@ export default function Transcript({ video }: TranscriptProps) {
                 </TableBody>
                 <TableCaption className="text-muted-foreground pb-4 text-center text-sm">
                   Transcript generated{" "}
-                  {new Date(transcript.createdAt).toLocaleDateString()}
+                  {new Date(transcript._creationTime).toLocaleDateString()}
                 </TableCaption>
               </Table>
             </div>
@@ -217,7 +234,7 @@ export default function Transcript({ video }: TranscriptProps) {
   );
 }
 
-function GeneralTable({ transcript }: { transcript: Transcript }) {
+function GeneralTable({ transcript }: { transcript: Doc<"transcripts"> }) {
   const transcriptData = transcript?.data as TranscriptData | undefined;
   if (!transcript || !transcriptData) return null;
 
@@ -239,7 +256,7 @@ function GeneralTable({ transcript }: { transcript: Transcript }) {
             {((transcriptData.audio_duration ?? 0) / 60).toFixed(2)}
           </TableCell>
           <TableCell>
-            {(transcript.speakingDuration / 1000 / 60).toFixed(2)}
+            {((transcript.speakingDuration ?? 0) / 1000 / 60).toFixed(2)}
           </TableCell>
         </TableRow>
       </TableBody>
@@ -247,11 +264,7 @@ function GeneralTable({ transcript }: { transcript: Transcript }) {
   );
 }
 
-function ReportTable({
-  report,
-}: {
-  report: NonNullable<TranscriptProps["video"]>["report"];
-}) {
+function ReportTable({ report }: { report: Doc<"reports"> | null }) {
   if (!report) return null;
 
   return (
@@ -367,7 +380,7 @@ function ReportTable({
   );
 }
 
-function FillerWordReport({ transcript }: { transcript: Transcript }) {
+function FillerWordReport({ transcript }: { transcript: Doc<"transcripts"> }) {
   const transcriptData = transcript?.data as TranscriptData | undefined;
   if (!transcript || !transcriptData) return null;
   if (!transcriptData?.text?.length) return null;

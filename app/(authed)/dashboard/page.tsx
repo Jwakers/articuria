@@ -1,9 +1,11 @@
-import { getUserVideoDetails } from "@/app/server/db/queries";
+import { getAuthToken } from "@/app/server/auth";
 import FeedbackSection from "@/components/feedback-cta";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { api } from "@/convex/_generated/api";
 import { ROUTES } from "@/lib/constants";
+import { fetchQuery } from "convex/nextjs";
 import { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -23,9 +25,11 @@ export const metadata: Metadata = {
 };
 
 export default async function DashboardPage() {
-  const { videoCount } = await getUserVideoDetails();
+  const videos = await fetchQuery(api.videos.list, undefined, {
+    token: await getAuthToken(),
+  });
 
-  if (!videoCount) return <NoVideos />;
+  if (!videos.length) return <NoVideos />;
 
   return (
     <div className="space-y-4">

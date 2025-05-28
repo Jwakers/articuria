@@ -1,6 +1,5 @@
 "use client";
 
-import { getUserVideoCount } from "@/app/server/db/queries";
 import type { getStripeBillingData } from "@/app/server/stripe/stripe-actions";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -8,12 +7,11 @@ import { useState } from "react";
 import { BillingHistory } from "./billing-history";
 import { SubscriptionDetails } from "./subscription-details";
 
-export type BillingPageProps = {
+export type BillingTabsProps = {
   billingDataPromise: ReturnType<typeof getStripeBillingData>;
-  videoCountPromise: ReturnType<typeof getUserVideoCount>;
 };
 
-export function BillingTabs(props: BillingPageProps) {
+export function BillingTabs(props: BillingTabsProps) {
   const [activeTab, setActiveTab] = useState("subscription");
 
   return (
@@ -23,7 +21,7 @@ export function BillingTabs(props: BillingPageProps) {
         <TabsTrigger value="history">Billing History</TabsTrigger>
       </TabsList>
       <TabsContent value="subscription">
-        <SubscriptionDetails {...props} />
+        <SubscriptionDetails />
       </TabsContent>
       <TabsContent value="history">
         <BillingHistory {...props} />

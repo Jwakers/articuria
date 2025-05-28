@@ -1,26 +1,24 @@
 "use server";
 
+import { getUserServer } from "@/app/server/auth";
 import { ROUTES } from "@/lib/constants";
-import { userWithMetadata } from "@/lib/utils";
-import { currentUser } from "@clerk/nextjs/server";
 import type Stripe from "stripe";
 import { stripe } from "./client";
 import { syncStripeDataToClerk } from "./sync-stripe";
 
 export async function generateStripeCheckout() {
-  const user = await currentUser();
+  const { user } = await getUserServer();
 
   if (!user) return { data: null, error: "User is not signed in" };
 
-  let stripeCustomerId =
-    (user.publicMetadata?.stripeCustomerId as string) ?? "";
+  let stripeCustomerId = (user?.stripeCustomerId as string) ?? "";
 
   if (!stripeCustomerId) {
     // Create stripe customer ID and sync with clerk
     const newCustomer = await stripe.customers.create({
-      email: user.emailAddresses[0].emailAddress,
+      email: user.email ?? "",
       metadata: {
-        userId: user.id,
+        userId: user._id,
       },
     });
 
@@ -57,15 +55,15 @@ export async function generateStripeCheckout() {
 }
 
 export async function getStripeBillingData() {
-  const { user, publicMetadata } = userWithMetadata(await currentUser());
+  const { user } = await getUserServer();
 
   if (!user) return { data: null, error: "Not signed in" };
-  if (!publicMetadata.stripeCustomerId)
+  if (!user.stripeCustomerId)
     return { data: null, error: "Customer ID is not defined" };
 
   try {
     const paymentIntents = await stripe.paymentIntents.list({
-      customer: publicMetadata.stripeCustomerId,
+      customer: user.stripeCustomerId,
       limit: 100,
     });
     return { data: paymentIntents.data, error: null };
@@ -76,14 +74,24 @@ export async function getStripeBillingData() {
 }
 
 export async function getReceiptUrl(chargeId: string) {
+  const { user } = await getUserServer();
+
+  if (!user) return null;
+  if (!user.stripeCustomerId) return null;
+
   const charge = await stripe.charges.retrieve(chargeId);
+
+  // Validate the charge belongs to the authenticated user
+  if (charge.customer !== user.stripeCustomerId) {
+    throw new Error("Unauthorized access to receipt");
+  }
 
   return charge.receipt_url;
 }
 
 export async function cancelSubscription() {
-  const { user, publicMetadata } = userWithMetadata(await currentUser());
-  const subscriptionId = publicMetadata?.subscriptionData?.subscriptionId;
+  const { user } = await getUserServer();
+  const subscriptionId = user?.subscriptionData?.subscriptionId;
 
   if (!user) return { data: null, error: "Not signed in" };
   if (!subscriptionId) return { data: null, error: "No subscription ID" };
@@ -91,7 +99,7 @@ export async function cancelSubscription() {
   try {
     const subscription = await stripe.subscriptions.cancel(subscriptionId);
 
-    if (subscription) await syncStripeDataToClerk();
+    if (subscription) await syncStripeDataToClerk(user.stripeCustomerId);
     const data = JSON.parse(JSON.stringify(subscription));
 
     return { data, error: null };

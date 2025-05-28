@@ -32,8 +32,9 @@ export function useConfetti(shouldTrigger: boolean, delay = 300) {
         if (Date.now() < end) {
           requestAnimationFrame(frame);
         }
-        confettiFired.current = true;
       })();
+
+      confettiFired.current = true;
     };
 
     const timer = setTimeout(launchConfetti, delay);

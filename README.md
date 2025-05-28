@@ -4,8 +4,7 @@
 
 - [x] Log out button in user menu does not work
 - [x] Traffic light system in accordions looks rough
-- [ ] Video still processing dialog is a bit shit
-- [ ] Error uploading large videos > 1:30. Prisma transaction is timing out.
+- [x] Alert dialogs transition in from teh side of the screen
 - [ ] Generating a second topic causes the video stream to fail.
 - [ ] contact page needs a loading.tsx
 - [ ] If the user does not save a video for a topic they will see the same one again
@@ -22,11 +21,27 @@
 - [x] Add privacy and terms of service page
 - [x] Upgrade tailwind
 - [x] Implement brand colors across code base not just for special elements
-- [ ] Refactor to convex
-- [ ] Provide open ai with table topic audio for a better review
 - [ ] Generate transcript with open ai removing assembly ai from the project
+  - [ ] Stream the transcript to the client
+- [ ] Provide open ai with table topic audio for a better review
 - [ ] Table topic report is quite generous, event for a totally shit video. Perhaps have it review duration in conjunction with what a normal table topic should be
   - [ ] Feedback should only be given on topics longer than one minute?
+- [ ] With the stripe getReceiptUrl function, validate the charge belongs to the user
+- [ ] Add pagination back to the video list page
+- [ ] Setup eslint validation locally with existing config (same that applies to vercel builds)
+
+# Convex refactor
+
+- [ ] Set up cron jobs to populate missing video data
+- [x] Utility function to return user data and account limits
+- [x] Remove old prisma code and env variables (including from PROD)
+- [ ] Once the refactor is finished, try again with creating actions with the openai and mux SDKs
+- [x] Review with code rabbit before PR
+- [ ] Populate env variables and webhook URLs for production including signing secrets
+- [ ] Remove redundant env vars (including cloudflare) from vercel and vercel env pull to local
+- [ ] Refactor for all best practices https://docs.convex.dev/understanding/best-practices/
+- [ ] Close down Supabase account
+- [ ] Research convex caching and make adjustments to code
 
 ## 2. New Features
 

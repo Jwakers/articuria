@@ -1,3 +1,5 @@
+"use client";
+
 import { getReceiptUrl } from "@/app/server/stripe/stripe-actions";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -8,7 +10,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import Spinner from "@/components/ui/spinner";
 import {
   Table,
   TableBody,
@@ -18,13 +19,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { price } from "@/lib/utils";
-import { Download, FileText } from "lucide-react";
+import { Download, FileText, Loader2 } from "lucide-react";
 import { use, useEffect, useTransition } from "react";
 import { toast } from "sonner";
 import type Stripe from "stripe";
-import { BillingPageProps } from "./billing-tabs";
+import { BillingTabsProps } from "./billing-tabs";
 
-export function BillingHistory({ billingDataPromise }: BillingPageProps) {
+export function BillingHistory({ billingDataPromise }: BillingTabsProps) {
   const { data, error } = use(billingDataPromise);
   const [pending, startTransition] = useTransition();
 
@@ -74,9 +75,13 @@ export function BillingHistory({ billingDataPromise }: BillingPageProps) {
                   {item.id}
                 </TableCell>
                 <TableCell>
-                  {new Date(item.created * 1000).toLocaleDateString()}
+                  {item.created
+                    ? new Date(item.created * 1000).toLocaleDateString()
+                    : "N/A"}
                 </TableCell>
-                <TableCell>{price(item.amount / 100)}</TableCell>
+                <TableCell>
+                  {item.amount ? price(item.amount / 100) : "N/A"}
+                </TableCell>
                 <TableCell>
                   <Badge
                     variant={
@@ -88,7 +93,9 @@ export function BillingHistory({ billingDataPromise }: BillingPageProps) {
                         : ""
                     }
                   >
-                    {item.status === "succeeded" ? "Paid" : "Unpaid"}
+                    {item.status === "succeeded"
+                      ? "Paid"
+                      : item.status || "Unknown"}
                   </Badge>
                 </TableCell>
                 <TableCell>{item.description ?? "-"}</TableCell>
@@ -105,7 +112,11 @@ export function BillingHistory({ billingDataPromise }: BillingPageProps) {
                       )
                     }
                   >
-                    {pending ? <Spinner /> : <Download className="h-4 w-4" />}
+                    {pending ? (
+                      <Loader2 className="size-4 animate-spin" />
+                    ) : (
+                      <Download className="size-4" />
+                    )}
                   </Button>
                 </TableCell>
               </TableRow>

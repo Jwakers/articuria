@@ -35,45 +35,50 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import Spinner from "@/components/ui/spinner";
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
+import { DIFFICULTY_OPTIONS, THEME_OPTIONS } from "@/convex/schema";
 import { useMediaRecorder } from "@/hooks/use-media-recorder";
+import { useUser } from "@/hooks/use-user";
 import { DIFFICULTY_MAP, ROUTES, THEME_MAP } from "@/lib/constants";
-import { cn, userWithMetadata } from "@/lib/utils";
-import { useUser } from "@clerk/nextjs";
+import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Difficulty, MuxVideo, Theme } from "@prisma/client";
-import { Download, HelpCircle, Save, Trash2 } from "lucide-react";
+import { useQuery } from "convex/react";
+import { Download, HelpCircle, Loader2, Save, Trash2 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
-import { useEffect, useRef, useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import TopicAndCountdown from "./topic-and-countdown";
 
 const COUNTDOWN_TIME = 5;
-const difficultyValues = Object.values(DIFFICULTY_MAP);
-const themeValues = Object.values(THEME_MAP);
+const DIFFICULTY_VALUES = Object.values(DIFFICULTY_MAP);
+const THEME_VALUES = Object.values(THEME_MAP);
 
 const formSchema = z.object({
   difficulty: z
-    .nativeEnum(Difficulty, {
-      message: `Invalid selection, should be one of ${difficultyValues.join(", ")}`,
+    .enum([...DIFFICULTY_OPTIONS], {
+      message: `Invalid selection, should be one of ${DIFFICULTY_VALUES.join(", ")}`,
     })
     .optional(),
   theme: z
-    .nativeEnum(Theme, {
-      message: `Invalid selection, should be one of ${themeValues.join(", ")}`,
+    .enum([...THEME_OPTIONS], {
+      message: `Invalid selection, should be one of ${THEME_VALUES.join(", ")}`,
     })
     .optional(),
 });
 
 export default function TableTopicsRecorder() {
-  const [currentTopic, setCurrentTopic] = useState<string | null>(null);
+  const [currentTopicId, setCurrentTopicId] =
+    useState<Id<"tableTopics"> | null>(null);
+  const currentTopic = useQuery(api.tableTopics.get, {
+    topicId: currentTopicId ?? undefined,
+  });
   const [isPending, startTransition] = useTransition();
-  const topicId = useRef<MuxVideo["tableTopicId"] | null>(null);
   const [countdown, setCountdown] = useState<number | null>(null);
-  const { accountLimits } = userWithMetadata(useUser().user);
+  const { accountLimits } = useUser();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
@@ -84,7 +89,6 @@ export default function TableTopicsRecorder() {
   const {
     isRecording,
     isSaving,
-    isSaved,
     savedVideoId,
     recordedVideoURL,
     videoElementRef,
@@ -95,6 +99,11 @@ export default function TableTopicsRecorder() {
     uploadVideo,
   } = useMediaRecorder();
 
+  const { video } =
+    useQuery(api.videos.getEnriched, {
+      videoId: savedVideoId ?? undefined,
+    }) ?? {};
+
   const onSubmit = ({ difficulty, theme }: z.infer<typeof formSchema>) => {
     if ((difficulty && !canSetDifficulty) || (theme && !canSetTheme)) {
       toast.error("Upgrade your account to use table topic options");
@@ -103,13 +112,13 @@ export default function TableTopicsRecorder() {
 
     startTransition(async () => {
       try {
-        if (currentTopic) handleDiscardRecording(); // Note: awaiting here causes some strange behaviour where the stream is not properly reset
-        const { topic, id } = await getTableTopic({
+        if (currentTopicId) await handleDiscardRecording();
+        const topicId = await getTableTopic({
           difficulty,
           theme,
         });
-        setCurrentTopic(topic);
-        topicId.current = id;
+
+        setCurrentTopicId(topicId);
         setCountdown(COUNTDOWN_TIME);
       } catch (error) {
         const message =
@@ -120,12 +129,12 @@ export default function TableTopicsRecorder() {
   };
 
   const handleSaveRecording = async () => {
-    if (!topicId.current)
+    if (!currentTopic?._id)
       return toast.error("Topic ID not set. Please generate a new topic.");
 
     await uploadVideo({
-      title: currentTopic ?? "Table topic",
-      tableTopicId: topicId.current,
+      title: currentTopic?.topic ?? "Table topic",
+      tableTopicId: currentTopic?._id,
     });
   };
 
@@ -144,15 +153,14 @@ export default function TableTopicsRecorder() {
 
   const handleDiscardRecording = async () => {
     await resetRecording();
-    setCurrentTopic(null);
-    topicId.current = null;
+    setCurrentTopicId(null);
   };
 
   const getTimingColor = () => {
-    if (timeElapsed <= 60) return "bg-transparent";
     if (timeElapsed > 120) return "bg-red-500";
     if (timeElapsed > 90) return "bg-amber-500";
     if (timeElapsed > 60) return "bg-green-500";
+    return "bg-transparent";
   };
 
   const timingColor = getTimingColor();
@@ -259,7 +267,7 @@ export default function TableTopicsRecorder() {
               )}
             />
             {!canSetDifficulty && !canSetTheme ? (
-              <p className="text-sm text-muted-foreground md:col-span-2">
+              <p className="text-muted-foreground text-sm md:col-span-2">
                 Setting options for table topics are only available for paid
                 users.
               </p>
@@ -274,12 +282,12 @@ export default function TableTopicsRecorder() {
               type="submit"
               size="lg"
             >
-              {isPending ? <Spinner /> : null}
+              {isPending ? <Loader2 className="animate-spin" /> : null}
               {!recordedVideoURL ? "Generate topic" : "Generate new topic"}
             </Button>
           </form>
         </Form>
-        <div className="relative aspect-video overflow-hidden rounded-md bg-accent">
+        <div className="bg-accent relative aspect-video overflow-hidden rounded-md">
           <video
             ref={videoElementRef}
             className="h-full w-full"
@@ -291,7 +299,7 @@ export default function TableTopicsRecorder() {
             aria-label="Table topic recording preview"
           />
           {isRecording ? (
-            <div className="absolute right-4 top-4 flex size-4 items-center justify-center md:size-6">
+            <div className="absolute top-4 right-4 flex size-4 items-center justify-center md:size-6">
               <span
                 className={cn(
                   "absolute inline-flex size-full animate-ping rounded-full",
@@ -308,7 +316,7 @@ export default function TableTopicsRecorder() {
           ) : null}
 
           <AnimatePresence>
-            {isPending && !currentTopic && !recordedVideoURL ? (
+            {isPending && !currentTopicId && !recordedVideoURL ? (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -316,9 +324,9 @@ export default function TableTopicsRecorder() {
                 transition={{
                   duration: 0.3,
                 }}
-                className="absolute inset-0 flex items-center justify-center bg-overlay text-overlay-foreground"
+                className="bg-overlay text-overlay-foreground absolute inset-0 flex items-center justify-center"
               >
-                <Spinner />
+                <Loader2 className="animate-spin" />
               </motion.div>
             ) : null}
 
@@ -327,21 +335,21 @@ export default function TableTopicsRecorder() {
               key="backdrop-blur-sm"
               className={cn(
                 "pointer-events-none absolute inset-0 backdrop-blur-xs transition-opacity duration-500",
-                currentTopic && !recordedVideoURL && !isRecording
+                currentTopic?.topic && !recordedVideoURL && !isRecording
                   ? "opacity-100"
                   : "opacity-0",
               )}
             />
-            {currentTopic && !recordedVideoURL ? (
+            {currentTopic?.topic && !recordedVideoURL ? (
               <motion.div
-                key={currentTopic}
+                key={currentTopic?.topic}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.3 }}
               >
                 <TopicAndCountdown
-                  topic={currentTopic}
+                  topic={currentTopic?.topic}
                   countdown={countdown}
                   showBackground={!isRecording}
                 />
@@ -361,32 +369,38 @@ export default function TableTopicsRecorder() {
         {recordedVideoURL && (
           <div className="flex w-full flex-wrap justify-between gap-4">
             <div className="flex gap-2">
-              {!isSaved ? (
+              {!video ? (
                 <Button
                   onClick={handleSaveRecording}
                   disabled={isSaving}
                   aria-busy={isSaving}
                   aria-live="polite"
                 >
-                  {isSaving ? <Spinner /> : <Save />}
+                  {isSaving ? <Loader2 className="animate-spin" /> : <Save />}
                   {isSaving ? "Saving..." : "Save"}
                 </Button>
               ) : null}
-              {savedVideoId ? (
-                <Button asChild variant="link">
+              {video?.status === "READY" ? (
+                <Button asChild>
                   <Link
-                    href={`${ROUTES.dashboard.tableTopics.manage}/${savedVideoId}`}
+                    href={`${ROUTES.dashboard.tableTopics.manage}/${video._id}`}
                   >
                     Go to video
                   </Link>
                 </Button>
+              ) : null}
+              {video && video.status !== "READY" ? (
+                <div className="text-muted-foreground flex items-center gap-2 text-sm">
+                  Processing video...
+                  <Loader2 className="animate-spin" />
+                </div>
               ) : null}
               <Button onClick={handleDownloadRecording} variant="secondary">
                 <Download />
                 Download
               </Button>
             </div>
-            {!isSaved ? (
+            {!video ? (
               <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <Button variant="destructive">
