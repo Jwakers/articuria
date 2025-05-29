@@ -122,9 +122,8 @@ export default function TableTopicsRecorder() {
         setCurrentTopicId(topicId);
         setCountdown(COUNTDOWN_TIME);
       } catch (error) {
-        const message =
-          error instanceof Error ? error.message : "Failed to generate topic";
-        toast.error(message);
+        console.error(error);
+        toast.error("Failed to generate topic");
       }
     });
   };
