@@ -41,9 +41,13 @@ export function SubscriptionDrawer() {
         return;
       }
 
-      const stripe = await loadStripe(
-        process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!,
-      );
+      const stripeKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+      if (!stripeKey) {
+        toast.error("Stripe configuration error");
+        return;
+      }
+
+      const stripe = await loadStripe(stripeKey);
 
       if (!stripe) {
         toast.error("Error loading Stripe");
