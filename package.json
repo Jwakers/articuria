@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "dev:secure": "next dev --experimental-https",
-    "build": "next build",
+    "build:prod": "npx convex deploy --cmd 'npm run build'",
+    "build:dev": "next build",
     "start": "next start",
     "lint": "next lint"
   },
