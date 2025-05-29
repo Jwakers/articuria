@@ -1,7 +1,7 @@
 #!/bin/bash
  
 if [[ $VERCEL_ENV == "production"  ]] ; then 
-  pnpm build:prod
+  pnpm build:convex
 else 
-  pnpm build:dev
+  pnpm build
 fi
