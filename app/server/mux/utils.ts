@@ -1,4 +1,6 @@
-import { MuxProcessingStatus } from "@prisma/client";
+import { Doc } from "@/convex/_generated/dataModel";
+
+type VideoStatus = Doc<"videos">["status"];
 
 export function parseStatus(
   currentStatus:
@@ -12,7 +14,7 @@ export function parseStatus(
     | "timed_out"
     | "skipped"
     | undefined,
-): MuxProcessingStatus {
+): VideoStatus {
   if (["preparing", "waiting", undefined].includes(currentStatus))
     return "WAITING";
   if (["ready", "asset_created"].includes(currentStatus ?? "")) return "READY";

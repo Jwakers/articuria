@@ -1,19 +1,20 @@
 "use server";
 
-import { getUserVideoDetails } from "@/app/server/db/queries";
+import { getAuthToken, getUser } from "@/app/server/auth";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { userWithMetadata } from "@/lib/utils";
-import { currentUser } from "@clerk/nextjs/server";
+import { api } from "@/convex/_generated/api";
+import { fetchQuery } from "convex/nextjs";
 import { AlertCircle } from "lucide-react";
 
 export default async function VideoLimitAlert() {
-  const [{ videoCount }, current] = await Promise.all([
-    getUserVideoDetails(),
-    currentUser(),
+  const [videos, { user, accountLimits }] = await Promise.all([
+    fetchQuery(api.videos.list, undefined, {
+      token: await getAuthToken(),
+    }),
+    getUser(),
   ]);
-  const { user, accountLimits } = userWithMetadata(current);
 
-  const showWarning = user && videoCount >= accountLimits.tableTopicLimit;
+  const showWarning = user && videos.length >= accountLimits.tableTopicLimit;
 
   if (!showWarning) return null;
 

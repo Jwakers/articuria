@@ -1,16 +1,15 @@
-import { getUploadUrl } from "@/app/server/mux/mux-actions";
-import { userWithMetadata, validateFile } from "@/lib/utils";
-import { useUser } from "@clerk/nextjs";
-import { MuxVideo } from "@prisma/client";
+import { createVideoUpload } from "@/app/server/mux/mux-actions";
+import { Id } from "@/convex/_generated/dataModel";
+import { validateFile } from "@/lib/utils";
 import ky from "ky";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import { useUser } from "./use-user";
 
 export const useMediaRecorder = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [isSaved, setIsSaved] = useState(false);
-  const [savedVideoId, setSavedVideoId] = useState<MuxVideo["id"] | null>(null);
+  const [savedVideoId, setSavedVideoId] = useState<Id<"videos"> | null>(null);
 
   const [recordedBlob, setRecordedBlob] = useState<Blob | null>(null);
   const [recordedVideoURL, setRecordedVideoURL] = useState<string | null>(null);
@@ -20,7 +19,7 @@ export const useMediaRecorder = () => {
   const streamRef = useRef<MediaStream | null>(null);
   const videoElementRef = useRef<HTMLVideoElement | null>(null);
   const hasInitUserMedia = useRef(false);
-  const { user, accountLimits } = userWithMetadata(useUser().user);
+  const { user, accountLimits } = useUser();
 
   const setVideoToStream = async () => {
     if (streamRef.current || hasInitUserMedia.current) return;
@@ -45,10 +44,12 @@ export const useMediaRecorder = () => {
       videoElementRef.current.srcObject = streamRef.current;
       hasInitUserMedia.current = false;
     } catch (error) {
+      console.error(error);
       toast.error("Error accessing media devices.", {
         description:
           "Failed to access camera/microphone. Please ensure they are not in use by another application. And are authorized for use in your browser.",
       });
+      hasInitUserMedia.current = false;
     }
   };
 
@@ -95,7 +96,6 @@ export const useMediaRecorder = () => {
     setIsRecording(false);
     setRecordedBlob(null);
     setRecordedVideoURL(null);
-    setIsSaved(false);
     setSavedVideoId(null);
     if (recordedVideoURL) URL.revokeObjectURL(recordedVideoURL);
     if (!streamRef.current) return;
@@ -110,7 +110,7 @@ export const useMediaRecorder = () => {
     tableTopicId,
   }: {
     title: string;
-    tableTopicId: MuxVideo["tableTopicId"];
+    tableTopicId: Id<"tableTopics">;
   }) => {
     if (!title?.trim()) throw new Error("Title is required");
     if (!tableTopicId) throw new Error("Table topic ID is required");
@@ -135,7 +135,7 @@ export const useMediaRecorder = () => {
     setIsSaving(true);
 
     const promise = async () => {
-      const { upload, video } = await getUploadUrl({
+      const { upload, videoId } = await createVideoUpload({
         title,
         tableTopicId,
       });
@@ -144,21 +144,19 @@ export const useMediaRecorder = () => {
         body: recordedBlob,
       });
 
-      return video;
+      return videoId;
     };
 
     toast.promise(promise(), {
       loading: "Saving...",
-      success: (data) => {
-        setIsSaved(true);
-        setSavedVideoId(data.id);
-        return "Recoding saved";
+      success: (videoId) => {
+        setSavedVideoId(videoId);
+        return "Recording saved";
       },
       error: (error) => {
         const message =
           error instanceof Error ? error.message : "Unknown error";
 
-        setIsSaved(false);
         return `Recording failed to save: ${message}`;
       },
       finally: () => {
@@ -219,7 +217,6 @@ export const useMediaRecorder = () => {
     timeElapsed,
     videoElementRef,
     isSaving,
-    isSaved,
     savedVideoId,
     startRecording,
     stopRecording,

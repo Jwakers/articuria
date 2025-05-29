@@ -1,59 +1,38 @@
-import {
-  getUserVideoDetails,
-  getUserVideoDurationData,
-} from "@/app/server/db/queries";
+"use client";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { formatDuration } from "@/lib/utils";
+import { api } from "@/convex/_generated/api";
+import { useQuery } from "convex/react";
+import { formatDuration, isSameMonth, subMonths } from "date-fns";
 import { Activity, AudioLines, Mic } from "lucide-react";
 import { JSX } from "react";
 
-export async function TotalVideosCard() {
-  try {
-    const { videoCount, countThisMonth } = await getUserVideoDetails();
+export function TotalVideosCard() {
+  const videos = useQuery(api.videos.list);
 
-    return (
-      <StatCard
-        title="Saved recordings"
-        stat={videoCount}
-        relativeStat={`${countThisMonth} this month`}
-        icon={<Mic />}
-      />
-    );
-  } catch (error) {
-    console.error("Failed to fetch video count:", error);
-    return (
-      <StatCard
-        title="Saved recordings"
-        stat="--"
-        relativeStat="Failed to load"
-        icon={<Mic />}
-      />
-    );
-  }
+  const count = videos?.length ?? 0;
+  const countThisMonth =
+    videos?.filter(({ video }) =>
+      isSameMonth(new Date(video._creationTime), new Date()),
+    ).length ?? 0;
+
+  if (!videos) return <StatCardSkeleton />;
+
+  return (
+    <StatCard
+      title="Saved recordings"
+      stat={count}
+      relativeStat={`${countThisMonth} this month`}
+      icon={<Mic />}
+    />
+  );
 }
 
-export async function AverageVideoDurationCard() {
-  try {
-    const { averageDuration, lastMonthAverageDuration } =
-      await getUserVideoDurationData();
+export function AverageVideoDurationCard() {
+  const videos = useQuery(api.videos.list);
 
-    const difference = averageDuration - lastMonthAverageDuration;
-    const differenceString =
-      difference > 0
-        ? `+${difference}s from last month`
-        : `${difference}s from last month`;
-
-    return (
-      <StatCard
-        title="Average duration"
-        stat={formatDuration(averageDuration)}
-        relativeStat={lastMonthAverageDuration ? differenceString : undefined}
-        icon={<Activity />}
-      />
-    );
-  } catch (error) {
-    console.error("Failed to fetch duration data:", error);
+  if (!videos)
     return (
       <StatCard
         title="Average duration"
@@ -62,28 +41,43 @@ export async function AverageVideoDurationCard() {
         icon={<Activity />}
       />
     );
-  }
+
+  const getAverage = (data: typeof videos) => {
+    if (data.length === 0) return 0;
+    const average = data.reduce(
+      (acc, { video }) => (acc += video?.duration ?? 0),
+      0,
+    );
+
+    return Math.round(average / data.length);
+  };
+
+  const lastMonthsVideos = videos.filter(({ video }) =>
+    isSameMonth(subMonths(new Date(), 1), new Date(video._creationTime)),
+  );
+  const averageDuration = getAverage(videos);
+  const lastMonthAverageDuration = getAverage(lastMonthsVideos);
+
+  const difference = averageDuration - lastMonthAverageDuration;
+  const differenceString =
+    difference > 0
+      ? `+${difference}s from last month`
+      : `${difference}s from last month`;
+
+  return (
+    <StatCard
+      title="Average duration"
+      stat={formatDuration({ seconds: parseFloat(averageDuration.toFixed(2)) })}
+      relativeStat={lastMonthAverageDuration ? differenceString : undefined}
+      icon={<Activity />}
+    />
+  );
 }
 
-export async function TotalVideoDurationCard() {
-  try {
-    const { totalDuration, thisMonthsTotalDuration } =
-      await getUserVideoDurationData();
+export function TotalVideoDurationCard() {
+  const videos = useQuery(api.videos.list);
 
-    return (
-      <StatCard
-        title="Total recording time"
-        stat={formatDuration(totalDuration)}
-        relativeStat={
-          thisMonthsTotalDuration
-            ? `${formatDuration(thisMonthsTotalDuration)} recorded this month`
-            : "No recordings this month"
-        }
-        icon={<AudioLines />}
-      />
-    );
-  } catch (error) {
-    console.error("Failed to fetch total duration:", error);
+  if (!videos)
     return (
       <StatCard
         title="Total recording time"
@@ -92,7 +86,32 @@ export async function TotalVideoDurationCard() {
         icon={<AudioLines />}
       />
     );
-  }
+
+  const thisMonthsVideos = videos.filter(({ video }) =>
+    isSameMonth(new Date(), video._creationTime),
+  );
+
+  const totalDuration = videos.reduce(
+    (acc, { video }) => (acc += video?.duration ?? 0),
+    0,
+  );
+  const thisMonthsTotalDuration = thisMonthsVideos.reduce(
+    (acc, { video }) => (acc += video?.duration ?? 0),
+    0,
+  );
+
+  return (
+    <StatCard
+      title="Total recording time"
+      stat={formatDuration({ seconds: parseFloat(totalDuration.toFixed(2)) })}
+      relativeStat={
+        thisMonthsTotalDuration
+          ? `${formatDuration({ seconds: parseFloat(thisMonthsTotalDuration.toFixed(2)) })} recorded this month`
+          : "No recordings this month"
+      }
+      icon={<AudioLines />}
+    />
+  );
 }
 
 function StatCard({
@@ -117,7 +136,7 @@ function StatCard({
       <CardContent>
         <div className="text-2xl font-semibold">{stat}</div>
         {relativeStat ? (
-          <p className="text-xs text-muted-foreground">{relativeStat}</p>
+          <p className="text-muted-foreground text-xs">{relativeStat}</p>
         ) : null}
       </CardContent>
     </Card>

@@ -12,20 +12,19 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer";
+import { useUser } from "@/hooks/use-user";
 import { SUBSCRIPTION_TIERS } from "@/lib/constants";
-import { price, userWithMetadata } from "@/lib/utils";
-import { useUser } from "@clerk/nextjs";
+import { price } from "@/lib/utils";
 import { loadStripe } from "@stripe/stripe-js";
-import { Check, CreditCard, Sparkle, X } from "lucide-react";
+import { Check, CreditCard, Loader2, Sparkle, X } from "lucide-react";
 import { useTransition } from "react";
 import { toast } from "sonner";
-import Spinner from "../ui/spinner";
 import { useSubscriptionDrawer } from "./context";
 
 export function SubscriptionDrawer() {
   const { isOpen, setIsOpen } = useSubscriptionDrawer();
   const [isPending, startTransition] = useTransition();
-  const { user, publicMetadata } = userWithMetadata(useUser().user);
+  const { user } = useUser();
 
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,21 +56,20 @@ export function SubscriptionDrawer() {
     });
   };
 
-  if (!user || publicMetadata.subscriptionData?.status === "active")
-    return null;
+  if (user?.subscriptionData?.status === "active") return null;
 
   return (
     <Drawer open={isOpen} onOpenChange={setIsOpen}>
-      <DrawerContent className="max-h-[80%] bg-linear-to-b from-background to-highlight/10">
+      <DrawerContent className="from-background to-highlight/10 max-h-[80%] bg-linear-to-b">
         <div className="container mx-auto w-full overflow-y-auto py-4">
           <DrawerHeader className="text-center">
             <DrawerTitle className="gradient-text text-center text-2xl font-bold">
               Choose Your Plan
             </DrawerTitle>
-            <DrawerDescription className="text-center text-muted-foreground">
+            <DrawerDescription className="text-muted-foreground text-center">
               Select the plan that works best for you
             </DrawerDescription>
-            <div className="absolute right-4 top-4">
+            <div className="absolute top-4 right-4">
               <DrawerClose asChild>
                 <Button
                   variant="ghost"
@@ -87,15 +85,15 @@ export function SubscriptionDrawer() {
 
           <div className="mb-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {/* Free Plan */}
-            <div className="flex flex-col rounded-lg border bg-background p-6">
+            <div className="bg-background flex flex-col rounded-lg border p-6">
               <div className="mb-4 flex items-start justify-between">
                 <div>
                   <h3 className="text-lg font-medium">Free Plan</h3>
-                  <p className="text-sm text-muted-foreground">Basic access</p>
+                  <p className="text-muted-foreground text-sm">Basic access</p>
                 </div>
                 <div className="text-right">
                   <div className="font-bold">Free</div>
-                  <p className="text-xs text-muted-foreground">Forever</p>
+                  <p className="text-muted-foreground text-xs">Forever</p>
                 </div>
               </div>
 
@@ -106,9 +104,9 @@ export function SubscriptionDrawer() {
                     key={feature.title}
                   >
                     <div className="bg-muted-background rounded-full p-1">
-                      <Check className="h-3 w-3 text-muted-foreground" />
+                      <Check className="text-muted-foreground h-3 w-3" />
                     </div>
-                    <span className="text-sm text-muted-foreground">
+                    <span className="text-muted-foreground text-sm">
                       {feature.shortDescription}
                     </span>
                   </li>
@@ -126,19 +124,19 @@ export function SubscriptionDrawer() {
 
             {/* Pro Plan - More appealing with gradient and emphasis */}
             <div className="relative overflow-hidden rounded-lg shadow-md">
-              <div className="absolute inset-0 bg-linear-to-br from-highlight to-highlight-secondary" />
-              <div className="isolate m-1 rounded border bg-background p-6">
+              <div className="from-highlight to-highlight-secondary absolute inset-0 bg-linear-to-br" />
+              <div className="bg-background isolate m-1 rounded border p-6">
                 <div className="mb-4 flex items-start justify-between">
                   <div>
                     <h3 className="text-lg font-medium">Pro Plan</h3>
-                    <p className="text-sm text-muted-foreground">Full access</p>
+                    <p className="text-muted-foreground text-sm">Full access</p>
                   </div>
                   {SUBSCRIPTION_TIERS.pro.price ? (
                     <div className="text-right">
                       <div className="text-lg font-bold">
                         {price(SUBSCRIPTION_TIERS.pro.price / 100)}
                       </div>
-                      <p className="text-xs text-muted-foreground">per month</p>
+                      <p className="text-muted-foreground text-xs">per month</p>
                     </div>
                   ) : null}
                 </div>
@@ -149,17 +147,17 @@ export function SubscriptionDrawer() {
                       className="flex items-center space-x-3"
                       key={feature.title}
                     >
-                      <div className="rounded-full bg-highlight/10 p-1">
+                      <div className="bg-highlight/10 rounded-full p-1">
                         {feature.comingSoon ? (
-                          <Sparkle className="h-4 w-4 text-highlight-secondary" />
+                          <Sparkle className="text-highlight-secondary h-4 w-4" />
                         ) : (
-                          <Check className="h-4 w-4 text-highlight-secondary" />
+                          <Check className="text-highlight-secondary h-4 w-4" />
                         )}
                       </div>
                       <div className="space-y-1">
                         <p className="text-sm">{feature.shortDescription}</p>
                         {feature.comingSoon ? (
-                          <p className="text-sm text-muted-foreground">
+                          <p className="text-muted-foreground text-sm">
                             Coming soon
                           </p>
                         ) : null}
@@ -168,7 +166,7 @@ export function SubscriptionDrawer() {
                   ))}
                 </ul>
 
-                <p className="mb-4 text-center text-sm text-muted-foreground">
+                <p className="text-muted-foreground mb-4 text-center text-sm">
                   No contract. Cancel anytime
                 </p>
 
@@ -180,7 +178,7 @@ export function SubscriptionDrawer() {
                   disabled={isPending}
                 >
                   {isPending ? (
-                    <Spinner />
+                    <Loader2 className="animate-spin" />
                   ) : (
                     <CreditCard className="mr-2 h-4 w-4" />
                   )}
@@ -189,7 +187,7 @@ export function SubscriptionDrawer() {
               </div>
             </div>
           </div>
-          <p className="text-center text-xs text-muted-foreground">
+          <p className="text-muted-foreground text-center text-xs">
             By subscribing, you agree to our Terms of Service and Privacy
             Policy.
           </p>

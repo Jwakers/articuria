@@ -1,24 +1,32 @@
-import { getUserVideoById } from "@/app/server/db/queries";
-import { getUpdatedVideo } from "@/app/server/mux/mux-actions";
+import { getAuthToken } from "@/app/server/auth";
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
 import { currentUser } from "@clerk/nextjs/server";
+import { fetchQuery } from "convex/nextjs";
 import { Metadata } from "next";
-import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import Transcript from "./_components/transcript";
-import VideoNotProcessed from "./_components/video-not-processed";
 import VideoPlayer, { VideoPlayerSkeleton } from "./_components/video-player";
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: Id<"videos"> }>;
 }): Promise<Metadata> {
   const [user, { id }] = await Promise.all([currentUser(), params]);
   if (!user) throw new Error("You must be signed in to view this page");
-  const muxVideo = await getUserVideoById(id);
+  const video = await fetchQuery(
+    api.videos.getEnriched,
+    {
+      videoId: id,
+    },
+    {
+      token: await getAuthToken(),
+    },
+  );
 
   return {
-    title: muxVideo?.tableTopic.topic ?? "My Table Topic",
+    title: video?.tableTopic?.topic ?? "My Table Topic",
     description:
       "Rewatch, transcribe and generate feedback for your table topic",
   };
@@ -27,31 +35,15 @@ export async function generateMetadata({
 export default async function VideoPage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: Id<"videos"> }>;
 }) {
-  const [user, { id }] = await Promise.all([currentUser(), params]);
-
-  if (!user) throw new Error("You must be signed in to view this page");
-
-  let muxVideo = await getUserVideoById(id);
-  if (!muxVideo) return notFound();
-
-  const audioReady = muxVideo.audioRenditionStatus === "READY";
-
-  if (
-    !muxVideo.publicPlaybackId ||
-    !muxVideo.audioRenditionStatus ||
-    !audioReady
-  ) {
-    muxVideo = await getUpdatedVideo(muxVideo);
-  }
+  const { id } = await params;
 
   return (
     <Suspense fallback={<VideoPlayerSkeleton />}>
       <div className="space-y-2">
-        {!muxVideo?.publicPlaybackId ? <VideoNotProcessed /> : null}
-        <VideoPlayer video={muxVideo} />
-        <Transcript video={muxVideo} />
+        <VideoPlayer videoId={id} />
+        <Transcript videoId={id} />
       </div>
     </Suspense>
   );

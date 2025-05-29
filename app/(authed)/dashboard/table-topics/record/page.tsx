@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   description: "Record your table topic performance, save and process feedback",
 };
 
-export default async function TopicRecordPage() {
+export default function TopicRecordPage() {
   return (
     <div className="space-y-8">
       <div className="space-y-2">

@@ -5,6 +5,8 @@ import { headers } from "next/headers";
 import { after, NextResponse } from "next/server";
 import type Stripe from "stripe";
 
+const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
 export async function POST(req: Request): Promise<NextResponse> {
   const body = await req.text();
   const signature = (await headers()).get("Stripe-Signature");
@@ -15,11 +17,14 @@ export async function POST(req: Request): Promise<NextResponse> {
     if (typeof signature !== "string") {
       throw new Error("[STRIPE HOOK] Header isn't a string???");
     }
+    if (!webhookSecret) {
+      throw new Error("STRIPE_WEBHOOK_SECRET environment variable is not set");
+    }
 
     const event = stripe.webhooks.constructEvent(
       body,
       signature,
-      process.env.STRIPE_WEBHOOK_SECRET!,
+      webhookSecret,
     );
 
     // Return early, let the processing continue in the background

@@ -13,13 +13,8 @@ import {
 import UserMenu from "@/components/user-menu";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ROUTES } from "@/lib/constants";
-import {
-  SignedIn,
-  SignedOut,
-  SignInButton,
-  SignUpButton,
-  UserButton,
-} from "@clerk/nextjs";
+import { SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
+import { Authenticated, Unauthenticated } from "convex/react";
 import { Menu } from "lucide-react";
 import Link from "next/link";
 import { ModeToggle } from "./mode-toggle";
@@ -37,25 +32,25 @@ export function Header() {
           {!isMobile ? (
             <ul className="flex items-center space-x-4">
               <li className="flex gap-2">
-                <SignedOut>
+                <Unauthenticated>
                   <Button variant="ghost" asChild>
                     <SignInButton mode="modal" />
                   </Button>
                   <Button asChild>
                     <SignUpButton mode="modal" />
                   </Button>
-                </SignedOut>
-                <SignedIn>
+                </Unauthenticated>
+                <Authenticated>
                   <UserButton />
-                </SignedIn>
+                </Authenticated>
               </li>
-              <SignedIn>
+              <Authenticated>
                 <li>
                   <Button asChild>
                     <Link href={ROUTES.dashboard.root}>Dashboard</Link>
                   </Button>
                 </li>
-              </SignedIn>
+              </Authenticated>
               <li>
                 <ModeToggle />
               </li>
@@ -81,24 +76,24 @@ function MobileMenu() {
         </SheetHeader>
         <Separator />
         <ul className="space-y-2">
-          <SignedOut>
+          <Unauthenticated>
             <li>
               <SignInButton mode="modal" />
             </li>
             <li>
               <SignUpButton mode="modal" />
             </li>
-          </SignedOut>
-          <SignedIn>
+          </Unauthenticated>
+          <Authenticated>
             <li>
               <Link href={ROUTES.dashboard.root}>Dashboard</Link>
             </li>
-          </SignedIn>
+          </Authenticated>
         </ul>
         <SheetFooter className="mt-auto gap-2">
-          <SignedIn>
+          <Authenticated>
             <UserMenu />
-          </SignedIn>
+          </Authenticated>
           <div className="self-end">
             <ModeToggle />
           </div>

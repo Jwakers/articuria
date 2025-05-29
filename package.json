@@ -5,25 +5,17 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "dev:secure": "next dev --experimental-https",
-    "build": "prisma generate && prisma migrate deploy && next build",
+    "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "backfill-duration": "pnpm dlx tsx scripts/backfill-video-durations.ts",
-    "prisma:generate": "pnpm prisma generate",
-    "prisma:migrate": "pnpm prisma migrate dev",
-    "prisma:deploy": "pnpm prisma migrate deploy",
-    "prisma:studio": "pnpm prisma studio"
-  },
-  "prisma": {
-    "schema": "app/server/db/schema.prisma"
+    "lint": "next lint"
   },
   "dependencies": {
+    "@clerk/backend": "^1.33.0",
     "@clerk/nextjs": "^6.9.5",
     "@hookform/resolvers": "^5.0.1",
     "@mux/mux-node": "^11.0.2",
     "@mux/mux-player": "^3.4.0",
     "@mux/mux-player-react": "^3.4.0",
-    "@prisma/client": "6.1.0",
     "@radix-ui/react-accordion": "^1.2.3",
     "@radix-ui/react-alert-dialog": "^1.1.5",
     "@radix-ui/react-avatar": "^1.1.2",
@@ -42,6 +34,7 @@
     "canvas-confetti": "^1.9.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "convex": "^1.24.1",
     "date-fns": "^4.1.0",
     "dotenv": "^16.4.7",
     "isomorphic-dompurify": "^2.22.0",
@@ -79,7 +72,6 @@
     "postcss": "^8",
     "prettier": "^3.5.3",
     "prettier-plugin-tailwindcss": "^0.6.11",
-    "prisma": "^6.1.0",
     "tailwindcss": "^4.1.7",
     "typescript": "^5"
   }
