@@ -5,17 +5,11 @@ import { muxProcessingStatus } from "./schema";
 
 // Helper functions
 export async function enrichedVideo(ctx: QueryCtx, video: Doc<"videos">) {
-  let tableTopic, transcript, report;
-
-  if (video.tableTopic) {
-    tableTopic = await ctx.db.get(video.tableTopic);
-  }
-  if (video.transcript) {
-    transcript = await ctx.db.get(video.transcript);
-  }
-  if (video.report) {
-    report = await ctx.db.get(video.report);
-  }
+  const [tableTopic, transcript, report] = await Promise.all([
+    video.tableTopic ? ctx.db.get(video.tableTopic) : undefined,
+    video.transcript ? ctx.db.get(video.transcript) : undefined,
+    video.report ? ctx.db.get(video.report) : undefined,
+  ]);
 
   return { video, tableTopic, transcript, report };
 }
@@ -43,7 +37,10 @@ export const getEnriched = query({
     if (!identity) throw new Error("Unauthorized");
 
     const video = await ctx.db.get(args.videoId);
+
     if (!video) throw new Error("Video not found");
+    if (video.user !== identity.tokenIdentifier)
+      throw new Error("Unauthorized");
 
     return await enrichedVideo(ctx, video);
   },
@@ -86,47 +83,6 @@ export const create = mutation({
   },
 });
 
-export const update = mutation({
-  args: {
-    videoId: v.id("videos"),
-    status: v.optional(muxProcessingStatus),
-    audioRenditionStatus: v.optional(muxProcessingStatus),
-    publicPlaybackId: v.optional(v.string()),
-    uploadId: v.optional(v.string()),
-    assetId: v.optional(v.string()),
-    duration: v.optional(v.number()),
-  },
-  async handler(ctx, args) {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Unauthorized");
-
-    const { videoId, ...updateData } = args;
-
-    // Filter out undefined values
-    const filteredUpdateData = Object.fromEntries(
-      Object.entries(updateData).filter(([_, value]) => value !== undefined),
-    ) as typeof updateData;
-
-    await ctx.db.patch(videoId, filteredUpdateData);
-  },
-});
-
-export const getById = query({
-  args: {
-    videoId: v.id("videos"),
-  },
-  async handler(ctx, args) {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Unauthorized");
-
-    const video = await ctx.db.get(args.videoId);
-    if (!video || video.user !== identity.tokenIdentifier)
-      throw new Error("Unauthorized");
-
-    return video;
-  },
-});
-
 export const updateById = mutation({
   args: {
     videoId: v.id("videos"),
@@ -147,6 +103,56 @@ export const updateById = mutation({
     if (!video || video.user !== identity.tokenIdentifier)
       throw new Error("Unauthorized");
 
+    await ctx.db.patch(args.videoId, args.updateData);
+  },
+});
+
+export const getById = query({
+  args: {
+    videoId: v.id("videos"),
+  },
+  async handler(ctx, args) {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Unauthorized");
+
+    const video = await ctx.db.get(args.videoId);
+    if (!video || video.user !== identity.tokenIdentifier)
+      throw new Error("Unauthorized");
+
+    return video;
+  },
+});
+
+// TODO: Remove this once we the mux webhook is brought into http.ts
+// They should use internal mutations that don't require auth
+// OR pass a shared secret as an argument to the query e.g
+// https://docs.convex.dev/auth#service-authentication
+export const getByIdBypassAuth = query({
+  args: {
+    videoId: v.id("videos"),
+  },
+  async handler(ctx, args) {
+    return await ctx.db.get(args.videoId);
+  },
+});
+
+// TODO: Remove this once we the mux webhook is brought into http.ts
+// They should use internal mutations that don't require auth
+// OR pass a shared secret as an argument to the query e.g
+// https://docs.convex.dev/auth#service-authentication
+export const updateByIdBypassAuth = mutation({
+  args: {
+    videoId: v.id("videos"),
+    updateData: v.object({
+      status: v.optional(muxProcessingStatus),
+      audioRenditionStatus: v.optional(muxProcessingStatus),
+      publicPlaybackId: v.optional(v.string()),
+      uploadId: v.optional(v.string()),
+      assetId: v.optional(v.string()),
+      duration: v.optional(v.number()),
+    }),
+  },
+  async handler(ctx, args) {
     await ctx.db.patch(args.videoId, args.updateData);
   },
 });

@@ -73,9 +73,10 @@ const formSchema = z.object({
 export default function TableTopicsRecorder() {
   const [currentTopicId, setCurrentTopicId] =
     useState<Id<"tableTopics"> | null>(null);
-  const currentTopic = useQuery(api.tableTopics.get, {
-    topicId: currentTopicId ?? undefined,
-  });
+  const currentTopic = useQuery(
+    api.tableTopics.get,
+    currentTopicId ? { topicId: currentTopicId } : "skip",
+  );
   const [isPending, startTransition] = useTransition();
   const [countdown, setCountdown] = useState<number | null>(null);
   const { accountLimits } = useUser();
@@ -129,8 +130,8 @@ export default function TableTopicsRecorder() {
   };
 
   const handleSaveRecording = async () => {
-    if (!currentTopic?._id)
-      return toast.error("Topic ID not set. Please generate a new topic.");
+    if (!currentTopic?.topic)
+      return toast.error("Topic not set. Please generate a new topic.");
 
     await uploadVideo({
       title: currentTopic?.topic ?? "Table topic",

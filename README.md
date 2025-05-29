@@ -29,10 +29,12 @@
 - [ ] With the stripe getReceiptUrl function, validate the charge belongs to the user
 - [ ] Add pagination back to the video list page
 - [ ] Setup eslint validation locally with existing config (same that applies to vercel builds)
+- [ ] Check for existing topics the user has already done or suitable existing topics in the database before generating a new one
+- [ ] update all user fields in schema to be a reference to the users table
 
 # Convex refactor
 
-- [ ] Set up cron jobs to populate missing video data
+- [ ] IMPORTANT:Set up cron jobs to populate missing video data or other means to fill missing data
 - [x] Utility function to return user data and account limits
 - [x] Remove old prisma code and env variables (including from PROD)
 - [ ] Once the refactor is finished, try again with creating actions with the openai and mux SDKs

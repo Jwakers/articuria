@@ -44,6 +44,7 @@ export const useMediaRecorder = () => {
       videoElementRef.current.srcObject = streamRef.current;
       hasInitUserMedia.current = false;
     } catch (error) {
+      console.error(error);
       toast.error("Error accessing media devices.", {
         description:
           "Failed to access camera/microphone. Please ensure they are not in use by another application. And are authorized for use in your browser.",
@@ -150,7 +151,7 @@ export const useMediaRecorder = () => {
       loading: "Saving...",
       success: (videoId) => {
         setSavedVideoId(videoId);
-        return "Recoding saved";
+        return "Recording saved";
       },
       error: (error) => {
         const message =

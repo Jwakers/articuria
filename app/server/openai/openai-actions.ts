@@ -8,7 +8,7 @@ import { fetchMutation, fetchQuery } from "convex/nextjs";
 import { zodTextFormat } from "openai/helpers/zod";
 import { z } from "zod";
 import { GenerateTopicOptions } from "../actions";
-import { getAuthToken, getUserServer } from "../auth";
+import { getAuthToken, getUser } from "../auth";
 import client from "./client";
 
 const scoreSchema = z.object({
@@ -32,7 +32,8 @@ const reportSchema = z.object({
 type ReportSchema = z.infer<typeof reportSchema>;
 
 export async function generateTableTopicReport(videoId: Id<"videos">) {
-  const { accountLimits } = await getUserServer();
+  const { accountLimits } = await getUser();
+  const authToken = await getAuthToken();
 
   if (!accountLimits?.tableTopicReport)
     return {
@@ -47,7 +48,7 @@ export async function generateTableTopicReport(videoId: Id<"videos">) {
         videoId,
       },
       {
-        token: await getAuthToken(),
+        token: authToken,
       },
     )) ?? {};
 
@@ -93,7 +94,7 @@ export async function generateTableTopicReport(videoId: Id<"videos">) {
     // await fs.promises.writeFile(filePath, Buffer.from(buffer));
 
     const promptText = `
-    Please generate a comprehensive feedback report for the following table topic transcript, taking into account all the instructions provided: ${JSON.stringify(transcriptData.text)}.`;
+    Please generate a comprehensive feedback report for the following table topic transcript, taking into account all the instructions provided: ${transcriptData.text}.`;
 
     const response = await client.responses.parse({
       model: "o4-mini",
@@ -158,7 +159,7 @@ export async function generateTableTopicReport(videoId: Id<"videos">) {
           toneScore: data.tone?.score,
         },
         {
-          token: await getAuthToken(),
+          token: authToken,
         },
       );
 

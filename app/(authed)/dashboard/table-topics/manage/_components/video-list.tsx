@@ -93,13 +93,7 @@ export function VideoList() {
                     {new Date(video._creationTime).toLocaleDateString()}
                   </TableCell>
                   <TableCell className="hidden md:table-cell">
-                    <span
-                      aria-label={`Duration: ${
-                        video.duration
-                          ? `${Math.floor(video.duration / 60)} minutes and ${Math.floor(video.duration % 60)} seconds`
-                          : "Not available"
-                      }`}
-                    >
+                    <span>
                       {video.duration
                         ? formatDuration({
                             seconds: parseFloat(video.duration.toFixed(2)),

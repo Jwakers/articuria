@@ -44,7 +44,7 @@ export default defineSchema({
   tableTopics: defineTable({
     topic: v.optional(v.string()),
     difficulty: v.optional(difficultyUnion),
-    theme: v.union(themeUnion),
+    theme: v.optional(themeUnion),
   }),
   videos: defineTable({
     user: v.string(),

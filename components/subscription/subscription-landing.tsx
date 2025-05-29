@@ -1,11 +1,11 @@
-import { getUserServer } from "@/app/server/auth";
+import { getUser } from "@/app/server/auth";
 import { SUBSCRIPTION_TIERS } from "@/lib/constants";
 import { cn, price } from "@/lib/utils";
 import { Check } from "lucide-react";
 import { SubscriptionTrigger } from "./subscription-trigger";
 
 export default async function SubscriptionLanding() {
-  const { user } = await getUserServer();
+  const { user } = await getUser();
 
   return (
     <section className="from-background to-highlight/10 bg-linear-to-b py-12 md:py-24 lg:py-32">

@@ -25,7 +25,7 @@ export async function POST(request: Request) {
 
     let video: Doc<"videos"> | null = null;
     if ("passthrough" in data && data.passthrough) {
-      video = await fetchQuery(api.videos.getById, {
+      video = await fetchQuery(api.videos.getByIdBypassAuth, {
         videoId: data.passthrough as Id<"videos">,
       });
     }
@@ -36,7 +36,7 @@ export async function POST(request: Request) {
         if (video?.status === "READY" || data.status === "ready")
           return new Response(null, { status: 200 });
 
-        await fetchMutation(api.videos.updateById, {
+        await fetchMutation(api.videos.updateByIdBypassAuth, {
           videoId: data.passthrough as Id<"videos">,
           updateData: {
             assetId: data.id,
@@ -52,7 +52,7 @@ export async function POST(request: Request) {
         if (video?.status === "READY" || data.status !== "ready")
           return new Response(null, { status: 200 });
 
-        await fetchMutation(api.videos.updateById, {
+        await fetchMutation(api.videos.updateByIdBypassAuth, {
           videoId: data.passthrough as Id<"videos">,
           updateData: {
             status: parseStatus(data.status),
@@ -79,14 +79,13 @@ export async function POST(request: Request) {
             );
             return new Response(null, { status: 200 });
           }
-          console.log({ data });
 
           const asset = await mux.video.assets.retrieve(renditionData.asset_id);
 
           if (renditionData.resolution !== "audio-only" || !asset?.passthrough)
             return new Response(null, { status: 200 });
 
-          await fetchMutation(api.videos.updateById, {
+          await fetchMutation(api.videos.updateByIdBypassAuth, {
             videoId: asset?.passthrough as Id<"videos">,
             updateData: {
               audioRenditionStatus: parseStatus(renditionData.status),

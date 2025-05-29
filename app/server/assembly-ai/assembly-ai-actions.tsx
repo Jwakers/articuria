@@ -4,18 +4,19 @@ import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { disfluencyData } from "@/lib/utils";
 import { fetchMutation, fetchQuery } from "convex/nextjs";
-import { getAuthToken, getUserServer } from "../auth";
+import { getAuthToken, getUser } from "../auth";
 import { getAudioRendition } from "../mux/mux-actions";
 import { assemblyAi } from "./client";
 
 export async function getTranscriptionData(videoId: Id<"videos">) {
+  const authToken = await getAuthToken();
   const data = await fetchQuery(
     api.videos.getEnriched,
     {
       videoId,
     },
     {
-      token: await getAuthToken(),
+      token: authToken,
     },
   );
 
@@ -28,7 +29,7 @@ export async function getTranscriptionData(videoId: Id<"videos">) {
     return { error: "Video data not finished processing" };
   if (!video.assetId) return { error: "Video missing asset ID" };
 
-  const { user, accountLimits } = await getUserServer();
+  const { user, accountLimits } = await getUser();
 
   if (!user) return { error: "Unauthenticated" };
 
@@ -98,7 +99,7 @@ export async function getTranscriptionData(videoId: Id<"videos">) {
         fillerWordCount,
       },
       {
-        token: await getAuthToken(),
+        token: authToken,
       },
     );
     return { error: null };

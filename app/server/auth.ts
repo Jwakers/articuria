@@ -9,8 +9,7 @@ export async function getAuthToken() {
   return (await (await auth()).getToken({ template: "convex" })) ?? undefined;
 }
 
-// rename to getUser
-export async function getUserServer() {
+export async function getUser() {
   const token = await getAuthToken();
   const user = await fetchQuery(api.users.current, undefined, {
     token,

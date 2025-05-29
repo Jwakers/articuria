@@ -1,6 +1,6 @@
 "use server";
 
-import { getAuthToken, getUserServer } from "@/app/server/auth";
+import { getAuthToken, getUser } from "@/app/server/auth";
 import { api } from "@/convex/_generated/api";
 import { Doc, Id } from "@/convex/_generated/dataModel";
 import { fetchMutation, fetchQuery } from "convex/nextjs";
@@ -19,7 +19,7 @@ export async function createVideoUpload({
   title: string;
   tableTopicId: Id<"tableTopics">;
 }) {
-  const { user, accountLimits } = await getUserServer();
+  const { user, accountLimits } = await getUser();
   if (!user) throw new Error("Not signed in");
   if (!origin) throw new Error("Origin is not defined");
 
@@ -66,12 +66,14 @@ export async function createVideoUpload({
 
   // update the video with the upload id
   await fetchMutation(
-    api.videos.update,
+    api.videos.updateById,
     {
       videoId,
-      uploadId: upload.id,
-      status: parseStatus(upload.status),
-      assetId: upload.asset_id,
+      updateData: {
+        uploadId: upload.id,
+        status: parseStatus(upload.status),
+        assetId: upload.asset_id,
+      },
     },
     {
       token: await getAuthToken(),
@@ -105,7 +107,7 @@ export async function getUploadData(uploadId: string) {
 
 export async function deleteAsset(video: Doc<"videos">) {
   try {
-    const { user } = await getUserServer();
+    const { user } = await getUser();
     if (!user?._id) throw new Error("User is not signed in");
 
     if (!video?.assetId) throw new Error("Asset ID is not set");

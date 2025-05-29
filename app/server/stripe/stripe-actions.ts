@@ -1,13 +1,13 @@
 "use server";
 
-import { getUserServer } from "@/app/server/auth";
+import { getUser } from "@/app/server/auth";
 import { ROUTES } from "@/lib/constants";
 import type Stripe from "stripe";
 import { stripe } from "./client";
 import { syncStripeDataToClerk } from "./sync-stripe";
 
 export async function generateStripeCheckout() {
-  const { user } = await getUserServer();
+  const { user } = await getUser();
 
   if (!user) return { data: null, error: "User is not signed in" };
 
@@ -55,7 +55,7 @@ export async function generateStripeCheckout() {
 }
 
 export async function getStripeBillingData() {
-  const { user } = await getUserServer();
+  const { user } = await getUser();
 
   if (!user) return { data: null, error: "Not signed in" };
   if (!user.stripeCustomerId)
@@ -74,23 +74,24 @@ export async function getStripeBillingData() {
 }
 
 export async function getReceiptUrl(chargeId: string) {
-  const { user } = await getUserServer();
+  const { user } = await getUser();
 
   if (!user) return null;
   if (!user.stripeCustomerId) return null;
 
   const charge = await stripe.charges.retrieve(chargeId);
+  const { customer, receipt_url } = charge;
+  const customerId = typeof customer === "string" ? customer : customer?.id;
 
-  // Validate the charge belongs to the authenticated user
-  if (charge.customer !== user.stripeCustomerId) {
+  if (customerId !== user.stripeCustomerId) {
     throw new Error("Unauthorized access to receipt");
   }
 
-  return charge.receipt_url;
+  return receipt_url;
 }
 
 export async function cancelSubscription() {
-  const { user } = await getUserServer();
+  const { user } = await getUser();
   const subscriptionId = user?.subscriptionData?.subscriptionId;
 
   if (!user) return { data: null, error: "Not signed in" };

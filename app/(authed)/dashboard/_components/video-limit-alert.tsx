@@ -1,6 +1,6 @@
 "use server";
 
-import { getAuthToken, getUserServer } from "@/app/server/auth";
+import { getAuthToken, getUser } from "@/app/server/auth";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { api } from "@/convex/_generated/api";
 import { fetchQuery } from "convex/nextjs";
@@ -11,7 +11,7 @@ export default async function VideoLimitAlert() {
     fetchQuery(api.videos.list, undefined, {
       token: await getAuthToken(),
     }),
-    getUserServer(),
+    getUser(),
   ]);
 
   const showWarning = user && videos.length >= accountLimits.tableTopicLimit;

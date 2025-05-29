@@ -52,10 +52,15 @@ export default function Transcript({ videoId }: TranscriptProps) {
 
   const handleGenerateTranscript = async () => {
     startTranscriptTransition(async () => {
-      if (transcript || !video) {
+      if (!video) {
+        toast.error("Video metadata not yet available");
+        return;
+      }
+      if (transcript) {
         toast.error("Transcript already exists");
         return;
       }
+
       try {
         const { error } = await getTranscriptionData(video._id);
 
@@ -92,7 +97,6 @@ export default function Transcript({ videoId }: TranscriptProps) {
 
   useEffect(() => {
     if (!transcript || video?.report || report || reportPending) return;
-    console.log("Generating report");
     const generateReport = async () => {
       if (!video?._id) {
         toast.error("No video ID");
@@ -107,11 +111,12 @@ export default function Transcript({ videoId }: TranscriptProps) {
     startReportTransition(async () => {
       await generateReport();
     });
-  }, [report, transcript, reportPending]);
+  }, [report, transcript, reportPending, video?.report, video?._id, videoId]);
 
   if (
     accountLimits &&
-    (!accountLimits.tableTopicReport || !accountLimits.tableTopicTranscription)
+    (!accountLimits?.tableTopicReport ||
+      !accountLimits?.tableTopicTranscription)
   ) {
     return (
       <Card>

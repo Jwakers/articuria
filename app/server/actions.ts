@@ -3,7 +3,7 @@
 import { api } from "@/convex/_generated/api";
 import { DIFFICULTY_OPTIONS, THEME_OPTIONS } from "@/convex/schema";
 import { fetchMutation } from "convex/nextjs";
-import { getAuthToken, getUserServer } from "./auth";
+import { getAuthToken, getUser } from "./auth";
 import { generateTableTopic } from "./openai/openai-actions";
 
 type Difficulty = (typeof DIFFICULTY_OPTIONS)[number];
@@ -21,24 +21,30 @@ export async function getTableTopic(
   },
 ) {
   try {
-    const { user, accountLimits } = await getUserServer();
+    const { user, accountLimits } = await getUser();
 
     if (!user) throw new Error("Not signed in");
 
     let difficulty: Difficulty = "BEGINNER",
       theme: Theme = "GENERAL";
 
-    if (!accountLimits.tableTopicOptions.difficulty && options.difficulty) {
+    if (
+      !accountLimits.tableTopicOptions.difficulty &&
+      options.difficulty !== "BEGINNER"
+    ) {
       throw new Error("Your current plan does not allow setting a difficulty");
     }
 
-    if (!accountLimits.tableTopicOptions.theme && options.theme) {
+    if (!accountLimits.tableTopicOptions.theme && options.theme !== "GENERAL") {
       throw new Error("Your current plan does not allow setting a theme");
     }
     if (accountLimits.tableTopicOptions.difficulty && options.difficulty)
       difficulty = options.difficulty;
     if (accountLimits.tableTopicOptions.theme && options.theme)
       theme = options.theme;
+
+    // TODO: Check for existing topics the user has already done
+    // Or suitable existing topics in the database
 
     const aiTopic = await generateTableTopic({
       difficulty,

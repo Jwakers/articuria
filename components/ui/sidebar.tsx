@@ -592,7 +592,7 @@ const SidebarMenuButton = React.forwardRef<
         className={cn(sidebarMenuButtonVariants({ variant, size }), className)}
         onClick={(e) => {
           props.onClick?.(e);
-          if (closeMobile) setOpenMobile(false);
+          if (closeMobile && !e.defaultPrevented) setOpenMobile(false);
         }}
         {...props}
       />

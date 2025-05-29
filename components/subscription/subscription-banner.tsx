@@ -1,4 +1,4 @@
-import { getUserServer } from "@/app/server/auth";
+import { getUser } from "@/app/server/auth";
 import { SUBSCRIPTION_TIERS } from "@/lib/constants";
 import { price } from "@/lib/utils";
 import { Check } from "lucide-react";
@@ -6,7 +6,7 @@ import { SubscriptionTrigger } from "./subscription-trigger";
 import { SubscriptionWrapper } from "./subscription-wrapper";
 
 export async function SubscriptionBanner() {
-  const { user } = await getUserServer();
+  const { user } = await getUser();
   if (!user || user.subscriptionData?.status === "active") return null;
 
   return (

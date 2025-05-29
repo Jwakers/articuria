@@ -23,16 +23,20 @@ export const create = mutation({
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) throw new Error("Unauthorized");
 
+    const video = await ctx.db.get(args.videoId);
+    if (!video) throw new Error("Video not found");
+    if (video.user !== identity.tokenIdentifier) throw new Error("Forbidden");
+
     const transcriptId = await ctx.db.insert("transcripts", {
       data: args.data,
       user: identity.tokenIdentifier,
-      videoId: args.videoId,
+      videoId: video._id,
       speakingDuration: args.speakingDuration,
       wordsPerMinute: args.wordsPerMinute,
       fillerWordCount: args.fillerWordCount,
     });
 
-    await ctx.db.patch(args.videoId, {
+    await ctx.db.patch(video._id, {
       transcript: transcriptId,
     });
 

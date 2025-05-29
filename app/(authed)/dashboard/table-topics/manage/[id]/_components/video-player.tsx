@@ -30,21 +30,22 @@ type VideoPlayerProps = {
 
 export default function VideoPlayer({ videoId }: VideoPlayerProps) {
   const router = useRouter();
-  const { video, tableTopic } =
-    useQuery(api.videos.getEnriched, { videoId }) ?? {};
+  const query = useQuery(api.videos.getEnriched, { videoId });
   const { isDeleting, deleteVideo } = useManageVideo({
-    video,
+    video: query?.video,
   });
+
+  if (!query) {
+    return <VideoPlayerSkeleton />;
+  }
+
+  const { video, tableTopic } = query;
 
   const handleDelete = () => {
     // Do not await deleteVideo. It will cause a client error where the video no longer exists
     void deleteVideo();
     router.push(ROUTES.dashboard.tableTopics.manage);
   };
-
-  if (!video) {
-    return <VideoPlayerSkeleton />;
-  }
 
   return (
     <Card>

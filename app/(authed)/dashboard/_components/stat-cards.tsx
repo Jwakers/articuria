@@ -53,7 +53,7 @@ export function AverageVideoDurationCard() {
   };
 
   const lastMonthsVideos = videos.filter(({ video }) =>
-    isSameMonth(subMonths(new Date(), 1), video._creationTime),
+    isSameMonth(subMonths(new Date(), 1), new Date(video._creationTime)),
   );
   const averageDuration = getAverage(videos);
   const lastMonthAverageDuration = getAverage(lastMonthsVideos);
@@ -80,10 +80,10 @@ export function TotalVideoDurationCard() {
   if (!videos)
     return (
       <StatCard
-        title="Average duration"
+        title="Total recording time"
         stat="--"
         relativeStat="Failed to load"
-        icon={<Activity />}
+        icon={<AudioLines />}
       />
     );
 
@@ -99,6 +99,7 @@ export function TotalVideoDurationCard() {
     (acc, { video }) => (acc += video?.duration ?? 0),
     0,
   );
+
   return (
     <StatCard
       title="Total recording time"

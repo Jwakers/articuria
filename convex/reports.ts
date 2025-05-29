@@ -42,8 +42,14 @@ export const create = mutation({
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) throw new Error("Unauthorized");
 
+    const video = await ctx.db.get(args.videoId);
+    if (!video) throw new Error("Video not found");
+    if (video.user !== identity.tokenIdentifier) {
+      throw new Error("Unauthorized");
+    }
+
     const reportId = await ctx.db.insert("reports", {
-      videoId: args.videoId,
+      videoId: video._id,
       user: identity.tokenIdentifier,
       averageScore: args.averageScore,
       clarity: args.clarity,
@@ -64,7 +70,7 @@ export const create = mutation({
       toneScore: args.toneScore,
     });
 
-    await ctx.db.patch(args.videoId, {
+    await ctx.db.patch(video._id, {
       report: reportId,
     });
 

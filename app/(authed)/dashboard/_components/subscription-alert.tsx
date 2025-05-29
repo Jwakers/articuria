@@ -1,9 +1,9 @@
-import { getUserServer } from "@/app/server/auth";
+import { getUser } from "@/app/server/auth";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 
 export async function SubscriptionAlert() {
-  const { user } = await getUserServer();
+  const { user } = await getUser();
 
   if (user?.subscriptionData?.status !== "canceled") return null;
   const endDateUnix = user.subscriptionData.currentPeriodEnd;
