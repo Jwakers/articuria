@@ -30,7 +30,7 @@ export default function UserMenu() {
 
   if (!user) return null;
 
-  const fullName = user.firstName + " " + user.lastName;
+  const fullName = [user.firstName, user.lastName].filter(Boolean).join(" ");
 
   return (
     <DropdownMenu>

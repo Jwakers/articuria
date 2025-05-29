@@ -14,7 +14,8 @@ export async function getUser() {
   const user = await fetchQuery(api.users.current, undefined, {
     token,
   });
-  if (!user) throw new Error("User not found");
+
+  if (!user) return { user: null, accountLimits: null };
 
   const accountLimits = getAccountLimits(user);
 

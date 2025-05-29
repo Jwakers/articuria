@@ -8,6 +8,7 @@
 - [ ] Generating a second topic causes the video stream to fail.
 - [ ] contact page needs a loading.tsx
 - [ ] If the user does not save a video for a topic they will see the same one again
+- [ ] Clicking the sign out button in the user menu causes a client error (need to use clerk to refresh the session or redirect to the home page)
 
 ## 1. Updates
 
@@ -44,6 +45,7 @@
 - [ ] Refactor for all best practices https://docs.convex.dev/understanding/best-practices/
 - [ ] Close down Supabase account
 - [ ] Research convex caching and make adjustments to code
+- [ ] Fully read all important parts of the convex docs, best practice, dev guides, etc and task out any improvements
 
 ## 2. New Features
 
