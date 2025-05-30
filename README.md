@@ -34,18 +34,20 @@
 - [ ] Setup eslint validation locally with existing config (same that applies to vercel builds)
 - [ ] Check for existing topics the user has already done or suitable existing topics in the database before generating a new one
 - [ ] update all user fields in schema to be a reference to the users table
+- [ ] Set up a trello board for tasks
+- [ ] Create actual read me from code rabbit or AI tool
 
 # Convex refactor
 
-- [ ] IMPORTANT:Set up cron jobs to populate missing video data or other means to fill missing data
+- [x] IMPORTANT: Set up cron jobs to populate missing video data or other means to fill missing data
 - [x] Utility function to return user data and account limits
 - [x] Remove old prisma code and env variables (including from PROD)
-- [ ] Once the refactor is finished, try again with creating actions with the openai and mux SDKs
+- [x] Refactor mux webhook to convex httpAction
+- [ ] Refactor openai server actions to convex actions
 - [x] Review with code rabbit before PR
-- [ ] Populate env variables and webhook URLs for production including signing secrets
-- [ ] Remove redundant env vars (including cloudflare) from vercel and vercel env pull to local
+- [x] Populate env variables and webhook URLs for production including signing secrets
+- [x] Remove redundant env vars (including cloudflare) from vercel and vercel env pull to local
 - [ ] Refactor for all best practices https://docs.convex.dev/understanding/best-practices/
-- [ ] Close down Supabase account
 - [ ] Research convex caching and make adjustments to code
 - [ ] Fully read all important parts of the convex docs, best practice, dev guides, etc and task out any improvements
 

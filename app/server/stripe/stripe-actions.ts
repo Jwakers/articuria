@@ -2,9 +2,12 @@
 
 import { getUser } from "@/app/server/auth";
 import { ROUTES } from "@/lib/constants";
+import { getSiteUrl } from "@/lib/utils";
 import type Stripe from "stripe";
 import { stripe } from "./client";
 import { syncStripeDataToClerk } from "./sync-stripe";
+
+const SITE_URL = getSiteUrl();
 
 export async function generateStripeCheckout() {
   const { user } = await getUser();
@@ -27,14 +30,12 @@ export async function generateStripeCheckout() {
     stripeCustomerId = newCustomer.id;
   }
 
-  const origin = `${process.env.NODE_ENV === "production" ? "https" : "http"}://${process.env.NEXT_PUBLIC_APP_URL}`;
-
   try {
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
       customer: stripeCustomerId,
-      success_url: `${origin}/${ROUTES.success}?sessionId={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/${ROUTES.dashboard.root}`,
+      success_url: `${SITE_URL}/${ROUTES.success}?sessionId={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${SITE_URL}/${ROUTES.dashboard.root}`,
       line_items: [
         {
           price: process.env.STRIPE_PRO_TIER_PRICE_ID,

@@ -39,12 +39,22 @@ export default function Transcript({ videoId }: TranscriptProps) {
   const video = useQuery(api.videos.getById, {
     videoId,
   });
-  const transcript = useQuery(api.transcripts.get, {
-    transcriptId: video?.transcript,
-  });
-  const report = useQuery(api.reports.get, {
-    reportId: video?.report,
-  });
+  const transcript = useQuery(
+    api.transcripts.get,
+    video?.transcript
+      ? {
+          transcriptId: video?.transcript,
+        }
+      : "skip",
+  );
+  const report = useQuery(
+    api.reports.get,
+    video?.report
+      ? {
+          reportId: video?.report,
+        }
+      : "skip",
+  );
   const [transcriptPending, startTranscriptTransition] = useTransition();
   const [reportPending, startReportTransition] = useTransition();
   const transcriptData = transcript?.data as TranscriptData | undefined;
@@ -108,6 +118,7 @@ export default function Transcript({ videoId }: TranscriptProps) {
         return;
       }
     };
+
     startReportTransition(async () => {
       await generateReport();
     });
@@ -150,7 +161,7 @@ export default function Transcript({ videoId }: TranscriptProps) {
             <Loader2 className="animate-spin" />
           </div>
         ) : null}
-        {!transcript && !transcriptPending && audioReady ? (
+        {!transcript && audioReady ? (
           <div className="space-y-2">
             <p className="text-muted-foreground">
               Here you can generate a transcript and feedback on your table

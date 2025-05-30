@@ -1,6 +1,6 @@
 import { v } from "convex/values";
 import { Doc } from "./_generated/dataModel";
-import { mutation, query, QueryCtx } from "./_generated/server";
+import { internalQuery, mutation, query, QueryCtx } from "./_generated/server";
 import { muxProcessingStatus } from "./schema";
 
 // Helper functions
@@ -180,5 +180,21 @@ export const deleteById = mutation({
     }
 
     await ctx.db.delete(args.videoId);
+  },
+});
+
+export const getIncompleteVideos = internalQuery({
+  args: {},
+  async handler(ctx) {
+    const videos = await ctx.db
+      .query("videos")
+      .filter((q) =>
+        q.or(
+          q.neq(q.field("status"), "READY"),
+          q.neq(q.field("audioRenditionStatus"), "READY"),
+        ),
+      )
+      .collect();
+    return videos;
   },
 });
