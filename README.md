@@ -29,7 +29,7 @@
 - [ ] Provide open ai with table topic audio for a better review
 - [ ] Table topic report is quite generous, event for a totally shit video. Perhaps have it review duration in conjunction with what a normal table topic should be
   - [ ] Feedback should only be given on topics longer than one minute?
-- [ ] With the stripe getReceiptUrl function, validate the charge belongs to the user
+- [x] With the stripe getReceiptUrl function, validate the charge belongs to the user
 - [ ] Add pagination back to the video list page
 - [ ] Setup eslint validation locally with existing config (same that applies to vercel builds)
 - [ ] Check for existing topics the user has already done or suitable existing topics in the database before generating a new one
@@ -43,6 +43,7 @@
 - [x] Utility function to return user data and account limits
 - [x] Remove old prisma code and env variables (including from PROD)
 - [x] Refactor mux webhook to convex httpAction
+- [ ] Refactor mux server actions into convex actions
 - [ ] Refactor openai server actions to convex actions
 - [x] Review with code rabbit before PR
 - [x] Populate env variables and webhook URLs for production including signing secrets
