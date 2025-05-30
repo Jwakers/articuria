@@ -2,7 +2,7 @@
 
 import Mux from "@mux/mux-node";
 import { v } from "convex/values";
-import { api, internal } from "../_generated/api";
+import { internal } from "../_generated/api";
 import { Doc } from "../_generated/dataModel";
 import { internalAction } from "../_generated/server";
 
@@ -34,7 +34,7 @@ export const updateVideoStatus = internalAction({
       if (!video.assetId) {
         const upload = await mux.video.uploads.retrieve(video.uploadId);
         if (upload.asset_id) {
-          await ctx.runMutation(api.videos.updateByIdBypassAuth, {
+          await ctx.runMutation(internal.videos.updateById, {
             videoId: video._id,
             updateData: {
               assetId: upload.asset_id,
@@ -54,7 +54,7 @@ export const updateVideoStatus = internalAction({
         status = "READY";
       }
 
-      await ctx.runMutation(api.videos.updateByIdBypassAuth, {
+      await ctx.runMutation(internal.videos.updateById, {
         videoId: video._id,
         updateData: {
           assetId: video.assetId ?? asset.id,
@@ -75,7 +75,7 @@ export const updateVideoStatus = internalAction({
       if (audioRendition.status === "errored") audioStatus = "ERRORED";
       if (audioRendition.status !== "ready") audioStatus = "WAITING";
 
-      await ctx.runMutation(api.videos.updateByIdBypassAuth, {
+      await ctx.runMutation(internal.videos.updateById, {
         videoId: video._id,
         updateData: {
           audioRenditionStatus: audioStatus,

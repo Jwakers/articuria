@@ -1,7 +1,7 @@
 import { Id } from "../_generated/dataModel";
 
 import { UnwrapWebhookEvent } from "@mux/mux-node/resources/webhooks.mjs";
-import { api, internal } from "../_generated/api";
+import { internal } from "../_generated/api";
 import { Doc } from "../_generated/dataModel";
 import { httpAction } from "../_generated/server";
 
@@ -17,7 +17,7 @@ export const muxWebhookHandler = httpAction(async (ctx, request) => {
 
     let video: Doc<"videos"> | null = null;
     if ("passthrough" in data && data.passthrough) {
-      video = await ctx.runQuery(api.videos.getByIdBypassAuth, {
+      video = await ctx.runQuery(internal.videos.getById, {
         videoId: data.passthrough as Id<"videos">,
       });
     }
@@ -28,7 +28,7 @@ export const muxWebhookHandler = httpAction(async (ctx, request) => {
         if (video?.status === "READY" || data.status === "ready")
           return new Response(null, { status: 200 });
 
-        await ctx.runMutation(api.videos.updateByIdBypassAuth, {
+        await ctx.runMutation(internal.videos.updateById, {
           videoId: data.passthrough as Id<"videos">,
           updateData: {
             assetId: data.id,
@@ -44,7 +44,7 @@ export const muxWebhookHandler = httpAction(async (ctx, request) => {
         if (video?.status === "READY" || data.status !== "ready")
           return new Response(null, { status: 200 });
 
-        await ctx.runMutation(api.videos.updateByIdBypassAuth, {
+        await ctx.runMutation(internal.videos.updateById, {
           videoId: data.passthrough as Id<"videos">,
           updateData: {
             status: parseStatus(data.status),
@@ -79,7 +79,7 @@ export const muxWebhookHandler = httpAction(async (ctx, request) => {
           if (renditionData.resolution !== "audio-only" || !asset?.passthrough)
             return new Response(null, { status: 200 });
 
-          await ctx.runMutation(api.videos.updateByIdBypassAuth, {
+          await ctx.runMutation(internal.videos.updateById, {
             videoId: asset?.passthrough as Id<"videos">,
             updateData: {
               audioRenditionStatus: parseStatus(renditionData.status),

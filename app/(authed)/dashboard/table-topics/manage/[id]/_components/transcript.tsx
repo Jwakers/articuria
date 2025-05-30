@@ -36,7 +36,7 @@ type TranscriptProps = {
 
 export default function Transcript({ videoId }: TranscriptProps) {
   const { accountLimits } = useUser();
-  const video = useQuery(api.videos.getById, {
+  const video = useQuery(api.videos.get, {
     videoId,
   });
   const transcript = useQuery(

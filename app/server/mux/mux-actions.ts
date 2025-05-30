@@ -64,7 +64,7 @@ export async function createVideoUpload({
 
   // update the video with the upload id
   await fetchMutation(
-    api.videos.updateById,
+    api.videos.update,
     {
       videoId,
       updateData: {
@@ -109,6 +109,11 @@ export async function deleteAsset(video: Doc<"videos">) {
     if (!user?._id) throw new Error("User is not signed in");
 
     if (!video?.assetId) throw new Error("Asset ID is not set");
+
+    // TODO: temporary, will be easier to check when this is a convex actions
+    if (video.user.split("|")[1] !== user.clerkId) {
+      throw new Error("Cannot delete another user's video");
+    }
 
     await mux.video.assets.delete(video.assetId);
     await fetchMutation(

@@ -35,11 +35,11 @@ export default function VideoPlayer({ videoId }: VideoPlayerProps) {
     video: query?.video,
   });
 
-  if (!query) {
+  if (query === undefined) {
     return <VideoPlayerSkeleton />;
   }
 
-  const { video, tableTopic } = query;
+  const { video, tableTopic } = query ?? {};
 
   const handleDelete = () => {
     // Do not await deleteVideo. It will cause a client error where the video no longer exists
