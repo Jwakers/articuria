@@ -8,9 +8,9 @@
 - [ ] Generating a second topic causes the video stream to fail.
 - [ ] contact page needs a loading.tsx
 - [ ] If the user does not save a video for a topic they will see the same one again
-- [ ] Clicking the sign out button in the user menu causes a client error (need to use clerk to refresh the session or redirect to the home page)
-- [ ] Subscription drawer gradient is bugged (more noticeable in light mode)
-- [ ] signed out users can click upgrade now on the home page and see the subscription drawer
+- [x] Clicking the sign out button in the user menu causes a client error (need to use clerk to refresh the session or redirect to the home page)
+- [x] Subscription drawer gradient is bugged (more noticeable in light mode)
+- [x] Signed out users can click upgrade now on the home page and see the subscription drawer
 
 ## 1. Updates
 

@@ -2,7 +2,7 @@
 
 import { CreditCard, LogOut } from "lucide-react";
 
-import { SignOutButton, useClerk } from "@clerk/nextjs";
+import { useClerk } from "@clerk/nextjs";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import {
   DropdownMenu,
@@ -19,16 +19,22 @@ import { useUser } from "@/hooks/use-user";
 import { ROUTES } from "@/lib/constants";
 import { BadgeCheck, ChevronsUpDown } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "./ui/button";
 
 export default function UserMenu() {
   const { user } = useUser();
-  const { openUserProfile } = useClerk();
+  const { signOut, openUserProfile } = useClerk();
+  const router = useRouter();
+  const isMobile = useIsMobile();
   const subActive = user?.subscriptionData?.status === "active";
 
-  const isMobile = useIsMobile();
-
   if (!user) return null;
+
+  const handleSignOut = async () => {
+    signOut(); // DO not await to avoid unauthenticated state
+    router.push(ROUTES.landing);
+  };
 
   const fullName = [user.firstName, user.lastName].filter(Boolean).join(" ");
 
@@ -96,12 +102,11 @@ export default function UserMenu() {
           </DropdownMenuItem> */}
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <SignOutButton>
-          <DropdownMenuItem>
-            <LogOut />
-            Log out
-          </DropdownMenuItem>
-        </SignOutButton>
+
+        <DropdownMenuItem onClick={handleSignOut}>
+          <LogOut />
+          Log out
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
