@@ -96,15 +96,6 @@ export const getAssetData = internalAction({
 
 async function getAudioRendition(assetId: string) {
   const asset = await mux.video.assets.retrieve(assetId);
-  const playbackId = await mux.video.assets.createPlaybackId(assetId ?? "", {
-    policy: "public",
-  });
-
-  if (!playbackId.id) {
-    console.log("[MUX] No playback ID found for asset", assetId);
-    return null;
-  }
-
   const audioRendition = asset?.static_renditions?.files?.find(
     (file) => file.resolution === "audio-only",
   );

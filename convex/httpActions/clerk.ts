@@ -31,13 +31,20 @@ export const clerkWebhookHandler = httpAction(async (ctx, request) => {
 async function validateClerkWebhook(
   req: Request,
 ): Promise<WebhookEvent | null> {
+  const secret = process.env.CLERK_WEBHOOK_SECRET;
+  if (!secret) {
+    console.error(
+      "Missing CLERK_WEBHOOK_SECRET env var – cannot validate webhook",
+    );
+    return null;
+  }
   const payloadString = await req.text();
   const svixHeaders = {
     "svix-id": req.headers.get("svix-id")!,
     "svix-timestamp": req.headers.get("svix-timestamp")!,
     "svix-signature": req.headers.get("svix-signature")!,
   };
-  const wh = new Webhook(process.env.CLERK_WEBHOOK_SECRET!);
+  const wh = new Webhook(secret);
   try {
     return wh.verify(payloadString, svixHeaders) as unknown as WebhookEvent;
   } catch (error) {

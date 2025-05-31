@@ -25,8 +25,13 @@ export const muxWebhookHandler = httpAction(async (ctx, request) => {
     switch (type) {
       case "video.asset.created":
         // Only update if the asset is not ready yet.
-        if (video?.status === "READY" || data.status === "ready")
+        if (video?.status === "READY")
           return new Response(null, { status: 200 });
+
+        if (!data.passthrough) {
+          console.error(`[MUX WEBHOOK] Missing passthrough for event ${type}`);
+          return new Response(null, { status: 200 });
+        }
 
         await ctx.runMutation(internal.videos.updateById, {
           videoId: data.passthrough as Id<"videos">,
@@ -43,6 +48,11 @@ export const muxWebhookHandler = httpAction(async (ctx, request) => {
       case "video.asset.ready":
         if (video?.status === "READY" || data.status !== "ready")
           return new Response(null, { status: 200 });
+
+        if (!data.passthrough) {
+          console.error(`[MUX WEBHOOK] Missing passthrough for event ${type}`);
+          return new Response(null, { status: 200 });
+        }
 
         await ctx.runMutation(internal.videos.updateById, {
           videoId: data.passthrough as Id<"videos">,
