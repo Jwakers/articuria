@@ -88,3 +88,12 @@ export function disfluencyData(text: string) {
   );
   return data;
 }
+
+export function getSiteUrl() {
+  const origin = process.env.VERCEL_URL;
+  const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
+
+  if (!origin) throw new Error("VERCEL_URL is not set");
+
+  return new URL(`${protocol}://${origin}`).toString();
+}

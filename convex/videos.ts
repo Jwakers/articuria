@@ -1,6 +1,12 @@
 import { v } from "convex/values";
 import { Doc } from "./_generated/dataModel";
-import { mutation, query, QueryCtx } from "./_generated/server";
+import {
+  internalMutation,
+  internalQuery,
+  mutation,
+  query,
+  QueryCtx,
+} from "./_generated/server";
 import { muxProcessingStatus } from "./schema";
 
 // Helper functions
@@ -83,7 +89,7 @@ export const create = mutation({
   },
 });
 
-export const updateById = mutation({
+export const update = mutation({
   args: {
     videoId: v.id("videos"),
     updateData: v.object({
@@ -107,7 +113,7 @@ export const updateById = mutation({
   },
 });
 
-export const getById = query({
+export const get = query({
   args: {
     videoId: v.id("videos"),
   },
@@ -123,11 +129,7 @@ export const getById = query({
   },
 });
 
-// TODO: Remove this once we the mux webhook is brought into http.ts
-// They should use internal mutations that don't require auth
-// OR pass a shared secret as an argument to the query e.g
-// https://docs.convex.dev/auth#service-authentication
-export const getByIdBypassAuth = query({
+export const getById = internalQuery({
   args: {
     videoId: v.id("videos"),
   },
@@ -136,11 +138,7 @@ export const getByIdBypassAuth = query({
   },
 });
 
-// TODO: Remove this once we the mux webhook is brought into http.ts
-// They should use internal mutations that don't require auth
-// OR pass a shared secret as an argument to the query e.g
-// https://docs.convex.dev/auth#service-authentication
-export const updateByIdBypassAuth = mutation({
+export const updateById = internalMutation({
   args: {
     videoId: v.id("videos"),
     updateData: v.object({
@@ -180,5 +178,21 @@ export const deleteById = mutation({
     }
 
     await ctx.db.delete(args.videoId);
+  },
+});
+
+export const getIncompleteVideos = internalQuery({
+  args: {},
+  async handler(ctx) {
+    const videos = await ctx.db
+      .query("videos")
+      .filter((q) =>
+        q.or(
+          q.neq(q.field("status"), "READY"),
+          q.neq(q.field("audioRenditionStatus"), "READY"),
+        ),
+      )
+      .collect();
+    return videos;
   },
 });

@@ -3,14 +3,13 @@
 import { getAuthToken, getUser } from "@/app/server/auth";
 import { api } from "@/convex/_generated/api";
 import { Doc, Id } from "@/convex/_generated/dataModel";
+import { getSiteUrl } from "@/lib/utils";
 import { fetchMutation, fetchQuery } from "convex/nextjs";
 import jwt from "jsonwebtoken";
 import mux from "./client";
 import { parseStatus } from "./utils";
 
-const appHost = process.env.NEXT_PUBLIC_APP_URL;
-if (!appHost) throw new Error("[MUX] NEXT_PUBLIC_APP_URL missing");
-const origin = `${process.env.NODE_ENV === "production" ? "https" : "http"}://${appHost}`;
+const SITE_URL = getSiteUrl();
 
 export async function createVideoUpload({
   title,
@@ -21,7 +20,6 @@ export async function createVideoUpload({
 }) {
   const { user, accountLimits } = await getUser();
   if (!user) throw new Error("Not signed in");
-  if (!origin) throw new Error("Origin is not defined");
 
   const videos = await fetchQuery(
     api.videos.list,
@@ -46,7 +44,7 @@ export async function createVideoUpload({
   );
 
   const upload = await mux.video.uploads.create({
-    cors_origin: origin,
+    cors_origin: SITE_URL,
     new_asset_settings: {
       playback_policy: ["public"],
       video_quality: "basic",
@@ -66,7 +64,7 @@ export async function createVideoUpload({
 
   // update the video with the upload id
   await fetchMutation(
-    api.videos.updateById,
+    api.videos.update,
     {
       videoId,
       updateData: {
@@ -111,6 +109,11 @@ export async function deleteAsset(video: Doc<"videos">) {
     if (!user?._id) throw new Error("User is not signed in");
 
     if (!video?.assetId) throw new Error("Asset ID is not set");
+
+    // TODO: temporary, will be easier to check when this is a convex actions
+    if (video.user.split("|")[1] !== user.clerkId) {
+      throw new Error("Cannot delete another user's video");
+    }
 
     await mux.video.assets.delete(video.assetId);
     await fetchMutation(
