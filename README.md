@@ -43,14 +43,16 @@
 - [x] Utility function to return user data and account limits
 - [x] Remove old prisma code and env variables (including from PROD)
 - [x] Refactor mux webhook to convex httpAction
-- [ ] Refactor mux server actions into convex actions
+- [x] Refactor mux server actions into convex actions
 - [ ] Refactor openai server actions to convex actions
 - [x] Review with code rabbit before PR
 - [x] Populate env variables and webhook URLs for production including signing secrets
 - [x] Remove redundant env vars (including cloudflare) from vercel and vercel env pull to local
+- [ ] Do references cascade on delete, if not, delete reference items when deleting a video
 - [ ] Refactor for all best practices https://docs.convex.dev/understanding/best-practices/
 - [ ] Research convex caching and make adjustments to code
 - [ ] Fully read all important parts of the convex docs, best practice, dev guides, etc and task out any improvements
+- [ ] Reorganise convex files into public and private folders for internal and public queries/mutations
 
 ## 2. New Features
 

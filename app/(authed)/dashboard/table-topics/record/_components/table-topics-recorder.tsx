@@ -101,9 +101,14 @@ export default function TableTopicsRecorder() {
   } = useMediaRecorder();
 
   const { video } =
-    useQuery(api.videos.getEnriched, {
-      videoId: savedVideoId ?? undefined,
-    }) ?? {};
+    useQuery(
+      api.videos.getEnriched,
+      savedVideoId
+        ? {
+            videoId: savedVideoId ?? undefined,
+          }
+        : "skip",
+    ) ?? {};
 
   const onSubmit = ({ difficulty, theme }: z.infer<typeof formSchema>) => {
     if ((difficulty && !canSetDifficulty) || (theme && !canSetTheme)) {

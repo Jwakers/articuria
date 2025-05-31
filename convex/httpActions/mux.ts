@@ -4,6 +4,8 @@ import { UnwrapWebhookEvent } from "@mux/mux-node/resources/webhooks.mjs";
 import { internal } from "../_generated/api";
 import { Doc } from "../_generated/dataModel";
 import { httpAction } from "../_generated/server";
+import { parseStatus } from "../utils";
+import { StaticRenditionWebhookPayload } from "./types";
 
 // Note must send a 2** status code or Mux will retry for 24hrs
 export const muxWebhookHandler = httpAction(async (ctx, request) => {
@@ -65,6 +67,16 @@ export const muxWebhookHandler = httpAction(async (ctx, request) => {
           },
         });
         break;
+      case "video.asset.deleted":
+        if (!data.passthrough) {
+          console.error(`[MUX WEBHOOK] Missing passthrough for event ${type}`);
+          return new Response(null, { status: 200 });
+        }
+
+        await ctx.runMutation(internal.videos.deleteById, {
+          videoId: data.passthrough as Id<"videos">,
+        });
+        break;
       case "video.asset.static_rendition.created":
       case "video.asset.static_rendition.ready":
         try {
@@ -106,7 +118,7 @@ export const muxWebhookHandler = httpAction(async (ctx, request) => {
 
     return new Response(null, { status: 200 });
   } catch (error) {
-    console.error("Error validating Mux webhook", error);
+    console.error("[MUX WEBHOOK] Error", error);
     return new Response("Unauthorized", { status: 200 });
   }
 });
@@ -195,39 +207,3 @@ function timingSafeEqual(a: string, b: string): boolean {
 
   return result === 0;
 }
-
-function parseStatus(
-  currentStatus:
-    | string
-    | "preparing"
-    | "waiting"
-    | "ready"
-    | "asset_created"
-    | "errored"
-    | "cancelled"
-    | "timed_out"
-    | "skipped"
-    | undefined,
-): Doc<"videos">["status"] {
-  if (["preparing", "waiting", undefined].includes(currentStatus))
-    return "WAITING";
-  if (["ready", "asset_created"].includes(currentStatus ?? "")) return "READY";
-  if (
-    ["cancelled", "timed_out", "errored", "skipped"].includes(
-      currentStatus ?? "",
-    )
-  )
-    return "ERRORED";
-
-  return "WAITING";
-}
-
-type StaticRenditionWebhookPayload = Partial<{
-  type: string;
-  status: string;
-  resolution: string;
-  name: string;
-  id: string;
-  ext: string;
-  asset_id: string;
-}>;

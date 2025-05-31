@@ -1,6 +1,7 @@
-import { createVideoUpload } from "@/app/server/mux/mux-actions";
+import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { validateFile } from "@/lib/utils";
+import { useAction } from "convex/react";
 import ky from "ky";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -10,6 +11,7 @@ export const useMediaRecorder = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [savedVideoId, setSavedVideoId] = useState<Id<"videos"> | null>(null);
+  const uploadAction = useAction(api.actions.mux.upload);
 
   const [recordedBlob, setRecordedBlob] = useState<Blob | null>(null);
   const [recordedVideoURL, setRecordedVideoURL] = useState<string | null>(null);
@@ -135,7 +137,7 @@ export const useMediaRecorder = () => {
     setIsSaving(true);
 
     const promise = async () => {
-      const { upload, videoId } = await createVideoUpload({
+      const { upload, videoId } = await uploadAction({
         title,
         tableTopicId,
       });

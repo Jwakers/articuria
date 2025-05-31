@@ -1,6 +1,4 @@
-import { Doc } from "@/convex/_generated/dataModel";
-
-type VideoStatus = Doc<"videos">["status"];
+import { Doc } from "./_generated/dataModel";
 
 export function parseStatus(
   currentStatus:
@@ -14,7 +12,7 @@ export function parseStatus(
     | "timed_out"
     | "skipped"
     | undefined,
-): VideoStatus {
+): Doc<"videos">["status"] {
   if (["preparing", "waiting", undefined].includes(currentStatus))
     return "WAITING";
   if (["ready", "asset_created"].includes(currentStatus ?? "")) return "READY";

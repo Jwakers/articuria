@@ -18,10 +18,12 @@ import type * as crons from "../crons.js";
 import type * as http from "../http.js";
 import type * as httpActions_clerk from "../httpActions/clerk.js";
 import type * as httpActions_mux from "../httpActions/mux.js";
+import type * as httpActions_types from "../httpActions/types.js";
 import type * as reports from "../reports.js";
 import type * as tableTopics from "../tableTopics.js";
 import type * as transcripts from "../transcripts.js";
 import type * as users from "../users.js";
+import type * as utils from "../utils.js";
 import type * as videos from "../videos.js";
 
 /**
@@ -38,10 +40,12 @@ declare const fullApi: ApiFromModules<{
   http: typeof http;
   "httpActions/clerk": typeof httpActions_clerk;
   "httpActions/mux": typeof httpActions_mux;
+  "httpActions/types": typeof httpActions_types;
   reports: typeof reports;
   tableTopics: typeof tableTopics;
   transcripts: typeof transcripts;
   users: typeof users;
+  utils: typeof utils;
   videos: typeof videos;
 }>;
 export declare const api: FilterApi<

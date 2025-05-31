@@ -1,4 +1,5 @@
 import { v } from "convex/values";
+import { internal } from "./_generated/api";
 import { Doc } from "./_generated/dataModel";
 import {
   internalMutation,
@@ -155,7 +156,7 @@ export const updateById = internalMutation({
   },
 });
 
-export const deleteById = mutation({
+export const deleteVideo = mutation({
   args: {
     videoId: v.id("videos"),
   },
@@ -167,7 +168,32 @@ export const deleteById = mutation({
     if (!video) throw new Error("Video not found");
 
     if (video.user !== identity.tokenIdentifier)
-      throw new Error("Unauthorized");
+      throw new Error("Not authorized to delete this video");
+
+    if (!video.assetId) throw new Error("Video has no asset ID");
+
+    if (video.transcript) {
+      await ctx.db.delete(video.transcript);
+    }
+
+    if (video.report) {
+      await ctx.db.delete(video.report);
+    }
+
+    await ctx.db.delete(video._id);
+    await ctx.scheduler.runAfter(0, internal.actions.mux.deleteAsset, {
+      assetId: video.assetId,
+    });
+  },
+});
+
+export const deleteById = internalMutation({
+  args: {
+    videoId: v.id("videos"),
+  },
+  async handler(ctx, args) {
+    const video = await ctx.db.get(args.videoId);
+    if (!video) throw new Error("Video not found");
 
     if (video.transcript) {
       await ctx.db.delete(video.transcript);
