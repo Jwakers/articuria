@@ -1,11 +1,16 @@
-import { getUser } from "@/app/server/auth";
+"use client";
+
+import { useUser } from "@/hooks/use-user";
 import { SUBSCRIPTION_TIERS } from "@/lib/constants";
 import { cn, price } from "@/lib/utils";
+import { SignInButton } from "@clerk/nextjs";
+import { Authenticated, Unauthenticated } from "convex/react";
 import { Check } from "lucide-react";
+import { Button } from "../ui/button";
 import { SubscriptionTrigger } from "./subscription-trigger";
 
-export default async function SubscriptionLanding() {
-  const { user } = await getUser();
+export default function SubscriptionLanding() {
+  const { user } = useUser();
 
   return (
     <section className="from-background to-highlight/10 bg-linear-to-b py-12 md:py-24 lg:py-32">
@@ -53,9 +58,20 @@ export default async function SubscriptionLanding() {
               </div>
 
               <div className="shrink-0">
-                <SubscriptionTrigger className="w-full md:w-auto">
-                  Upgrade Now
-                </SubscriptionTrigger>
+                <Authenticated>
+                  <SubscriptionTrigger className="w-full md:w-auto">
+                    Upgrade Now
+                  </SubscriptionTrigger>
+                </Authenticated>
+                <Unauthenticated>
+                  <Button
+                    asChild
+                    variant="subscribe"
+                    className="w-full md:w-auto"
+                  >
+                    <SignInButton mode="modal">Sign in to upgrade</SignInButton>
+                  </Button>
+                </Unauthenticated>
               </div>
             </div>
           </div>

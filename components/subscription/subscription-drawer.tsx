@@ -64,7 +64,7 @@ export function SubscriptionDrawer() {
 
   return (
     <Drawer open={isOpen} onOpenChange={setIsOpen}>
-      <DrawerContent className="from-background to-highlight/10 max-h-[80%] bg-linear-to-b">
+      <DrawerContent className="max-h-[80%]">
         <div className="container mx-auto w-full overflow-y-auto py-4">
           <DrawerHeader className="text-center">
             <DrawerTitle className="gradient-text text-center text-2xl font-bold">
