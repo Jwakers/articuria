@@ -1,6 +1,6 @@
 # Articuria
 
-## 0. Bugs and Refactor
+## Bugs and Refactor
 
 - [x] Log out button in user menu does not work
 - [x] Traffic light system in accordions looks rough
@@ -12,7 +12,11 @@
 - [x] Subscription drawer gradient is bugged (more noticeable in light mode)
 - [x] Signed out users can click upgrade now on the home page and see the subscription drawer
 
-## 1. Updates
+## L&D
+
+- [ ] Watch convex [tutorials](https://docs.convex.dev/tutorial/)
+
+## Updates
 
 - [x] Remove "Coming soon" from transcript and report features. Also appears on the billing and subscription page (including in stripe dashboard)
 - [ ] On recorder page, warn that data will be lost on redirect or refresh (trigger alert dialog when navigating without saving). This is complex and cannot be handled with the beforeunload event. Next.js uses 'soft' navigation so the event does not fire. Need to find a way to intercept route changes before they happen.
@@ -64,7 +68,7 @@
 - [ ] Review all app interactions and simplify/remove tech dept where possible
 - [ ] Track each table topic a users sees in the users table
 
-## 2. New Features
+## New Features
 
 - [ ] Add a documentation and support page. There is a card for this on the success page and a link on the home page, once complete, enable these
 

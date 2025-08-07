@@ -57,9 +57,12 @@ export const createTableTopic = internalAction({
     topicId: v.id("tableTopics"),
     difficulty: v.union(difficultyUnion),
     theme: v.union(themeUnion),
+    userId: v.id("users"),
   },
   async handler(ctx, args) {
-    const userTopics = await ctx.runQuery(internal.tableTopics.getUserTopics);
+    const userTopics = await ctx.runQuery(internal.tableTopics.getUserTopics, {
+      userId: args.userId,
+    });
     const generatedTopic = await generateTableTopic({
       difficulty: args.difficulty,
       theme: args.theme,

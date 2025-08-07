@@ -39,7 +39,6 @@ export const getNewTopic = mutation({
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) throw new Error("Unauthorized");
 
-    // Check user permissions
     const user = await Users.getCurrentUserOrThrow(ctx);
     const accountLimits = getAccountLimits(user);
 
@@ -88,9 +87,13 @@ export const getNewTopic = mutation({
 });
 
 export const getUserTopics = internalQuery({
-  args: {},
-  async handler(ctx) {
-    const user = await Users.getCurrentUserOrThrow(ctx);
+  args: {
+    userId: v.id("users"),
+  },
+  async handler(ctx, args) {
+    const user = await ctx.db.get(args.userId);
+    if (!user) throw new Error("User not found");
+
     const topicIds = user.tableTopics;
 
     return await ctx.db
