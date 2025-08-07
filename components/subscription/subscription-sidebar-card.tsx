@@ -1,4 +1,4 @@
-import { getUser } from "@/app/server/auth";
+import { getUser } from "@/lib/auth";
 import { SUBSCRIPTION_TIERS } from "@/lib/constants";
 import { price } from "@/lib/utils";
 import { Check } from "lucide-react";

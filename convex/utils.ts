@@ -1,4 +1,5 @@
 import { Doc } from "./_generated/dataModel";
+import { ACCOUNT_LIMITS } from "./constants";
 
 export function parseStatus(
   currentStatus:
@@ -24,4 +25,13 @@ export function parseStatus(
     return "ERRORED";
 
   return "WAITING";
+}
+
+export function getAccountLimits(user: Doc<"users">) {
+  if (user.subscription === "PRO") return ACCOUNT_LIMITS.pro;
+  return ACCOUNT_LIMITS.free;
+}
+
+export function convertMegabytesToBytes(megabytes: number): number {
+  return megabytes * 1024 * 1024;
 }

@@ -19,7 +19,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { api } from "@/convex/_generated/api";
-import { DIFFICULTY_MAP, ROUTES, THEME_MAP } from "@/lib/constants";
+import { DIFFICULTY_MAP, THEME_MAP } from "@/convex/constants";
+import { ROUTES } from "@/lib/constants";
 import { useQuery } from "convex/react";
 import { formatDuration } from "date-fns";
 import { ChevronLeft, ChevronRight, Play } from "lucide-react";

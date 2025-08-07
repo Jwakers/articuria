@@ -1,7 +1,7 @@
 "use client";
 
 import { api } from "@/convex/_generated/api";
-import { getAccountLimits } from "@/lib/utils";
+import { getAccountLimits } from "@/convex/utils";
 import { useQuery } from "convex/react";
 
 export function useUser() {

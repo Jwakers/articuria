@@ -24,6 +24,7 @@
 - [x] Add privacy and terms of service page
 - [x] Upgrade tailwind
 - [x] Implement brand colors across code base not just for special elements
+- [ ] Refactor report and translation to work in complete isolation (the files are too crowded)
 - [ ] Generate transcript with open ai removing assembly ai from the project
   - [ ] Stream the transcript to the client
 - [ ] Provide open ai with table topic audio for a better review
@@ -44,15 +45,24 @@
 - [x] Remove old prisma code and env variables (including from PROD)
 - [x] Refactor mux webhook to convex httpAction
 - [x] Refactor mux server actions into convex actions
-- [ ] Refactor openai server actions to convex actions
+- [x] Refactor openai server actions to convex actions
 - [x] Review with code rabbit before PR
 - [x] Populate env variables and webhook URLs for production including signing secrets
 - [x] Remove redundant env vars (including cloudflare) from vercel and vercel env pull to local
-- [ ] Do references cascade on delete, if not, delete reference items when deleting a video
-- [ ] Refactor for all best practices https://docs.convex.dev/understanding/best-practices/
+- [ ] Refactor and abstract the transcript and report sections of the video page.
 - [ ] Research convex caching and make adjustments to code
-- [ ] Fully read all important parts of the convex docs, best practice, dev guides, etc and task out any improvements
+- [x] Fully read all important parts of the convex docs, best practice, dev guides, etc and task out any improvements
+  - [x] Refactor to a shared code pattern (e.g. convex/model/videos.ts import these into convex/videos.ts which should contain much less code): https://docs.convex.dev/understanding/best-practices/#use-helper-functions-to-write-shared-code
+  - [ ] Replace all instances of .filter with .withIndex if possible: https://docs.convex.dev/understanding/best-practices/#examples
+  - [ ] Only use .collect with a small number of results
+  - [ ] Only schedule and ctx.run\* internal functions
+  - [ ] Use runAction only when using a different runtime
+  - [ ] replace Error with ConvexError
+  - [ ] Make all components that use data, client side components (don't pass promises to them in props)
+- [ ] Enable no floating promises in eslint https://typescript-eslint.io/rules/no-floating-promises/
 - [ ] Reorganise convex files into public and private folders for internal and public queries/mutations
+- [ ] Review all app interactions and simplify/remove tech dept where possible
+- [ ] Track each table topic a users sees in the users table
 
 ## 2. New Features
 

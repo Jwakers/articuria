@@ -2,9 +2,9 @@
 
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+import { getAuthToken, getUser } from "@/lib/auth";
 import { disfluencyData } from "@/lib/utils";
 import { fetchAction, fetchMutation, fetchQuery } from "convex/nextjs";
-import { getAuthToken, getUser } from "../auth";
 import { assemblyAi } from "./client";
 
 export async function getTranscriptionData(videoId: Id<"videos">) {
