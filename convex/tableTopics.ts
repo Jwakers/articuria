@@ -53,17 +53,26 @@ export const getNewTopic = mutation({
         ? args.theme
         : "GENERAL";
 
+    // Get user's existing topic IDs, defaulting to empty array
+    const existingTopicIds = user.tableTopics ?? [];
+
     // Query for available topics not already assigned to user
     const availableTopic = await ctx.db
       .query("tableTopics")
       .withIndex("by_theme_difficulty", (q) =>
         q.eq("theme", effectiveTheme).eq("difficulty", effectiveDifficulty),
       )
-      .filter((q) =>
-        q.and(
-          ...(user.tableTopics?.map((id) => q.neq(q.field("_id"), id)) ?? []),
-        ),
-      )
+      .filter((q) => {
+        // If user has no existing topics, no filtering needed
+        if (existingTopicIds.length === 0) {
+          return q.eq(q.field("_id"), q.field("_id")); // Always true condition
+        }
+
+        // Use individual neq conditions for each existing topic ID
+        return q.and(
+          ...existingTopicIds.map((id) => q.neq(q.field("_id"), id)),
+        );
+      })
       .first();
 
     let topicId: Id<"tableTopics">;

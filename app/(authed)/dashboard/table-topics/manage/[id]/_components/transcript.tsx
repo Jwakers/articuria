@@ -120,7 +120,6 @@ export default function Transcript({ videoId }: TranscriptProps) {
     } catch (error) {
       console.error(error);
       toast.error("Error generating report");
-    } finally {
       setReportPending(false);
     }
   };

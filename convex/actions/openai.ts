@@ -17,11 +17,10 @@ import {
 
 const apiKey = process.env.OPEN_AI_SECRET_KEY;
 
-if (!apiKey) throw new Error("Missing OpenAI api key");
-
-const client = new OpenAI({
-  apiKey,
-});
+const getOpenAIClient = () => {
+  if (!apiKey) throw new Error("Missing OpenAI api key");
+  return new OpenAI({ apiKey });
+};
 
 const scoreSchema = z.object({
   feedback: z.string(),
@@ -111,6 +110,7 @@ async function generateTableTopic({
   topicBlackList,
 }: GenerateTableTopicArgs) {
   try {
+    const client = getOpenAIClient();
     const rules = [
       "You are the toastmaster",
       "You will generate 1 table topic when asked",
@@ -169,6 +169,7 @@ async function generateTableTopicReport({
   if (!tableTopic?.topic) throw new Error("Missing table topic data");
 
   try {
+    const client = getOpenAIClient();
     const rules = [
       `You are the toastmaster, tasked with reviewing the provided table topic transcript.`,
       `Your analysis should focus on creativity, clarity, engagement, tone, pacing, and language.`,

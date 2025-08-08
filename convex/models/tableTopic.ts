@@ -8,6 +8,7 @@ export async function createTopic(
   ctx: MutationCtx,
   args: Pick<WithoutSystemFields<Doc<"tableTopics">>, "theme" | "difficulty">,
 ) {
+  const user = await Users.getCurrentUserOrThrow(ctx);
   const theme = args.theme ?? "GENERAL";
   const difficulty = args.difficulty ?? "BEGINNER";
 
@@ -15,9 +16,6 @@ export async function createTopic(
     theme,
     difficulty,
   });
-
-  // Get the current user to pass to the action
-  const user = await Users.getCurrentUserOrThrow(ctx);
 
   await ctx.scheduler.runAfter(0, internal.actions.openai.createTableTopic, {
     topicId,

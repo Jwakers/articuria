@@ -68,14 +68,21 @@ export const muxWebhookHandler = httpAction(async (ctx, request) => {
         });
         break;
       case "video.asset.deleted":
+        // Needed if the video is deleted directly from MUX
         if (!data.passthrough) {
           console.error(`[MUX WEBHOOK] Missing passthrough for event ${type}`);
           return new Response(null, { status: 200 });
         }
-
-        await ctx.runMutation(internal.videos.deleteById, {
-          videoId: data.passthrough as Id<"videos">,
-        });
+        try {
+          await ctx.runMutation(internal.videos.deleteById, {
+            videoId: data.passthrough as Id<"videos">,
+          });
+        } catch (error) {
+          console.log(error);
+          return new Response("[MUX WEBHOOK] Video already deleted", {
+            status: 200,
+          });
+        }
         break;
       case "video.asset.static_rendition.created":
       case "video.asset.static_rendition.ready":

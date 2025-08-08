@@ -8,11 +8,6 @@ import {
 import * as Video from "./models/video";
 import { muxProcessingStatus } from "./schema";
 
-// Helper functions
-
-// End of helper functions
-
-// Queries and mutations
 export const getEnriched = query({
   args: {
     videoId: v.optional(v.id("videos")),
@@ -149,7 +144,7 @@ export const deleteVideo = mutation({
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) throw new Error("Unauthorized");
 
-    const video = await ctx.db.get(args.videoId);
+    const video = await Video.getVideo(ctx, args.videoId);
     if (!video) throw new Error("Video not found");
 
     if (video.user !== identity.tokenIdentifier)
@@ -164,7 +159,8 @@ export const deleteById = internalMutation({
     videoId: v.id("videos"),
   },
   async handler(ctx, args) {
-    const video = await ctx.db.get(args.videoId);
+    console.log({ args });
+    const video = await Video.getVideo(ctx, args.videoId);
     if (!video) throw new Error("Video not found");
 
     await Video.deleteVideo(ctx, video);

@@ -51,15 +51,12 @@ export async function updateVideo(
     updateData: Partial<WithoutSystemFields<Doc<"videos">>>;
   },
 ) {
-  // Remove undefined properties
-  const patchData = args.updateData;
-  Object.keys(patchData).forEach((key) => {
-    if (
-      patchData[key as keyof WithoutSystemFields<Doc<"videos">>] === undefined
-    ) {
-      delete patchData[key as keyof WithoutSystemFields<Doc<"videos">>];
-    }
-  });
+  // Remove undefined and null properties
+  const patchData = Object.fromEntries(
+    Object.entries(args.updateData).filter(
+      ([, value]) => value !== undefined && value !== null,
+    ),
+  );
   await ctx.db.patch(args.videoId, patchData);
 }
 
