@@ -36,11 +36,10 @@ export const getNewTopic = mutation({
     theme: v.optional(themeUnion),
   },
   async handler(ctx, args) {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Unauthorized");
-
     const user = await Users.getCurrentUserOrThrow(ctx);
     const accountLimits = getAccountLimits(user);
+
+    if (!user) throw new Error("Unauthorized");
 
     // Determine effective difficulty and theme based on account limits
     const effectiveDifficulty: Doc<"tableTopics">["difficulty"] =
