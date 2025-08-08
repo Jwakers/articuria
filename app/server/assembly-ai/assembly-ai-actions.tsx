@@ -2,10 +2,9 @@
 
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+import { getAuthToken, getUser } from "@/lib/auth";
 import { disfluencyData } from "@/lib/utils";
-import { fetchMutation, fetchQuery } from "convex/nextjs";
-import { getAuthToken, getUser } from "../auth";
-import { getAudioRendition } from "../mux/mux-actions";
+import { fetchAction, fetchMutation, fetchQuery } from "convex/nextjs";
 import { assemblyAi } from "./client";
 
 export async function getTranscriptionData(videoId: Id<"videos">) {
@@ -38,8 +37,11 @@ export async function getTranscriptionData(videoId: Id<"videos">) {
       error: "You do not have permission to generate a transcript",
     };
 
-  const { audioRendition, playbackId, error } = await getAudioRendition(
-    video.assetId,
+  const { audioRendition, playbackId, error } = await fetchAction(
+    api.actions.mux.getAudio,
+    {
+      assetId: video.assetId,
+    },
   );
 
   if (error) return { error };

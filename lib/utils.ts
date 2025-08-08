@@ -1,7 +1,7 @@
-import { Doc } from "@/convex/_generated/dataModel";
+import { getAccountLimits } from "@/convex/utils";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { ACCOUNT_LIMITS, DISFLUENCIES } from "./constants";
+import { DISFLUENCIES } from "./constants";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -29,10 +29,6 @@ export function validateFile({
   }
 }
 
-export function convertMegabytesToBytes(megabytes: number): number {
-  return megabytes * 1024 * 1024;
-}
-
 type Success<T> = {
   data: T;
   error: null;
@@ -54,11 +50,6 @@ export async function tryCatch<T, E = Error>(
   } catch (error) {
     return { data: null, error: error as E };
   }
-}
-
-export function getAccountLimits(user: Doc<"users">) {
-  if (user.subscription === "PRO") return ACCOUNT_LIMITS.pro;
-  return ACCOUNT_LIMITS.free;
 }
 
 export function price(value: number) {

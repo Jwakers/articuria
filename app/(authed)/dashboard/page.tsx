@@ -1,9 +1,9 @@
-import { getAuthToken } from "@/app/server/auth";
 import FeedbackSection from "@/components/feedback-cta";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { api } from "@/convex/_generated/api";
+import { getAuthToken } from "@/lib/auth";
 import { ROUTES } from "@/lib/constants";
 import { fetchQuery } from "convex/nextjs";
 import { Metadata } from "next";

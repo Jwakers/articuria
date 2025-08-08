@@ -1,6 +1,5 @@
 "use client";
 
-import { getTableTopic } from "@/app/server/actions";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -37,17 +36,18 @@ import {
 } from "@/components/ui/select";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+import { DIFFICULTY_MAP, THEME_MAP } from "@/convex/constants";
 import { DIFFICULTY_OPTIONS, THEME_OPTIONS } from "@/convex/schema";
 import { useMediaRecorder } from "@/hooks/use-media-recorder";
 import { useUser } from "@/hooks/use-user";
-import { DIFFICULTY_MAP, ROUTES, THEME_MAP } from "@/lib/constants";
+import { ROUTES } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQuery } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { Download, HelpCircle, Loader2, Save, Trash2 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -77,7 +77,8 @@ export default function TableTopicsRecorder() {
     api.tableTopics.get,
     currentTopicId ? { topicId: currentTopicId } : "skip",
   );
-  const [isPending, startTransition] = useTransition();
+  const getTopicMutation = useMutation(api.tableTopics.getNewTopic);
+  const [isPending, setIsPending] = useState(false);
   const [countdown, setCountdown] = useState<number | null>(null);
   const { accountLimits } = useUser();
   const form = useForm<z.infer<typeof formSchema>>({
@@ -101,31 +102,39 @@ export default function TableTopicsRecorder() {
   } = useMediaRecorder();
 
   const { video } =
-    useQuery(api.videos.getEnriched, {
-      videoId: savedVideoId ?? undefined,
-    }) ?? {};
+    useQuery(
+      api.videos.getEnriched,
+      savedVideoId
+        ? {
+            videoId: savedVideoId ?? undefined,
+          }
+        : "skip",
+    ) ?? {};
 
-  const onSubmit = ({ difficulty, theme }: z.infer<typeof formSchema>) => {
+  const onSubmit = async ({
+    difficulty,
+    theme,
+  }: z.infer<typeof formSchema>) => {
     if ((difficulty && !canSetDifficulty) || (theme && !canSetTheme)) {
       toast.error("Upgrade your account to use table topic options");
       return;
     }
 
-    startTransition(async () => {
-      try {
-        if (currentTopicId) await handleDiscardRecording();
-        const topicId = await getTableTopic({
-          difficulty,
-          theme,
-        });
+    try {
+      setIsPending(true);
+      if (currentTopicId) await handleDiscardRecording();
+      const topicId = await getTopicMutation({
+        difficulty,
+        theme,
+      });
 
-        setCurrentTopicId(topicId);
-        setCountdown(COUNTDOWN_TIME);
-      } catch (error) {
-        console.error(error);
-        toast.error("Failed to generate topic");
-      }
-    });
+      setCurrentTopicId(topicId);
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to generate topic");
+
+      setIsPending(false);
+    }
   };
 
   const handleSaveRecording = async () => {
@@ -164,6 +173,13 @@ export default function TableTopicsRecorder() {
   };
 
   const timingColor = getTimingColor();
+
+  useEffect(() => {
+    if (!currentTopic?.topic) return;
+
+    setIsPending(false);
+    setCountdown(COUNTDOWN_TIME);
+  }, [currentTopic]);
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -283,7 +299,7 @@ export default function TableTopicsRecorder() {
               size="lg"
             >
               {isPending ? <Loader2 className="animate-spin" /> : null}
-              {!recordedVideoURL ? "Generate topic" : "Generate new topic"}
+              {!recordedVideoURL ? "Start recording" : "Get new topic"}
             </Button>
           </form>
         </Form>
@@ -316,7 +332,7 @@ export default function TableTopicsRecorder() {
           ) : null}
 
           <AnimatePresence>
-            {isPending && !currentTopicId && !recordedVideoURL ? (
+            {isPending ? (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}

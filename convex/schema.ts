@@ -37,6 +37,7 @@ export default defineSchema({
     lastName: v.optional(v.string()),
     email: v.optional(v.string()),
     image: v.optional(v.string()),
+    tableTopics: v.optional(v.array(v.id("tableTopics"))),
     subscription: v.optional(v.union(v.literal("FREE"), v.literal("PRO"))),
     stripeCustomerId: v.optional(v.string()),
     subscriptionData: v.optional(v.any()), // TODO: add validation
@@ -45,7 +46,7 @@ export default defineSchema({
     topic: v.optional(v.string()),
     difficulty: v.optional(difficultyUnion),
     theme: v.optional(themeUnion),
-  }),
+  }).index("by_theme_difficulty", ["theme", "difficulty"]),
   videos: defineTable({
     user: v.string(),
     uploadId: v.optional(v.string()),

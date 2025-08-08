@@ -1,6 +1,6 @@
 "use server";
 
-import { getUser } from "@/app/server/auth";
+import { getUser } from "@/lib/auth";
 import { ROUTES } from "@/lib/constants";
 import { getSiteUrl } from "@/lib/utils";
 import type Stripe from "stripe";

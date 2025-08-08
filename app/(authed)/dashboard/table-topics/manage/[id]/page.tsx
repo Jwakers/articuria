@@ -1,6 +1,6 @@
-import { getAuthToken } from "@/app/server/auth";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+import { getAuthToken } from "@/lib/auth";
 import { currentUser } from "@clerk/nextjs/server";
 import { fetchQuery } from "convex/nextjs";
 import { Metadata } from "next";

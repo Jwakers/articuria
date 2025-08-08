@@ -1,7 +1,6 @@
 "use client";
 
 import { getTranscriptionData } from "@/app/server/assembly-ai/assembly-ai-actions";
-import { generateTableTopicReport } from "@/app/server/openai/openai-actions";
 import {
   Accordion,
   AccordionContent,
@@ -25,9 +24,9 @@ import { Doc, Id } from "@/convex/_generated/dataModel";
 import { useUser } from "@/hooks/use-user";
 import { disfluencyData } from "@/lib/utils";
 import type { Transcript as TranscriptData } from "assemblyai";
-import { useQuery } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { ArrowRight, Loader2, Play } from "lucide-react";
-import { useEffect, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
 
 type TranscriptProps = {
@@ -55,8 +54,9 @@ export default function Transcript({ videoId }: TranscriptProps) {
         }
       : "skip",
   );
+  const reportMutation = useMutation(api.reports.generate);
   const [transcriptPending, startTranscriptTransition] = useTransition();
-  const [reportPending, startReportTransition] = useTransition();
+  const [reportPending, setReportPending] = useState(false);
   const transcriptData = transcript?.data as TranscriptData | undefined;
   const audioReady = video?.audioRenditionStatus === "READY";
 
@@ -105,24 +105,29 @@ export default function Transcript({ videoId }: TranscriptProps) {
     });
   };
 
-  useEffect(() => {
-    if (!transcript || video?.report || report || reportPending) return;
-    const generateReport = async () => {
-      if (!video?._id) {
-        toast.error("No video ID");
-        return;
-      }
-      const { error } = await generateTableTopicReport(videoId);
-      if (error) {
-        toast.error(error);
-        return;
-      }
-    };
+  const generateReport = async () => {
+    if (!video?._id) {
+      toast.error("No video ID");
+      return;
+    }
+    if (report) {
+      toast.error("Report already exists");
+      return;
+    }
+    try {
+      setReportPending(true);
+      await reportMutation({ videoId: video?._id });
+    } catch (error) {
+      console.error(error);
+      toast.error("Error generating report");
+      setReportPending(false);
+    }
+  };
 
-    startReportTransition(async () => {
-      await generateReport();
-    });
-  }, [report, transcript, reportPending, video?.report, video?._id, videoId]);
+  useEffect(() => {
+    if (!report) return;
+    setReportPending(false);
+  }, [report]);
 
   if (
     accountLimits &&
@@ -189,11 +194,17 @@ export default function Transcript({ videoId }: TranscriptProps) {
           <div className="space-y-4">
             <ReportTable report={report ?? null} />
 
-            {transcript && !report && reportPending ? (
-              <div className="text-muted-foreground flex items-center gap-2">
-                <span>Generating report...</span>
-                <Loader2 className="animate-spin" />
-              </div>
+            {transcript && !report ? (
+              <Button onClick={generateReport} disabled={reportPending}>
+                <span>
+                  {reportPending ? "Generating..." : "Generate report"}
+                </span>
+                {reportPending ? (
+                  <Loader2 className="animate-spin" />
+                ) : (
+                  <ArrowRight />
+                )}
+              </Button>
             ) : null}
             <div className="bg-muted rounded border shadow-inner">
               <Table className="border-b">

@@ -1,6 +1,5 @@
-import { Doc } from "@/convex/_generated/dataModel";
-
-type VideoStatus = Doc<"videos">["status"];
+import { Doc } from "./_generated/dataModel";
+import { ACCOUNT_LIMITS } from "./constants";
 
 export function parseStatus(
   currentStatus:
@@ -14,7 +13,7 @@ export function parseStatus(
     | "timed_out"
     | "skipped"
     | undefined,
-): VideoStatus {
+): Doc<"videos">["status"] {
   if (["preparing", "waiting", undefined].includes(currentStatus))
     return "WAITING";
   if (["ready", "asset_created"].includes(currentStatus ?? "")) return "READY";
@@ -26,4 +25,13 @@ export function parseStatus(
     return "ERRORED";
 
   return "WAITING";
+}
+
+export function getAccountLimits(user: Doc<"users">) {
+  if (user.subscription === "PRO") return ACCOUNT_LIMITS.pro;
+  return ACCOUNT_LIMITS.free;
+}
+
+export function convertMegabytesToBytes(megabytes: number): number {
+  return megabytes * 1024 * 1024;
 }

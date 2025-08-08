@@ -1,5 +1,5 @@
-import { getUser } from "@/app/server/auth";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { getUser } from "@/lib/auth";
 import { AlertCircle } from "lucide-react";
 
 export async function SubscriptionAlert() {

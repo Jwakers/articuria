@@ -1,5 +1,10 @@
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import { internal } from "./_generated/api";
+import { internalMutation, mutation, query } from "./_generated/server";
+import * as Report from "./models/report";
+import * as Users from "./models/user";
+import * as Video from "./models/video";
+import { getAccountLimits } from "./utils";
 
 export const get = query({
   args: {
@@ -10,16 +15,50 @@ export const get = query({
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) throw new Error("Unauthorized");
 
-    const report = await ctx.db.get(args.reportId);
+    const report = await Report.getReport(ctx, args.reportId);
     if (report?.user !== identity.tokenIdentifier) return null;
 
     return report;
   },
 });
 
-export const create = mutation({
+export const generate = mutation({
   args: {
     videoId: v.id("videos"),
+  },
+  async handler(ctx, args) {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Unauthorized");
+
+    const video = await Video.getVideo(ctx, args.videoId);
+    if (!video) throw new Error("Video not found");
+    if (video.report) throw new Error("Report already exists");
+    if (!video.transcript)
+      throw new Error("No transcript found to generate report from");
+
+    // Check user permissions
+    const user = await Users.getCurrentUserOrThrow(ctx);
+    const accountLimits = getAccountLimits(user);
+
+    // Can the user create a report?
+    if (!accountLimits.tableTopicReport)
+      throw new Error("You do not have permission to create a report");
+
+    await ctx.scheduler.runAfter(
+      0,
+      internal.actions.openai.createTableTopicReport,
+      {
+        videoId: video._id,
+        user: identity.tokenIdentifier,
+      },
+    );
+  },
+});
+
+export const create = internalMutation({
+  args: {
+    videoId: v.id("videos"),
+    user: v.string(),
     averageScore: v.number(),
     clarity: v.string(),
     clarityScore: v.number(),
@@ -39,18 +78,13 @@ export const create = mutation({
     toneScore: v.number(),
   },
   async handler(ctx, args) {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Unauthorized");
-
-    const video = await ctx.db.get(args.videoId);
+    const video = await Video.getVideo(ctx, args.videoId);
     if (!video) throw new Error("Video not found");
-    if (video.user !== identity.tokenIdentifier) {
-      throw new Error("Unauthorized");
-    }
+    if (video.user !== args.user) throw new Error("Unauthorized");
 
-    const reportId = await ctx.db.insert("reports", {
+    const reportId = await Report.createReport(ctx, {
       videoId: video._id,
-      user: identity.tokenIdentifier,
+      user: args.user,
       averageScore: args.averageScore,
       clarity: args.clarity,
       clarityScore: args.clarityScore,
@@ -70,8 +104,11 @@ export const create = mutation({
       toneScore: args.toneScore,
     });
 
-    await ctx.db.patch(video._id, {
-      report: reportId,
+    await Video.updateVideo(ctx, {
+      videoId: video._id,
+      updateData: {
+        report: reportId,
+      },
     });
 
     return reportId;

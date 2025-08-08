@@ -1,8 +1,8 @@
 "use server";
 
-import { getAuthToken, getUser } from "@/app/server/auth";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { api } from "@/convex/_generated/api";
+import { getAuthToken, getUser } from "@/lib/auth";
 import { fetchQuery } from "convex/nextjs";
 import { AlertCircle } from "lucide-react";
 

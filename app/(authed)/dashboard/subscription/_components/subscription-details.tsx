@@ -24,8 +24,9 @@ import {
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { api } from "@/convex/_generated/api";
+import { ACCOUNT_LIMITS } from "@/convex/constants";
 import { useUser } from "@/hooks/use-user";
-import { ACCOUNT_LIMITS, ROUTES, SUBSCRIPTION_TIERS } from "@/lib/constants";
+import { ROUTES, SUBSCRIPTION_TIERS } from "@/lib/constants";
 import { price } from "@/lib/utils";
 import { useQuery } from "convex/react";
 import { Check, Sparkle } from "lucide-react";
