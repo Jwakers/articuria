@@ -23,14 +23,14 @@ export default function ContactUsCard() {
           Need more help?
         </CardTitle>
         <p className="text-sm font-normal text-blue-700 dark:text-blue-300">
-          We're here to support your public speaking journey
+          We&apos;re here to support your public speaking journey
         </p>
       </CardHeader>
       <CardContent className="pb-6 text-center">
         <p className="leading-relaxed text-blue-800 dark:text-blue-200">
           If you need additional support or have any questions about table
-          topics, our recording system, or anything else, please don't hesitate
-          to reach out. Our team is ready to help you succeed.
+          topics, our recording system, or anything else, please don&apos;t
+          hesitate to reach out. Our team is ready to help you succeed.
         </p>
       </CardContent>
       <CardFooter className="justify-center pt-0">

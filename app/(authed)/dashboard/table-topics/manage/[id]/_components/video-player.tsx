@@ -56,7 +56,10 @@ export default function VideoPlayer({ videoId }: VideoPlayerProps) {
       </CardHeader>
       <CardContent className="space-y-4 p-6">
         {video?.publicPlaybackId ? (
-          <MuxPlayer playbackId={video?.publicPlaybackId} />
+          <MuxPlayer
+            playbackId={video?.publicPlaybackId}
+            className="overflow-hidden rounded-xl"
+          />
         ) : (
           <Skeleton className="aspect-video w-full rounded" />
         )}
