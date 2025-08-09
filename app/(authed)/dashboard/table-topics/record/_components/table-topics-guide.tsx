@@ -89,7 +89,7 @@ export default function TableTopicsGuide() {
                         "You can then save or delete the video. Deleted videos don't get another try",
                         "Responses should be 1-2 minutes long (see traffic light system below)",
                       ].map((item, index) => (
-                        <li key={index} className="flex items-start gap-3">
+                        <li key={item} className="flex items-start gap-3">
                           <Badge
                             variant="secondary"
                             className="flex h-6 w-6 items-center justify-center bg-blue-100 p-0 text-xs font-bold text-blue-700 dark:bg-blue-900 dark:text-blue-300"
