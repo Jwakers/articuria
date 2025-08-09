@@ -2,7 +2,13 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Loading() {
   return (
-    <div className="grid max-w-xl gap-4 md:grid-cols-2">
+    <div
+      className="grid max-w-xl gap-4 md:grid-cols-2"
+      role="status"
+      aria-busy="true"
+      aria-live="polite"
+      aria-label="Loading contact form"
+    >
       {/* Name field skeleton */}
       <div className="space-y-2">
         <Skeleton className="h-4 w-12" />

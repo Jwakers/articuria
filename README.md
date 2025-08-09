@@ -6,7 +6,7 @@
 - [x] Traffic light system in accordions looks rough
 - [x] Alert dialogs transition in from teh side of the screen
 - [x] contact page needs a loading.tsx
-- [ ] When loading a saved video page, the initial video component is very small
+- [ ] On saved video pages, the video initially renders too small; ensure a minimum container size and aspect ratio on first paint
 - [ ] If the user does not save a video for a topic they will see the same one again
 - [ ] Generating a report does not display the correct loading state in the button and allows multiple clicks
 - [ ] Get the correct user permissions inside the mux actions or make the action private

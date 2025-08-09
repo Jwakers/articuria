@@ -1,12 +1,10 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
 import { Clock, Mic } from "lucide-react";
 import { motion } from "motion/react";
 
 type CurrentTopicProps = {
   topic: string | null;
-  showBackground: boolean;
   countdown: number | null;
 };
 
@@ -25,9 +23,10 @@ export default function TopicAndCountdown({
       >
         {/* Topic Card */}
         <motion.div
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 20 }}
+          transition={{ duration: 0.5 }}
           className="relative"
         >
           <Card className="mx-auto max-w-2xl border-0 bg-white/95 shadow-2xl backdrop-blur-sm">
@@ -56,11 +55,8 @@ export default function TopicAndCountdown({
             opacity: countdown !== null ? 1 : 0,
             y: countdown !== null ? 0 : 20,
           }}
-          transition={{ delay: 0.4, duration: 0.5 }}
-          className={cn(
-            "space-y-3 text-center",
-            countdown !== null ? "opacity-100" : "opacity-0",
-          )}
+          transition={{ delay: 0.2, duration: 0.5 }}
+          className="space-y-3 text-center"
         >
           <div className="flex items-center justify-center gap-2 text-white">
             <Clock className="h-5 w-5" />

@@ -79,7 +79,7 @@ export const update = mutation({
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) throw new Error("Unauthorized");
 
-    const video = await ctx.db.get(args.videoId);
+    const video = await Video.getVideo(ctx, args.videoId);
     if (!video || video.user !== identity.tokenIdentifier)
       throw new Error("Unauthorized");
 

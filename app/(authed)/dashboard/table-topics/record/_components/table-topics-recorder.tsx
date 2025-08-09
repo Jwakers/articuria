@@ -477,15 +477,14 @@ export default function TableTopicsRecorder() {
                 {currentTopic?.topic && !isRecording && !recordedVideoURL && (
                   <motion.div
                     key={currentTopic?.topic}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9, y: "100%" }}
-                    transition={{ duration: 0.3 }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.5 }}
                   >
                     <TopicAndCountdown
                       topic={currentTopic?.topic}
                       countdown={countdown}
-                      showBackground={!isRecording}
                     />
                   </motion.div>
                 )}

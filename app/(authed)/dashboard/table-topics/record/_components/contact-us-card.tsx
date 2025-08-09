@@ -34,10 +34,7 @@ export default function ContactUsCard() {
         </p>
       </CardContent>
       <CardFooter className="justify-center pt-0">
-        <Button
-          asChild
-          className="h-12 bg-blue-600 px-8 py-3 text-base font-medium text-white shadow-lg transition-all duration-200 hover:bg-blue-700 hover:shadow-xl"
-        >
+        <Button asChild size="lg">
           <Link
             href={`${ROUTES.dashboard.contact}?reason=${CONTACT_FORM_REASONS.support.key}`}
             className="flex items-center gap-2"
