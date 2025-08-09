@@ -18,7 +18,7 @@ export const getEnriched = query({
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) throw new Error("Unauthorized");
 
-    const video = await ctx.db.get(args.videoId);
+    const video = await Video.getVideo(ctx, args.videoId);
 
     if (!video) throw new Error("Video not found");
     if (video.user !== identity.tokenIdentifier)
@@ -79,7 +79,7 @@ export const update = mutation({
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) throw new Error("Unauthorized");
 
-    const video = await ctx.db.get(args.videoId);
+    const video = await Video.getVideo(ctx, args.videoId);
     if (!video || video.user !== identity.tokenIdentifier)
       throw new Error("Unauthorized");
 
@@ -159,7 +159,6 @@ export const deleteById = internalMutation({
     videoId: v.id("videos"),
   },
   async handler(ctx, args) {
-    console.log({ args });
     const video = await Video.getVideo(ctx, args.videoId);
     if (!video) throw new Error("Video not found");
 
@@ -188,7 +187,7 @@ export const getForReport = internalQuery({
     videoId: v.id("videos"),
   },
   async handler(ctx, args) {
-    const video = await ctx.db.get(args.videoId);
+    const video = await Video.getVideo(ctx, args.videoId);
     if (!video) throw new Error("Video not found");
     if (!video.transcript)
       throw new Error("Video does not have a table topic or transcript");
