@@ -5,10 +5,11 @@
 - [x] Log out button in user menu does not work
 - [x] Traffic light system in accordions looks rough
 - [x] Alert dialogs transition in from teh side of the screen
-- [ ] Generating a second topic causes the video stream to fail.
-- [ ] contact page needs a loading.tsx
+- [x] contact page needs a loading.tsx
+- [ ] On saved video pages, the video initially renders too small; ensure a minimum container size and aspect ratio on first paint
 - [ ] If the user does not save a video for a topic they will see the same one again
 - [ ] Generating a report does not display the correct loading state in the button and allows multiple clicks
+- [ ] Get the correct user permissions inside the mux actions or make the action private
 - [x] Clicking the sign out button in the user menu causes a client error (need to use clerk to refresh the session or redirect to the home page)
 - [x] Subscription drawer gradient is bugged (more noticeable in light mode)
 - [x] Signed out users can click upgrade now on the home page and see the subscription drawer
@@ -20,6 +21,8 @@
 ## Updates
 
 - [x] Remove "Coming soon" from transcript and report features. Also appears on the billing and subscription page (including in stripe dashboard)
+- [ ] Homogenize the updated recording page with the design system and classes
+  - [ ] Dark mode styling also needs some improvement
 - [ ] On recorder page, warn that data will be lost on redirect or refresh (trigger alert dialog when navigating without saving). This is complex and cannot be handled with the beforeunload event. Next.js uses 'soft' navigation so the event does not fire. Need to find a way to intercept route changes before they happen.
 - [ ] Enable a paid plan on mux
 - [x] Update favicon (can use the mic icon for now or just an "A" in a black background).

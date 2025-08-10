@@ -7,9 +7,10 @@ import { fetchQuery } from "convex/nextjs";
 import { AlertCircle } from "lucide-react";
 
 export default async function VideoLimitAlert() {
+  const token = await getAuthToken();
   const [videos, { user, accountLimits }] = await Promise.all([
     fetchQuery(api.videos.list, undefined, {
-      token: await getAuthToken(),
+      token,
     }),
     getUser(),
   ]);

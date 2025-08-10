@@ -11,6 +11,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -27,6 +28,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Progress } from "@/components/ui/progress";
 import {
   Select,
   SelectContent,
@@ -44,7 +46,18 @@ import { ROUTES } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery } from "convex/react";
-import { Download, HelpCircle, Loader2, Save, Trash2 } from "lucide-react";
+import {
+  Clock,
+  Download,
+  HelpCircle,
+  Loader2,
+  Mic,
+  Play,
+  Save,
+  Sparkles,
+  Square,
+  Trash2,
+} from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -53,7 +66,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 import TopicAndCountdown from "./topic-and-countdown";
 
-const COUNTDOWN_TIME = 5;
+const COUNTDOWN_TIME = 6;
 const DIFFICULTY_VALUES = Object.values(DIFFICULTY_MAP);
 const THEME_VALUES = Object.values(THEME_MAP);
 
@@ -132,7 +145,6 @@ export default function TableTopicsRecorder() {
     } catch (error) {
       console.error(error);
       toast.error("Failed to generate topic");
-
       setIsPending(false);
     }
   };
@@ -169,10 +181,16 @@ export default function TableTopicsRecorder() {
     if (timeElapsed > 120) return "bg-red-500";
     if (timeElapsed > 90) return "bg-amber-500";
     if (timeElapsed > 60) return "bg-green-500";
-    return "bg-transparent";
+    return "bg-blue-500";
   };
 
   const timingColor = getTimingColor();
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
+  };
 
   useEffect(() => {
     if (!currentTopic?.topic) return;
@@ -195,255 +213,405 @@ export default function TableTopicsRecorder() {
   }, [countdown, startRecording]);
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <h1 className="text-xl font-bold md:text-2xl">
-            Table topics recorder
-          </h1>
-          <a
-            href="#table-topics-guide"
-            title="Find out more about table topics"
-            aria-label="Learn about table topics"
-          >
-            <HelpCircle className="size-4" />
-          </a>
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="grid gap-2 md:grid-cols-2"
-          >
-            <FormField
-              control={form.control}
-              name="difficulty"
-              disabled={!canSetDifficulty}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel
-                    className={cn(!canSetDifficulty && "text-muted-foreground")}
-                  >
-                    Difficulty
-                  </FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                    {...field}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a difficulty" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {Object.entries(DIFFICULTY_MAP).map(([key, val]) => (
-                        <SelectItem value={key} key={key}>
-                          {val}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="theme"
-              disabled={!canSetTheme}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel
-                    className={cn(!canSetTheme && "text-muted-foreground")}
-                  >
-                    Theme
-                  </FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                    {...field}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a theme" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {Object.entries(THEME_MAP).map(([key, val]) => (
-                        <SelectItem value={key} key={key}>
-                          {val}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            {!canSetDifficulty && !canSetTheme ? (
-              <p className="text-muted-foreground text-sm md:col-span-2">
-                Setting options for table topics are only available for paid
-                users.
-              </p>
-            ) : null}
-            <Button
-              disabled={
-                isRecording ||
-                isPending ||
-                (countdown !== null && countdown > 0)
-              }
-              className="md:col-span-2"
-              type="submit"
-              size="lg"
+    <div className="space-y-6">
+      {/* Header Section */}
+      <div className="space-y-2 text-center">
+        <h1 className="from-primary to-primary/60 bg-gradient-to-r bg-clip-text text-3xl font-bold text-transparent">
+          Table Topics Recorder
+        </h1>
+        <p className="text-muted-foreground mx-auto max-w-2xl">
+          Practice your impromptu speaking skills with AI-generated topics.
+          Record your response and get instant feedback to improve your public
+          speaking.
+        </p>
+      </div>
+
+      {/* Main Recording Interface */}
+      <Card className="from-background to-muted/20 overflow-hidden border-0 bg-gradient-to-br shadow-lg">
+        <CardHeader className="from-primary/5 to-primary/10 border-b bg-gradient-to-r">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="bg-primary/10 rounded-lg p-2">
+                <Mic className="text-primary h-5 w-5" />
+              </div>
+              <div>
+                <CardTitle className="text-xl">Ready to Record?</CardTitle>
+                <p className="text-muted-foreground text-sm">
+                  {!currentTopic?.topic
+                    ? "Generate a topic to get started"
+                    : isRecording
+                      ? "Recording in progress..."
+                      : "Topic ready - recording will start automatically"}
+                </p>
+              </div>
+            </div>
+            {isRecording && (
+              <Badge variant="secondary" className="animate-pulse">
+                <div className="mr-2 h-2 w-2 animate-ping rounded-full bg-red-500" />
+                LIVE
+              </Badge>
+            )}
+          </div>
+        </CardHeader>
+
+        <CardContent className="space-y-6">
+          {/* Topic Generation Form */}
+          {!currentTopic?.topic && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
             >
-              {isPending ? <Loader2 className="animate-spin" /> : null}
-              {!recordedVideoURL ? "Start recording" : "Get new topic"}
-            </Button>
-          </form>
-        </Form>
-        <div className="bg-accent relative aspect-video overflow-hidden rounded-md">
-          <video
-            ref={videoElementRef}
-            className="h-full w-full"
-            autoPlay={!recordedVideoURL} // Autoplay is required to see the stream without manually calling .play()
-            muted={!recordedVideoURL}
-            controls={!!recordedVideoURL}
-            src={recordedVideoURL || undefined}
-            playsInline
-            aria-label="Table topic recording preview"
-          />
-          {isRecording ? (
-            <div className="absolute top-4 right-4 flex size-4 items-center justify-center md:size-6">
-              <span
-                className={cn(
-                  "absolute inline-flex size-full animate-ping rounded-full",
-                  timingColor,
-                )}
-              />
-              <span
-                className={cn(
-                  "relative inline-flex size-full rounded-full",
-                  timingColor,
-                )}
-              />
-            </div>
-          ) : null}
-
-          <AnimatePresence>
-            {isPending ? (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{
-                  duration: 0.3,
-                }}
-                className="bg-overlay text-overlay-foreground absolute inset-0 flex items-center justify-center"
-              >
-                <Loader2 className="animate-spin" />
-              </motion.div>
-            ) : null}
-
-            {/* Backdrop blur must be outside of conditional rendering to properly transition */}
-            <div
-              key="backdrop-blur-sm"
-              className={cn(
-                "pointer-events-none absolute inset-0 backdrop-blur-xs transition-opacity duration-500",
-                currentTopic?.topic && !recordedVideoURL && !isRecording
-                  ? "opacity-100"
-                  : "opacity-0",
-              )}
-            />
-            {currentTopic?.topic && !recordedVideoURL ? (
-              <motion.div
-                key={currentTopic?.topic}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.3 }}
-              >
-                <TopicAndCountdown
-                  topic={currentTopic?.topic}
-                  countdown={countdown}
-                  showBackground={!isRecording}
-                />
-              </motion.div>
-            ) : null}
-          </AnimatePresence>
-        </div>
-        {isRecording && (
-          <div className="flex justify-between">
-            <Button onClick={stopRecording} variant="destructive">
-              Stop Recording
-            </Button>
-          </div>
-        )}
-      </CardContent>
-      <CardFooter>
-        {recordedVideoURL && (
-          <div className="flex w-full flex-wrap justify-between gap-4">
-            <div className="flex gap-2">
-              {!video ? (
-                <Button
-                  onClick={handleSaveRecording}
-                  disabled={isSaving}
-                  aria-busy={isSaving}
-                  aria-live="polite"
-                >
-                  {isSaving ? <Loader2 className="animate-spin" /> : <Save />}
-                  {isSaving ? "Saving..." : "Save"}
-                </Button>
-              ) : null}
-              {video?.status === "READY" ? (
-                <Button asChild>
-                  <Link
-                    href={`${ROUTES.dashboard.tableTopics.manage}/${video._id}`}
-                  >
-                    Go to video
-                  </Link>
-                </Button>
-              ) : null}
-              {video && video.status !== "READY" ? (
-                <div className="text-muted-foreground flex items-center gap-2 text-sm">
-                  Processing video...
-                  <Loader2 className="animate-spin" />
+              <div className="space-y-4 pt-6">
+                <div className="space-y-2 text-center">
+                  <Sparkles className="text-primary mx-auto h-8 w-8" />
+                  <h3 className="text-lg font-semibold">
+                    Customize Your Topic
+                  </h3>
+                  <p className="text-muted-foreground text-sm">
+                    Choose difficulty and theme to get a topic tailored to your
+                    skill level
+                  </p>
                 </div>
-              ) : null}
-              <Button onClick={handleDownloadRecording} variant="secondary">
-                <Download />
-                Download
-              </Button>
+
+                <Form {...form}>
+                  <form
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className="grid gap-4 md:grid-cols-2"
+                  >
+                    <FormField
+                      control={form.control}
+                      name="difficulty"
+                      disabled={!canSetDifficulty}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel
+                            className={cn(
+                              "text-sm font-medium",
+                              !canSetDifficulty && "text-muted-foreground",
+                            )}
+                          >
+                            Difficulty Level
+                          </FormLabel>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                            {...field}
+                          >
+                            <FormControl>
+                              <SelectTrigger className="h-11">
+                                <SelectValue placeholder="Select difficulty" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {Object.entries(DIFFICULTY_MAP).map(
+                                ([key, val]) => (
+                                  <SelectItem value={key} key={key}>
+                                    {val}
+                                  </SelectItem>
+                                ),
+                              )}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="theme"
+                      disabled={!canSetTheme}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel
+                            className={cn(
+                              "text-sm font-medium",
+                              !canSetTheme && "text-muted-foreground",
+                            )}
+                          >
+                            Topic Theme
+                          </FormLabel>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                            {...field}
+                          >
+                            <FormControl>
+                              <SelectTrigger className="h-11">
+                                <SelectValue placeholder="Select theme" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {Object.entries(THEME_MAP).map(([key, val]) => (
+                                <SelectItem value={key} key={key}>
+                                  {val}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    {!canSetDifficulty && !canSetTheme && (
+                      <div className="md:col-span-2">
+                        <div className="bg-muted/50 rounded-lg border border-dashed p-4">
+                          <p className="text-muted-foreground text-center text-sm">
+                            💎 <strong>Pro Feature:</strong> Customize
+                            difficulty and theme with a paid subscription
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="md:col-span-2">
+                      <Button
+                        disabled={isRecording || isPending}
+                        className="h-12 w-full text-base font-medium"
+                        type="submit"
+                        size="lg"
+                      >
+                        {isPending ? (
+                          <>
+                            <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                            Generating Topic...
+                          </>
+                        ) : (
+                          <>
+                            <Sparkles className="mr-2 h-5 w-5" />
+                            Generate Topic
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </form>
+                </Form>
+              </div>
+            </motion.div>
+          )}
+
+          {/* Video Recording Area */}
+          <div className="space-y-4 pt-6">
+            <div className="from-muted/30 to-muted/50 border-muted-foreground/20 relative aspect-video overflow-hidden rounded-xl border-2 border-dashed bg-gradient-to-br">
+              <video
+                ref={videoElementRef}
+                className="h-full w-full object-cover"
+                autoPlay={!recordedVideoURL}
+                muted={!recordedVideoURL}
+                controls={!!recordedVideoURL}
+                src={recordedVideoURL || undefined}
+                playsInline
+                aria-label="Table topic recording preview"
+              />
+
+              {/* Recording Status Overlay */}
+              {isRecording && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="absolute top-4 right-4 left-4"
+                >
+                  <div className="flex items-center justify-between rounded-lg bg-black/70 p-3 text-white backdrop-blur-sm">
+                    <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2">
+                        <span
+                          className={cn("h-3 w-3 rounded-full", timingColor)}
+                        />
+                        <span className="text-sm font-medium">Recording</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Clock className="h-4 w-4" />
+                      <span className="font-mono text-sm font-medium">
+                        {formatTime(timeElapsed)}
+                      </span>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Recording Progress Bar */}
+              {isRecording && (
+                <div className="absolute right-0 bottom-0 left-0">
+                  <Progress
+                    value={(timeElapsed / 120) * 100}
+                    className="h-1 rounded-none"
+                    style={
+                      {
+                        "--progress-background":
+                          timingColor === "bg-red-500"
+                            ? "#ef4444"
+                            : timingColor === "bg-amber-500"
+                              ? "#f59e0b"
+                              : timingColor === "bg-green-500"
+                                ? "#22c55e"
+                                : "#3b82f6",
+                      } as React.CSSProperties
+                    }
+                  />
+                </div>
+              )}
+
+              {/* Loading Overlay */}
+              <AnimatePresence>
+                {isPending && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="absolute inset-0 flex items-center justify-center rounded-xl bg-black/50 backdrop-blur-sm"
+                  >
+                    <div className="space-y-4 text-center">
+                      <Loader2 className="text-primary mx-auto h-12 w-12 animate-spin" />
+                      <p className="font-medium text-white">
+                        Generating your topic...
+                      </p>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Topic Display */}
+              <AnimatePresence>
+                {currentTopic?.topic && !isRecording && !recordedVideoURL && (
+                  <motion.div
+                    key={currentTopic?.topic}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <TopicAndCountdown
+                      topic={currentTopic?.topic}
+                      countdown={countdown}
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
-            {!video ? (
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button variant="destructive">
-                    <Trash2 className="mr-2 h-4 w-4" />
-                    Delete
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      This action cannot be undone. This will permanently delete
-                      your video from our servers.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleDiscardRecording}>
-                      Delete
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            ) : null}
+
+            {/* Recording Controls */}
+            {isRecording && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex justify-center"
+              >
+                <Button
+                  onClick={stopRecording}
+                  variant="destructive"
+                  size="lg"
+                  className="h-12 px-8 text-base font-medium shadow-lg"
+                >
+                  <Square className="mr-2 h-5 w-5" />
+                  Stop Recording
+                </Button>
+              </motion.div>
+            )}
           </div>
+        </CardContent>
+
+        {/* Action Buttons */}
+        {recordedVideoURL && (
+          <CardFooter className="bg-muted/30 border-t">
+            <div className="w-full space-y-4 pt-6">
+              <div className="flex items-center justify-between">
+                <h4 className="text-lg font-semibold">Recording Complete!</h4>
+              </div>
+
+              <div className="flex flex-wrap gap-3">
+                {!video ? (
+                  <Button
+                    onClick={handleSaveRecording}
+                    disabled={isSaving}
+                    className="min-w-[120px] flex-1"
+                  >
+                    {isSaving ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Saving...
+                      </>
+                    ) : (
+                      <>
+                        <Save className="mr-2 h-4 w-4" />
+                        Save Recording
+                      </>
+                    )}
+                  </Button>
+                ) : null}
+
+                {video?.status === "READY" ? (
+                  <Button asChild className="min-w-[120px] flex-1">
+                    <Link
+                      href={`${ROUTES.dashboard.tableTopics.manage}/${video._id}`}
+                    >
+                      <Play className="mr-2 h-4 w-4" />
+                      View Video
+                    </Link>
+                  </Button>
+                ) : null}
+
+                {video && video.status !== "READY" ? (
+                  <div className="text-muted-foreground bg-muted/50 flex items-center gap-2 rounded-lg px-4 py-2">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <span className="text-sm">Processing video...</span>
+                  </div>
+                ) : null}
+
+                <Button
+                  onClick={handleDownloadRecording}
+                  variant="outline"
+                  className="min-w-[120px] flex-1"
+                >
+                  <Download className="mr-2 h-4 w-4" />
+                  Download
+                </Button>
+
+                {!video && (
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        variant="destructive"
+                        className="min-w-[120px] flex-1"
+                      >
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        Delete
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Delete Recording?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This action cannot be undone. Your recording will be
+                          permanently deleted.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={handleDiscardRecording}>
+                          Delete Recording
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                )}
+              </div>
+            </div>
+          </CardFooter>
         )}
-      </CardFooter>
-    </Card>
+      </Card>
+
+      {/* Help Link */}
+      <div className="text-center">
+        <a
+          href="#table-topics-guide"
+          className="text-muted-foreground hover:text-primary inline-flex items-center gap-2 text-sm transition-colors"
+        >
+          <HelpCircle className="h-4 w-4" />
+          Learn more about table topics
+        </a>
+      </div>
+    </div>
   );
 }
