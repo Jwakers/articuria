@@ -24,7 +24,7 @@
 
 - [x] Remove "Coming soon" from transcript and report features. Also appears on the billing and subscription page (including in stripe dashboard)
 - [x] Homogenize the updated recording page with the design system and classes
-  - [ ] Dark mode styling also needs some improvement
+  - [x] Dark mode styling also needs some improvement
 - [ ] Feature topic reveal during recording; todo in the topic-and-countdown
 - [ ] On recorder page, warn that data will be lost on redirect or refresh (trigger alert dialog when navigating without saving). This is complex and cannot be handled with the beforeunload event. Next.js uses 'soft' navigation so the event does not fire. Need to find a way to intercept route changes before they happen.
 - [ ] Enable a paid plan on mux
