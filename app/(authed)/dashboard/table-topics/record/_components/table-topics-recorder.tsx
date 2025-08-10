@@ -216,7 +216,7 @@ export default function TableTopicsRecorder() {
     <div className="space-y-6">
       {/* Header Section */}
       <div className="space-y-2 text-center">
-        <h1 className="from-primary to-primary/60 bg-gradient-to-r bg-clip-text text-3xl font-bold text-transparent">
+        <h1 className="gradient-text text-xl font-bold md:text-2xl">
           Table Topics Recorder
         </h1>
         <p className="text-muted-foreground mx-auto max-w-2xl">
@@ -227,7 +227,7 @@ export default function TableTopicsRecorder() {
       </div>
 
       {/* Main Recording Interface */}
-      <Card className="from-background to-muted/20 overflow-hidden border-0 bg-gradient-to-br shadow-lg">
+      <Card className="overflow-hidden shadow-lg">
         <CardHeader className="from-primary/5 to-primary/10 border-b bg-gradient-to-r">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -247,7 +247,7 @@ export default function TableTopicsRecorder() {
             </div>
             {isRecording && (
               <Badge variant="secondary" className="animate-pulse">
-                <div className="mr-2 h-2 w-2 animate-ping rounded-full bg-red-500" />
+                <div className="bg-destructive mr-2 h-2 w-2 animate-ping rounded-full" />
                 LIVE
               </Badge>
             )}
@@ -356,7 +356,7 @@ export default function TableTopicsRecorder() {
 
                     {!canSetDifficulty && !canSetTheme && (
                       <div className="md:col-span-2">
-                        <div className="bg-muted/50 rounded-lg border border-dashed p-4">
+                        <div className="bg-muted rounded-lg border border-dashed p-4">
                           <p className="text-muted-foreground text-center text-sm">
                             💎 <strong>Pro Feature:</strong> Customize
                             difficulty and theme with a paid subscription
@@ -393,7 +393,7 @@ export default function TableTopicsRecorder() {
 
           {/* Video Recording Area */}
           <div className="space-y-4 pt-6">
-            <div className="from-muted/30 to-muted/50 border-muted-foreground/20 relative aspect-video overflow-hidden rounded-xl border-2 border-dashed bg-gradient-to-br">
+            <div className="relative aspect-video overflow-hidden rounded-xl">
               <video
                 ref={videoElementRef}
                 className="h-full w-full object-cover"
@@ -412,7 +412,7 @@ export default function TableTopicsRecorder() {
                   animate={{ opacity: 1 }}
                   className="absolute top-4 right-4 left-4"
                 >
-                  <div className="flex items-center justify-between rounded-lg bg-black/70 p-3 text-white backdrop-blur-sm">
+                  <div className="bg-foreground/70 text-background flex items-center justify-between rounded-lg p-3">
                     <div className="flex items-center gap-2">
                       <div className="flex items-center gap-2">
                         <span
@@ -436,19 +436,11 @@ export default function TableTopicsRecorder() {
                 <div className="absolute right-0 bottom-0 left-0">
                   <Progress
                     value={(timeElapsed / 120) * 100}
-                    className="h-1 rounded-none"
-                    style={
-                      {
-                        "--progress-background":
-                          timingColor === "bg-red-500"
-                            ? "#ef4444"
-                            : timingColor === "bg-amber-500"
-                              ? "#f59e0b"
-                              : timingColor === "bg-green-500"
-                                ? "#22c55e"
-                                : "#3b82f6",
-                      } as React.CSSProperties
-                    }
+                    className={cn("h-1 rounded-none")}
+                    barClassName={cn(
+                      "transition-colors duration-1000",
+                      timingColor,
+                    )}
                   />
                 </div>
               )}
