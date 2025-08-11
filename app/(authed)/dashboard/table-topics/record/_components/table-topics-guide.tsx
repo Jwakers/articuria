@@ -50,8 +50,8 @@ export default function TableTopicsGuide() {
         <AccordionItem value="table-topics" className="rounded-lg border px-4">
           <AccordionTrigger className="py-4 text-lg font-semibold hover:no-underline">
             <div className="flex items-center gap-3">
-              <div className="rounded-lg bg-blue-100 p-2 dark:bg-blue-900/30">
-                <Target className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+              <div className="dark:bg-primary/10 rounded-lg bg-blue-100 p-2">
+                <Target className="dark:text-primary h-5 w-5 text-blue-600" />
               </div>
               <span>What Are Table Topics?</span>
             </div>
@@ -74,9 +74,9 @@ export default function TableTopicsGuide() {
                   </p>
                 </div>
 
-                <Card className="border-blue-200/50 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20">
+                <Card className="dark:border-primary/60 dark:from-primary/20 dark:to-secondary/20 border-blue-200/50 bg-gradient-to-br from-blue-50 to-indigo-50">
                   <CardHeader>
-                    <CardTitle className="text-base font-semibold text-blue-900 dark:text-blue-100">
+                    <CardTitle className="dark:text-foreground text-base font-semibold text-blue-900">
                       How Table Topics Work
                     </CardTitle>
                   </CardHeader>
@@ -92,11 +92,11 @@ export default function TableTopicsGuide() {
                         <li key={item} className="flex items-start gap-3">
                           <Badge
                             variant="secondary"
-                            className="flex h-6 w-6 items-center justify-center bg-blue-100 p-0 text-xs font-bold text-blue-700 dark:bg-blue-900 dark:text-blue-300"
+                            className="dark:text-foreground/80 flex h-6 w-6 items-center justify-center bg-blue-100 p-0 text-xs font-bold text-blue-700 dark:bg-blue-900"
                           >
                             {index + 1}
                           </Badge>
-                          <span className="text-sm text-blue-800 dark:text-blue-200">
+                          <span className="dark:text-foreground/80 text-sm text-blue-800">
                             {item}
                           </span>
                         </li>
@@ -113,9 +113,9 @@ export default function TableTopicsGuide() {
               </p>
 
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                <Card className="border-green-200/50 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20">
+                <Card className="dark:border-primary/60 dark:from-primary/20 dark:to-secondary/20 border-green-200/50 bg-gradient-to-br from-green-50 to-emerald-50">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-base font-semibold text-green-900 dark:text-green-100">
+                    <CardTitle className="dark:text-foreground flex items-center gap-2 text-base font-semibold text-green-900">
                       <Star className="h-4 w-4" />
                       Benefits of Table Topics
                     </CardTitle>
@@ -131,9 +131,9 @@ export default function TableTopicsGuide() {
                       ].map((benefit, index) => (
                         <li
                           key={index}
-                          className="flex items-center gap-2 text-sm text-green-800 dark:text-green-200"
+                          className="dark:text-foreground/80 flex items-center gap-2 text-sm text-green-800"
                         >
-                          <div className="h-1.5 w-1.5 rounded-full bg-green-500" />
+                          <div className="dark:bg-primary h-1.5 w-1.5 rounded-full bg-green-500" />
                           {benefit}
                         </li>
                       ))}
@@ -141,9 +141,9 @@ export default function TableTopicsGuide() {
                   </CardContent>
                 </Card>
 
-                <Card className="border-purple-200/50 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20">
+                <Card className="dark:border-primary/60 dark:from-primary/20 dark:to-secondary/20 border-purple-200/50 bg-gradient-to-br from-purple-50 to-pink-50">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-base font-semibold text-purple-900 dark:text-purple-100">
+                    <CardTitle className="dark:text-foreground flex items-center gap-2 text-base font-semibold text-purple-900">
                       <Lightbulb className="h-4 w-4" />
                       Example Topics
                     </CardTitle>
@@ -159,9 +159,9 @@ export default function TableTopicsGuide() {
                       ].map((topic, index) => (
                         <li
                           key={index}
-                          className="flex items-center gap-2 text-sm text-purple-800 dark:text-purple-200"
+                          className="dark:text-foreground/80 flex items-center gap-2 text-sm text-purple-800"
                         >
-                          <div className="h-1.5 w-1.5 rounded-full bg-purple-500" />
+                          <div className="dark:bg-primary h-1.5 w-1.5 rounded-full bg-purple-500" />
                           {topic}
                         </li>
                       ))}
@@ -176,8 +176,8 @@ export default function TableTopicsGuide() {
         <AccordionItem value="traffic-light" className="rounded-lg border px-4">
           <AccordionTrigger className="py-4 text-lg font-semibold hover:no-underline">
             <div className="flex items-center gap-3">
-              <div className="rounded-lg bg-yellow-100 p-2 dark:bg-yellow-900/30">
-                <Clock className="h-5 w-5 text-yellow-600 dark:text-yellow-400" />
+              <div className="dark:bg-primary/10 rounded-lg bg-yellow-100 p-2">
+                <Clock className="dark:text-primary h-5 w-5 text-yellow-600" />
               </div>
               <span>The Traffic Light System</span>
             </div>
@@ -207,8 +207,8 @@ export default function TableTopicsGuide() {
                 />
               </div>
 
-              <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-950/20">
-                <p className="text-sm leading-relaxed text-amber-800 dark:text-amber-200">
+              <div className="border-warning bg-warning text-warning-foreground rounded-lg border p-4">
+                <p className="text-sm leading-relaxed">
                   <strong>Note:</strong> If you do go over or under the time
                   that is perfectly okay. These are just the guides used in
                   Toastmasters meetings. For practice purposes, go at your own
@@ -226,8 +226,8 @@ export default function TableTopicsGuide() {
         >
           <AccordionTrigger className="py-4 text-lg font-semibold hover:no-underline">
             <div className="flex items-center gap-3">
-              <div className="rounded-lg bg-red-100 p-2 dark:bg-red-900/30">
-                <Video className="h-5 w-5 text-red-600 dark:text-red-400" />
+              <div className="dark:bg-primary/10 rounded-lg bg-red-100 p-2">
+                <Video className="dark:text-primary h-5 w-5 text-red-600" />
               </div>
               <span>Video Overlay Indicators</span>
             </div>
@@ -240,7 +240,7 @@ export default function TableTopicsGuide() {
               </p>
 
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                <Card className="bg-gradient-to-br from-gray-50 to-slate-50 dark:from-gray-950/20 dark:to-slate-950/20">
+                <Card className="dark:from-primary/20 dark:to-secondary/20 bg-gradient-to-br from-gray-50 to-slate-50">
                   <CardHeader>
                     <CardTitle className="text-base font-normal">
                       During recording
@@ -260,7 +260,7 @@ export default function TableTopicsGuide() {
                   </CardContent>
                 </Card>
 
-                <Card className="bg-gradient-to-br from-gray-50 to-slate-50 dark:from-gray-950/20 dark:to-slate-950/20">
+                <Card className="dark:from-primary/20 dark:to-secondary/20 bg-gradient-to-br from-gray-50 to-slate-50">
                   <CardHeader>
                     <CardTitle className="text-base font-normal">
                       Colour key
@@ -302,8 +302,8 @@ export default function TableTopicsGuide() {
         <AccordionItem value="tips" className="rounded-lg border px-4">
           <AccordionTrigger className="py-4 text-lg font-semibold hover:no-underline">
             <div className="flex items-center gap-3">
-              <div className="rounded-lg bg-emerald-100 p-2 dark:bg-emerald-900/30">
-                <Lightbulb className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+              <div className="dark:bg-primary/10 rounded-lg bg-emerald-100 p-2">
+                <Lightbulb className="dark:text-primary h-5 w-5 text-emerald-600" />
               </div>
               <span>Tips for Using the Timing System</span>
             </div>
@@ -324,7 +324,7 @@ export default function TableTopicsGuide() {
                     "Try to finish your speech after the red light appears but before the 2:00 mark",
                   ].map((tip, index) => (
                     <li key={index} className="flex items-start gap-3">
-                      <div className="mt-2 h-2 w-2 flex-shrink-0 rounded-full bg-emerald-500" />
+                      <div className="dark:bg-primary mt-2 h-2 w-2 flex-shrink-0 rounded-full bg-emerald-500" />
                       <span className="text-muted-foreground text-sm leading-relaxed">
                         {tip}
                       </span>
@@ -332,14 +332,14 @@ export default function TableTopicsGuide() {
                   ))}
                 </ul>
 
-                <div className="rounded-lg border border-emerald-200 bg-gradient-to-br from-emerald-50 to-teal-50 p-6 dark:border-emerald-800 dark:from-emerald-950/20 dark:to-teal-950/20">
+                <div className="dark:border-primary dark:from-primary/20 dark:to-secondary/20 rounded-lg border border-emerald-200 bg-gradient-to-br from-emerald-50 to-teal-50 p-6">
                   <div className="mb-3 flex items-center gap-2">
-                    <Star className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
-                    <h4 className="font-bold text-emerald-900 dark:text-emerald-100">
+                    <Star className="dark:text-primary h-5 w-5 text-emerald-600" />
+                    <h4 className="dark:text-foreground font-bold text-emerald-900">
                       Pro Tip
                     </h4>
                   </div>
-                  <p className="text-sm leading-relaxed text-emerald-800 dark:text-emerald-200">
+                  <p className="dark:text-foreground/80 text-sm leading-relaxed text-emerald-800">
                     The ideal table topic speech has a clear opening, one main
                     point with a supporting example, and a concise conclusion.
                     Structure your practice with this format in mind to master
@@ -365,8 +365,8 @@ function TimingCard({
   description: string;
 }) {
   return (
-    <Card className="border-0 bg-gradient-to-br from-white to-gray-50 shadow-lg transition-shadow duration-200 hover:shadow-xl dark:from-gray-900 dark:to-gray-800">
-      <CardContent className="pt-6 pb-6 text-center">
+    <Card className="dark:from-primary/20 dark:to-secondary/20 border-0 bg-gradient-to-br from-white to-gray-50 shadow-lg transition-shadow duration-200 hover:shadow-xl">
+      <CardContent className="pt-6 text-center md:pt-6">
         <div className={cn("mx-auto mb-4 size-10 rounded-full", colorClass)} />
         <div className="mb-3 flex items-center justify-center gap-2">
           <div className={cn("h-4 w-4 rounded-full", colorClass)}></div>
