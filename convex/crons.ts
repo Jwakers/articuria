@@ -1,13 +1,19 @@
 import { cronJobs } from "convex/server";
-import { internal } from "./_generated/api";
 
 const crons = cronJobs();
 
-// This job will patch up any missing data from the video should the mux webhook fail
-crons.interval(
-  "update-video-status",
-  { minutes: 15 },
-  internal.actions.mux.updateVideoStatus,
-);
+// Cron job that patches up any missing data if the Mux webhook fails.
+// Disabled by default to prevent excessive Convex logs.
+//
+// To re-enable without changing code, set:
+//   MUX_UPDATE_VIDEO_STATUS_CRON_MINUTES = "<number of minutes>"
+// const intervalMinutes = Number(process.env.MUX_UPDATE_VIDEO_STATUS_CRON_MINUTES);
+// if (Number.isFinite(intervalMinutes) && intervalMinutes > 0) {
+//   crons.interval(
+//     "update-video-status",
+//     { minutes: intervalMinutes },
+//     internal.actions.mux.updateVideoStatus,
+//   );
+// }
 
 export default crons;
